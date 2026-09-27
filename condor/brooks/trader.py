@@ -23,7 +23,9 @@ def _decision_time(event: BrooksEvent) -> int:
     return value
 
 
-def _validate_references(intent: TradeIntentV2, windows: dict[str, dict[str, Any]]) -> None:
+def _validate_references(
+    intent: TradeIntentV2, windows: dict[str, dict[str, Any]]
+) -> None:
     """Entry prices must be exact fields of cited closed input bars."""
     if intent.decision == "NO_TRADE":
         if not intent.setup or not intent.setup.no_trade_reason:
@@ -40,7 +42,10 @@ def _validate_references(intent: TradeIntentV2, windows: dict[str, dict[str, Any
         raise ValueError("production entry must cite M15 decision timeframe")
     if intent.setup.trigger_status == "pending" and intent.trigger:
         expected_direction = "above" if intent.decision == "ENTER_LONG" else "below"
-        if intent.trigger.kind != "stop" or intent.trigger.direction != expected_direction:
+        if (
+            intent.trigger.kind != "stop"
+            or intent.trigger.direction != expected_direction
+        ):
             raise ValueError("pending trigger has invalid stop direction")
     for reference in (intent.trigger, intent.invalidation):
         assert reference is not None  # guaranteed by TradeIntentV2
@@ -74,22 +79,29 @@ class TraderConsumer:
         decision_time_ms = _decision_time(event)
         latest = self.store.read_latest("htf")
         htf = MarketContextV1.model_validate(latest) if latest else None
-        if htf and (htf.symbol != event.symbol or htf.decision_time_ms > decision_time_ms):
+        if htf and (
+            htf.symbol != event.symbol or htf.decision_time_ms > decision_time_ms
+        ):
             htf = None
         market_tools = TraderMarketTools(
-            source=self.source, decision_time_ms=decision_time_ms, market_context=htf,
+            source=self.source,
+            decision_time_ms=decision_time_ms,
+            market_context=htf,
         )
         # The copied entry skill's production profile requires each closed
         # window. The market gate rejects forming/future bars and short history.
         windows = {
             label: {
                 "interval": interval,
-                "bars": await market_tools.get_closed_candles(event.symbol, interval, 120),
+                "bars": await market_tools.get_closed_candles(
+                    event.symbol, interval, 120
+                ),
             }
             for label, interval in (("H4", "4h"), ("H1", "1h"), ("M15", "15m"))
         }
         if windows["H1"]["bars"][-1]["close_time_ms"] not in {
-            decision_time_ms, decision_time_ms - 1,
+            decision_time_ms,
+            decision_time_ms - 1,
         }:
             raise ValueError("H1 close event lacks its closed decision bar")
         context: dict[str, Any] = {
@@ -106,12 +118,15 @@ class TraderConsumer:
             agent_key=self.agent_key,
             prompt=context,
             output_model=TradeIntentV2,
-            market_tools=bind_symbol_tools(event.symbol, {
-                "get_closed_candles": market_tools.get_closed_candles,
-                "get_market_context": market_tools.get_market_context,
-                "get_recent_structure": market_tools.get_recent_structure,
-                "get_volatility": market_tools.get_volatility,
-            }),
+            market_tools=bind_symbol_tools(
+                event.symbol,
+                {
+                    "get_closed_candles": market_tools.get_closed_candles,
+                    "get_market_context": market_tools.get_market_context,
+                    "get_recent_structure": market_tools.get_recent_structure,
+                    "get_volatility": market_tools.get_volatility,
+                },
+            ),
             timeout_sec=self.timeout_sec,
             user_id=self.user_id,
         )
@@ -121,13 +136,18 @@ class TraderConsumer:
             raise ValueError("Trader output lacks production timeframe coverage")
         _validate_references(intent, windows)
         self.store.save_trader_intent(intent.model_dump())
-        await self.events.publish(BrooksEvent(
-            type=EventType.TRADER_INTENT_CREATED,
-            symbol=event.symbol,
-            correlation_id=event.correlation_id or str(uuid4()),
-            causation_id=event.event_id,
-            payload={"intent": intent.model_dump(), "shadow_mode": self.shadow_mode},
-        ))
+        await self.events.publish(
+            BrooksEvent(
+                type=EventType.TRADER_INTENT_CREATED,
+                symbol=event.symbol,
+                correlation_id=event.correlation_id or str(uuid4()),
+                causation_id=event.event_id,
+                payload={
+                    "intent": intent.model_dump(),
+                    "shadow_mode": self.shadow_mode,
+                },
+            )
+        )
         return intent
 
     async def run(self) -> None:
@@ -138,6 +158,10 @@ class TraderConsumer:
                 try:
                     await self.handle(event)
                 except Exception:
-                    log.exception("Brooks Trader failed for %s event %s", event.symbol, event.event_id)
+                    log.exception(
+                        "Brooks Trader failed for %s event %s",
+                        event.symbol,
+                        event.event_id,
+                    )
         finally:
             self.events.unsubscribe(queue)
