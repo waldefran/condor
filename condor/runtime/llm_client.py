@@ -25,6 +25,11 @@ from typing import Any
 
 from condor.acp import client as acp_client
 from condor.acp import pydantic_ai_client as pydantic_ai
+from condor.acp.opencode_cli_client import (
+    OPENCODE_PREFIXES,
+    OpenCodeCLIClient,
+    resolve_opencode_model,
+)
 from condor.preferences import resolve_custom_endpoint
 from condor.runtime.toolsets import get_project_dir
 
@@ -42,7 +47,7 @@ def build_llm_client(
     base_url_override: str | None = None,
     default_base_url: str | None = None,
     strict_custom_endpoint: bool = False,
-) -> acp_client.ACPClient | pydantic_ai.PydanticAIClient:
+) -> acp_client.ACPClient | pydantic_ai.PydanticAIClient | OpenCodeCLIClient:
     """Build (but do not start) the right client for ``agent_key``.
 
     Custom-endpoint keys (``custom@<endpoint>:<model>``) resolve through
@@ -82,6 +87,16 @@ def build_llm_client(
             api_key=api_key,
             allowed_tools=allowed_tools,
             system_prompt=system_prompt,
+        )
+
+    # OpenCode CLI bridge: agent keys "opencode-go:<model>" / "opencode:<model>"
+    # run on the user's OpenCode subscription through the local CLI auth --
+    # no API key, one subprocess per prompt, text only.
+    cli_model = resolve_opencode_model(agent_key)
+    if cli_model is not None:
+        return OpenCodeCLIClient(
+            model=cli_model,
+            working_dir=get_project_dir(),
         )
 
     # ACP subprocess models: claude-code, gemini, codex. A Claude model can be
@@ -127,11 +142,13 @@ async def agent_key_error(
         base = key.split(":", 1)[0]
         if base.split("@", 1)[0] in pydantic_ai.PYDANTIC_AI_PREFIXES:
             return f"no model id — use '{base}:<model-id>'"
-        if base not in acp_client.ACP_COMMANDS:
+        if base in OPENCODE_PREFIXES and not key.partition(":")[2].strip():
+            return f"no model id — use '{base}:<model-id>'"
+        if base not in acp_client.ACP_COMMANDS and base not in OPENCODE_PREFIXES:
             # resolve_acp would quietly run Claude Code in its place.
             known = sorted(acp_client.ACP_COMMANDS) + sorted(
                 pydantic_ai.PYDANTIC_AI_PREFIXES
-            )
+            ) + sorted(OPENCODE_PREFIXES)
             return f"unknown model provider '{base}' (known: {', '.join(known)})"
         return None
 
