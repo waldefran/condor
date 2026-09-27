@@ -2,7 +2,20 @@
 name: Brooks Price Action
 description: Independent market analysis and position management using Al Brooks price action
 agent_key: claude-acp:sonnet
-tools: [get_market_data]
+tools:
+- get_market_data
+- manage_routines
+- manage_agents
+- manage_strategies
+- control_agent
+- get_available_models
+- delegate
+- send_notification
+- manage_memory
+- manage_skill
+- trading_agent_journal_read
+- trading_agent_journal_write
+- run_code
 server_required: false
 ---
 
