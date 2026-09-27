@@ -45,6 +45,24 @@ class RoleRunError(RuntimeError):
     """Model output or a tool request violated the Brooks role contract."""
 
 
+def bind_symbol_tools(
+    symbol: str, tools: Mapping[str, Callable[..., Any]],
+) -> dict[str, Callable[..., Any]]:
+    """Constrain role reads to the event symbol, including later tool requests."""
+    if not symbol:
+        raise ValueError("symbol required")
+    bound = {}
+    for name, fn in tools.items():
+        async def call(*, _fn=fn, **kwargs):
+            if kwargs.get("symbol") != symbol:
+                raise RoleRunError("market tool symbol mismatch")
+            result = _fn(**kwargs)
+            return await result if inspect.isawaitable(result) else result
+
+        bound[name] = call
+    return bound
+
+
 def role_skills(role: Role) -> str:
     """Load copied, versioned Brooks instructions from the stock agent package."""
     try:
@@ -76,11 +94,11 @@ async def _deny_native_tool(_call: dict, _options: list[dict]) -> dict:
 
 async def run_role(
     role: Role,
+    prompt: Mapping[str, Any],
+    output_model: type[OutputT],
+    market_tools: Mapping[str, Callable[..., Any]],
     *,
     agent_key: str,
-    context: Mapping[str, Any],
-    output_model: type[OutputT],
-    tools: Mapping[str, Callable[..., Any]],
     timeout_sec: float = 180,
     max_tool_calls: int = 8,
     user_id: int | None = None,
@@ -96,7 +114,7 @@ async def run_role(
         raise ValueError("agent_key is required")
     if timeout_sec <= 0 or max_tool_calls < 0:
         raise ValueError("invalid Brooks run budget")
-    unknown = set(tools) - _ROLE_TOOLS[role]
+    unknown = set(market_tools) - _ROLE_TOOLS[role]
     if unknown:
         raise ValueError(f"tools forbidden for {role}: {sorted(unknown)}")
     if role in ("TRADER", "HTF_ANALYST"):
@@ -105,8 +123,17 @@ async def run_role(
             "pnl", "orders", "fills", "executor", "executors", "leverage",
             "hedge", "trade_history", "management_history",
         }
-        if forbidden.intersection(context):
-            raise ValueError(f"{role} context contains private account or position fields")
+        def check_public(value: Any) -> None:
+            if isinstance(value, Mapping):
+                if forbidden.intersection(str(key).lower() for key in value):
+                    raise ValueError(f"{role} prompt contains private account or position fields")
+                for child in value.values():
+                    check_public(child)
+            elif isinstance(value, (list, tuple)):
+                for child in value:
+                    check_public(child)
+
+        check_public(prompt)
     instructions = (
         f"You are the independent Brooks {role} role. Use only supplied facts and "
         "the copied Brooks skills below. Never invent data or request exchange writes. "
@@ -114,6 +141,10 @@ async def run_role(
         '{"tool":"name","arguments":{...}}; the host returns its result, then you '
         "may request another tool or return final JSON. Do not put JSON in prose.\n\n"
         + role_skills(role)
+        + ("\n\nFor HTF_ANALYST, return the MarketContextV1 envelope from the final "
+           "output schema. Summarize the skill's regime, phase and Always-In axes "
+           "in observations and uncertainty; do not return its standalone "
+           "market_context wrapper." if role == "HTF_ANALYST" else "")
     )
     client = build_llm_client(
         agent_key,
@@ -124,9 +155,9 @@ async def run_role(
         user_id=user_id,
     )
     first_prompt = (
-        f"Allowed read tools: {', '.join(sorted(tools)) or '(none)'}\n"
+        f"Allowed read tools: {', '.join(sorted(market_tools)) or '(none)'}\n"
         f"Final output schema: {json.dumps(output_model.model_json_schema(), default=str)}\n"
-        f"Input: {json.dumps(dict(context), default=str)}"
+        f"Input: {json.dumps(dict(prompt), default=str)}"
     )
     async with asyncio.timeout(timeout_sec):
         try:
@@ -144,11 +175,11 @@ async def run_role(
                 if set(response) != {"tool", "arguments"}:
                     raise RoleRunError("tool request must contain only tool and arguments")
                 name, arguments = response["tool"], response["arguments"]
-                if not isinstance(name, str) or name not in tools:
+                if not isinstance(name, str) or name not in market_tools:
                     raise RoleRunError(f"tool unavailable for {role}: {name}")
                 if not isinstance(arguments, dict):
                     raise RoleRunError("tool arguments must be a JSON object")
-                result = tools[name](**arguments)
+                result = market_tools[name](**arguments)
                 if inspect.isawaitable(result):
                     result = await result
                 prompt = (
