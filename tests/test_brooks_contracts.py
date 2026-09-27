@@ -4,10 +4,10 @@ import pytest
 from pydantic import ValidationError
 
 from condor.brooks.contracts import (
+    AccountState,
     HedgePlanV2,
     ManagementDecisionV2,
     MarketAnalysisRequestV1,
-    PositionManagementInputV2,
     TradeIntentV2,
 )
 
@@ -108,9 +108,10 @@ def test_market_analysis_request_excludes_private_context():
 
 
 def test_pm_account_decimals_are_canonical():
-    from tests.test_brooks_market_tools import snapshot
-
-    payload = snapshot().model_dump()
-    payload["account"]["equity"] = "NaN"
+    payload = {
+        "balance": "1000", "equity": "NaN", "available_margin": "500",
+        "fees": "0", "funding": "0", "currency": "USDT",
+        "leverage": "2", "position_mode": "HEDGE",
+    }
     with pytest.raises(ValidationError):
-        PositionManagementInputV2.model_validate(payload)
+        AccountState.model_validate(payload)
