@@ -115,3 +115,45 @@ def test_pm_account_decimals_are_canonical():
     }
     with pytest.raises(ValidationError):
         AccountState.model_validate(payload)
+
+
+def test_management_reduce_fraction_validation():
+    # REDUCE requires reduce_fraction with 0 < f < 1
+    payload = decision()
+    payload.update(action="REDUCE", reduce_fraction="0.50")
+    m = ManagementDecisionV2.model_validate(payload)
+    assert m.action == "REDUCE"
+    assert m.reduce_fraction == "0.50"
+
+    # REDUCE without reduce_fraction must fail
+    bad_reduce = decision()
+    bad_reduce.update(action="REDUCE", reduce_fraction=None)
+    with pytest.raises(ValidationError):
+        ManagementDecisionV2.model_validate(bad_reduce)
+
+    # REDUCE omitting reduce_fraction entirely must fail
+    bad_reduce_omitted = decision()
+    bad_reduce_omitted.update(action="REDUCE")
+    bad_reduce_omitted.pop("reduce_fraction", None)
+    with pytest.raises(ValidationError):
+        ManagementDecisionV2.model_validate(bad_reduce_omitted)
+
+    # REDUCE with out-of-range or invalid reduce_fraction: 0, 1, negative, > 1, non-canonical
+    for bad_frac in ("0", "1", "0.0", "1.0", "-0.1", "1.5", "1e-1", "NaN", "abc", 0.5):
+        bad_reduce = decision()
+        bad_reduce.update(action="REDUCE", reduce_fraction=bad_frac)
+        with pytest.raises(ValidationError):
+            ManagementDecisionV2.model_validate(bad_reduce)
+
+    # other actions (HOLD, CLOSE, HEDGE, etc.) reject reduce_fraction
+    for other_action in ("HOLD", "CLOSE"):
+        bad_action = decision()
+        bad_action.update(action=other_action, reduce_fraction="0.50")
+        with pytest.raises(ValidationError):
+            ManagementDecisionV2.model_validate(bad_action)
+
+    bad_hedge = decision()
+    bad_hedge.update(action="HEDGE", hedge_plan=hedge_plan(), reduce_fraction="0.50")
+    with pytest.raises(ValidationError):
+        ManagementDecisionV2.model_validate(bad_hedge)
+

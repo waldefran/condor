@@ -427,6 +427,16 @@ class ManagementDecisionV2(Contract):
     hedge_plan: HedgePlanV2 | None
     market_analysis_request: MarketAnalysisRequestV1 | None
     conditions_that_change_action: list[NonEmpty] = Field(min_length=1)
+    reduce_fraction: DecimalText | None = None
+
+    @field_validator("reduce_fraction")
+    @classmethod
+    def valid_reduce_fraction(cls, value: str | None) -> str | None:
+        if value is not None:
+            num = _decimal(value)
+            if not (Decimal(0) < num < Decimal(1)):
+                raise ValueError("reduce_fraction must be strictly between 0 and 1")
+        return value
 
     @model_validator(mode="after")
     def action_requirements(self) -> ManagementDecisionV2:
@@ -438,6 +448,10 @@ class ManagementDecisionV2(Contract):
             raise ValueError("REMOVE_HEDGE requires zero target ratio")
         if (self.action == "REQUEST_MARKET_ANALYSIS") != (self.market_analysis_request is not None):
             raise ValueError("market_analysis_request only for REQUEST_MARKET_ANALYSIS")
+        if self.action == "REDUCE" and self.reduce_fraction is None:
+            raise ValueError("REDUCE action requires reduce_fraction")
+        if self.action != "REDUCE" and self.reduce_fraction is not None:
+            raise ValueError("reduce_fraction only allowed for REDUCE action")
         if self.action in {"HOLD", "REDUCE", "CLOSE", *_HEDGE_ACTIONS} and not self.position_ids:
             raise ValueError("action requires position_ids")
         return self
