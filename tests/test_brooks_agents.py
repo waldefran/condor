@@ -236,3 +236,35 @@ def test_trader_rejects_invented_entry_reference():
         trader._validate_references(TradeIntentV2.model_validate(base), windows)
 
 
+@pytest.mark.asyncio
+async def test_htf_analyst_independent_d1_persistence(monkeypatch):
+    from condor.brooks import htf_analyst
+    from condor.brooks.contracts import MarketContextV1
+    from condor.brooks.events import BrooksEvent, EventType
+
+    decision_time_ms = 120 * 86_400_000
+    store = _Store()
+    bus = _Bus(store)
+    context = MarketContextV1.model_validate({
+        "schema": "brooks.market-context.v1", "role": "HTF_ANALYST",
+        "symbol": "BTC-USDT", "decision_time_ms": decision_time_ms,
+        "timeframe": "D1", "observations": ["range"],
+        "evidence_against": ["bull closes"], "uncertainty": ["breakout unknown"],
+    })
+
+    async def fake_run(role, prompt, output_model, market_tools, **kwargs):
+        assert role == "HTF_ANALYST" and output_model is MarketContextV1
+        assert prompt["timeframe"] == "1d" and len(prompt["bars"]) == 120
+        assert "get_market_context" not in market_tools
+        return context
+
+    monkeypatch.setattr(htf_analyst, "run_role", fake_run)
+    consumer = htf_analyst.HTFAnalystConsumer(
+        "claude-code", _Source(decision_time_ms), store, bus,
+    )
+    event = BrooksEvent(
+        EventType.D1_BAR_CLOSED, "BTC-USDT", {"decision_time_ms": decision_time_ms},
+    )
+    assert await consumer.handle(event) == context
+    assert store.saved[0][0] == "htf"
+    assert bus.published[0].type == EventType.MARKET_CONTEXT_UPDATED
