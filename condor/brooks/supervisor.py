@@ -10,6 +10,8 @@ import asyncio
 from pathlib import Path
 
 from .config import BrooksConfig
+from .events import EventBus
+from .store import BrooksStore
 
 
 class BrooksSupervisor:
@@ -21,6 +23,8 @@ class BrooksSupervisor:
         self._resume.set()
         self._children: set[asyncio.Task] = set()
         self._started = False
+        self.store: BrooksStore | None = None
+        self.events: EventBus | None = None
 
     @property
     def is_running(self) -> bool:
@@ -29,6 +33,8 @@ class BrooksSupervisor:
     async def start(self) -> None:
         if self._started:
             return
+        self.store = BrooksStore(self.strategy_home)
+        self.events = EventBus(self.store)
         self._stop.clear()
         self._started = True
 
@@ -59,4 +65,8 @@ class BrooksSupervisor:
         if children:
             await asyncio.gather(*children, return_exceptions=True)
         self._children.clear()
+        if self.events is not None:
+            self.events.close()
+        if self.store is not None:
+            self.store.flush()
         self._started = False
