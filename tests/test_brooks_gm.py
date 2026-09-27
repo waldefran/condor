@@ -219,3 +219,149 @@ def test_stale_intent_is_rejected():
         compile_main(old, snapshot(), policy())
 
 
+def managed_state(**changes):
+    fields = dict(
+        structure_status="single_main",
+        open_positions=1,
+        main_position_id="position-main",
+        main_executor_id="exec-main",
+        main_side="LONG",
+        main_quantity=D(2),
+    )
+    fields.update(changes)
+    return snapshot(**fields)
+
+
+def test_management_rereads_ownership_and_quantizes_reduce(tmp_path):
+    gate, reader, port = gm(tmp_path)
+    asyncio.run(gate.execute_entry(intent(), correlation_id="c1"))
+    reader.state = managed_state()
+    result = asyncio.run(
+        gate.execute_management(
+            correlation_id="c1",
+            decision_id="d1",
+            action="REDUCE",
+            reduce_fraction=D("0.255"),
+        )
+    )
+    assert result["quantity"] == "0.51"
+    assert port.calls[-1] == (
+        "reduce",
+        {"symbol": "BTC-USDT", "side": "LONG", "quantity": D("0.51"), "leverage": 2},
+    )
+    with pytest.raises(GMRejected, match="already submitted"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1",
+                decision_id="d1",
+                action="REDUCE",
+                reduce_fraction=D("0.255"),
+            )
+        )
+    result = asyncio.run(
+        gate.execute_management(correlation_id="c1", decision_id="d2", action="CLOSE")
+    )
+    assert result["status"] == "submitted" and port.calls[-1] == (
+        "close",
+        {"executor_id": "exec-main"},
+    )
+
+
+def test_management_blocks_changed_state_without_write(tmp_path):
+    gate, reader, port = gm(tmp_path)
+    asyncio.run(gate.execute_entry(intent(), correlation_id="c1"))
+    reader.state = managed_state(main_executor_id="foreign")
+    with pytest.raises(GMRejected, match="ownership"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1", decision_id="d1", action="CLOSE"
+            )
+        )
+    assert len(port.calls) == 1
+    assert not (tmp_path / "trades/c1/management/d1.json").exists()
+
+
+def test_hummingbot_port_uses_existing_primitives(monkeypatch):
+    calls = []
+
+    async def position(client, **kwargs):
+        calls.append(("position", kwargs))
+        return {"executor_id": "p1"}
+
+    async def order(client, **kwargs):
+        calls.append(("order", kwargs))
+        return {"executor_id": "o1"}
+
+    async def stop(client, **kwargs):
+        calls.append(("stop", kwargs))
+        return {"result": {"status": "stopping"}}
+
+    monkeypatch.setattr(
+        "condor.brooks.execution.executor_create.create_position_executor", position
+    )
+    monkeypatch.setattr(
+        "condor.brooks.execution.executor_create.create_order_executor", order
+    )
+    monkeypatch.setattr("condor.brooks.execution.executors.stop_executor", stop)
+    port = HummingbotExecutionPort(
+        object(),
+        account_name="demo",
+        connector_name="binance_perpetual",
+        controller_id="brooks",
+    )
+    assert (
+        asyncio.run(
+            port.open_main(
+                symbol="BTC-USDT",
+                side="LONG",
+                quantity=D("1.25"),
+                leverage=2,
+                stop_loss_pct=D("0.05"),
+                take_profit_pct=D("0.1"),
+                time_limit_sec=3600,
+            )
+        )
+        == "p1"
+    )
+    assert calls[0][1]["open_order_type"] == 1
+    assert calls[0][1]["stop_loss"] == 0.05
+    assert calls[0][1]["take_profit"] == 0.1
+    assert calls[0][1]["time_limit"] == 3600
+    assert (
+        asyncio.run(
+            port.reduce_main(
+                symbol="BTC-USDT", side="LONG", quantity=D("0.5"), leverage=2
+            )
+        )
+        == "o1"
+    )
+    assert calls[1][1]["side"] == 2 and calls[1][1]["position_action"] == "CLOSE"
+    assert asyncio.run(port.close_main(executor_id="p1")) == "p1"
+    assert calls[2][1]["keep_position"] is False
+
+
+def test_hummingbot_port_rejects_ambiguous_response(monkeypatch):
+    async def ambiguous(*args, **kwargs):
+        return {"formatted_output": "success maybe"}
+
+    monkeypatch.setattr(
+        "condor.brooks.execution.executor_create.create_position_executor", ambiguous
+    )
+    port = HummingbotExecutionPort(
+        object(),
+        account_name="demo",
+        connector_name="binance_perpetual",
+        controller_id="brooks",
+    )
+    with pytest.raises(ExecutionRejected, match="no executor_id"):
+        asyncio.run(
+            port.open_main(
+                symbol="BTC-USDT",
+                side="LONG",
+                quantity=D(1),
+                leverage=2,
+                stop_loss_pct=D("0.05"),
+                take_profit_pct=D("0.1"),
+                time_limit_sec=3600,
+            )
+        )

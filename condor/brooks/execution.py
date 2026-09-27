@@ -95,6 +95,48 @@ class HummingbotExecutionPort:
         )
         return _accepted(result)
 
+    async def reduce_main(
+        self, *, symbol: str, side: str, quantity: Decimal, leverage: int
+    ) -> str:
+        if side not in ("LONG", "SHORT") or not symbol:
+            raise ValueError("invalid MAIN side or symbol")
+        if isinstance(leverage, bool) or not isinstance(leverage, int) or leverage < 1:
+            raise ValueError("invalid leverage")
+        amount = _positive(quantity, "quantity")
+        result = await executor_create.create_order_executor(
+            self.client,
+            connector_name=self.connector_name,
+            trading_pair=symbol,
+            side=2 if side == "LONG" else 1,
+            amount=str(amount),
+            execution_strategy="MARKET",
+            leverage=leverage,
+            position_action="CLOSE",
+            account_name=self.account_name,
+            controller_id=self.controller_id,
+            save_as_default=False,
+        )
+        return _accepted(result)
+
+    async def close_main(self, *, executor_id: str) -> str:
+        if not executor_id:
+            raise ValueError("MAIN executor_id is required")
+        result = await executors.stop_executor(
+            self.client, executor_id=executor_id, keep_position=False
+        )
+        if not isinstance(result, dict) or result.get("error"):
+            raise ExecutionRejected(f"MAIN close rejected: {result!r}")
+        status = result.get("result")
+        if (
+            not isinstance(status, dict)
+            or not status
+            or status.get("status") in ("already_terminated", "failed", "error")
+        ):
+            raise ExecutionRejected(
+                "MAIN close result is ambiguous; reconcile position"
+            )
+        return executor_id
+
     async def get_state(self, *, symbol: str) -> dict[str, Any]:
         """Return raw fresh reads; the GM must validate their shape and ownership."""
         positions = await self.client.trading.get_positions(

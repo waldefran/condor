@@ -376,3 +376,114 @@ class BrooksGM:
         finally:
             self._unlock(lock, fd)
 
+    async def execute_management(
+        self,
+        *,
+        correlation_id: str,
+        decision_id: str,
+        action: str,
+        reduce_fraction: Decimal | None = None,
+    ) -> dict[str, Any]:
+        trade_dir = self._trade_dir(correlation_id)
+        binding_path = trade_dir / "binding.json"
+        if not binding_path.exists():
+            raise GMRejected("MAIN binding is missing")
+        binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        symbol = binding.get("symbol")
+        if not isinstance(symbol, str) or not symbol:
+            raise GMRejected("MAIN binding has no symbol")
+        if action == "HOLD":
+            return {"action": "HOLD", "status": "no_write"}
+        if action not in ("REDUCE", "CLOSE"):
+            raise GMRejected("unsupported management action")
+        if not decision_id or not all(c.isalnum() or c in "-_" for c in decision_id):
+            raise GMRejected("unsafe decision_id")
+        lock, fd = await self._locked(symbol)
+        try:
+            # Re-read under lock: neither the PM snapshot nor the earlier binding
+            # is an authority for current quantity or ownership.
+            binding = json.loads(binding_path.read_text(encoding="utf-8"))
+            if binding.get("status") != "submitted" or not binding.get(
+                "main_executor_id"
+            ):
+                raise GMRejected("MAIN execution is not confirmed")
+            if (
+                binding.get("account_name") != self.account_name
+                or binding.get("connector_name") != self.connector_name
+                or binding.get("controller_id") != self.execution.controller_id
+            ):
+                raise GMRejected(
+                    "MAIN binding belongs to a different account or controller"
+                )
+            record_path = trade_dir / "management" / f"{decision_id}.json"
+            if record_path.exists():
+                raise GMRejected("decision already submitted; reconcile before retry")
+            state = await self.reader.read(
+                account_name=self.account_name,
+                connector_name=self.connector_name,
+                symbol=symbol,
+            )
+            now = int(time.time() * 1000)
+            if (
+                state.as_of_ms > now
+                or now - state.as_of_ms > self.policy.max_snapshot_age_ms
+            ):
+                raise GMRejected("account snapshot is stale")
+            _decimal(state.equity, "equity")
+            _decimal(state.available_margin, "available_margin", positive=False)
+            _decimal(state.gross_exposure, "gross_exposure", positive=False)
+            _decimal(state.mark_price, "mark_price")
+            if (
+                state.structure_status != "single_main"
+                or state.main_executor_id != binding["main_executor_id"]
+                or state.main_side != binding["main_side"]
+            ):
+                raise GMRejected("MAIN ownership is unresolved or changed")
+            if (
+                binding.get("main_position_id")
+                and state.main_position_id != binding["main_position_id"]
+            ):
+                raise GMRejected("MAIN position id changed")
+            quantity = _decimal(state.main_quantity, "main_quantity")
+            if action == "REDUCE":
+                fraction = _decimal(reduce_fraction, "reduce_fraction")
+                if fraction >= 1:
+                    raise GMRejected("REDUCE fraction must be below one")
+                step = _decimal(state.rules.amount_step, "amount_step")
+                close_qty = ((quantity * fraction) / step).to_integral_value(
+                    rounding=ROUND_DOWN
+                ) * step
+                if (
+                    close_qty < _decimal(state.rules.min_amount, "min_amount")
+                    or close_qty >= quantity
+                ):
+                    raise GMRejected("reduction is too small or would close all")
+                if close_qty * _decimal(state.mark_price, "mark_price") < _decimal(
+                    state.rules.min_notional, "min_notional"
+                ):
+                    raise GMRejected("reduction is below minimum notional")
+            else:
+                close_qty = quantity
+            record = {
+                "decision_id": decision_id,
+                "action": action,
+                "quantity": str(close_qty),
+                "status": "submitting",
+            }
+            self._write_new(record_path, record)
+            if action == "REDUCE":
+                executor_id = await self.execution.reduce_main(
+                    symbol=symbol,
+                    side=state.main_side,
+                    quantity=close_qty,
+                    leverage=self.policy.leverage,
+                )
+            else:
+                executor_id = await self.execution.close_main(
+                    executor_id=state.main_executor_id
+                )
+            record.update(status="submitted", executor_id=executor_id)
+            self._replace(record_path, record)
+            return record
+        finally:
+            self._unlock(lock, fd)
