@@ -153,6 +153,9 @@ class TickEngine:
     _active_client: "ACPClient | PydanticAIClient | None" = field(
         default=None, init=False, repr=False
     )
+    _brooks_supervisor: "BrooksSupervisor | None" = field(
+        default=None, init=False, repr=False
+    )
 
     def __post_init__(self):
         # The journal/sessions/learnings hang off the *strategy* dir (one level
@@ -252,12 +255,23 @@ class TickEngine:
     # ------------------------------------------------------------------
 
     async def start(self, bot=None) -> None:
-        """Start the tick loop as an asyncio task."""
+        """Start the configured runtime as an asyncio task."""
         if self._running:
             return
+        mode = self.config.get("execution_mode", "loop")
+        if mode == "brooks_agents":
+            from condor.brooks.config import BrooksConfig
+            from condor.brooks.supervisor import BrooksSupervisor
+
+            self._brooks_supervisor = BrooksSupervisor(
+                self.strategy.home, BrooksConfig.from_engine_config(self.config)
+            )
+            await self._brooks_supervisor.start()
         self._running = True
         self._bot = bot
-        self._task = asyncio.create_task(self._loop())
+        self._task = asyncio.create_task(
+            self._brooks_supervisor.run() if mode == "brooks_agents" else self._loop()
+        )
         _supervisor().register(self)
         log.info(
             "TickEngine %s started (freq=%ss)",
@@ -268,6 +282,8 @@ class TickEngine:
     async def stop(self) -> None:
         """Stop gracefully."""
         self._running = False
+        if self._brooks_supervisor is not None:
+            await self._brooks_supervisor.stop()
         if self._task and not self._task.done():
             self._task.cancel()
             try:
@@ -317,6 +333,9 @@ class TickEngine:
         in-flight tick only when called from a *different* task — cancelling our own
         task would abort the winddown.
         """
+        if self.config.get("execution_mode", "loop") == "brooks_agents":
+            await self.stop()
+            return
         if self._shutting_down:
             return
         self._shutting_down = True
@@ -371,10 +390,14 @@ class TickEngine:
 
     def pause(self) -> None:
         self._paused = True
+        if self._brooks_supervisor is not None:
+            self._brooks_supervisor.pause()
         _supervisor().record(self, LoopState.PAUSED)
 
     def resume(self) -> None:
         self._paused = False
+        if self._brooks_supervisor is not None:
+            self._brooks_supervisor.resume()
         _supervisor().record(self, LoopState.RUNNING)
 
     @property

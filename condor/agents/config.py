@@ -68,9 +68,9 @@ class AgentConfig(BaseModel):
         default="",
         description="Natural language session context that guides the agent's trading decisions",
     )
-    execution_mode: Literal["dry_run", "run_once", "loop"] = Field(
+    execution_mode: Literal["dry_run", "run_once", "loop", "brooks_agents"] = Field(
         default="loop",
-        description="Execution mode: dry_run (simulate), run_once (single live tick), loop (continuous)",
+        description="Execution mode: dry_run, run_once, loop, or brooks_agents (independent Brooks lifecycle)",
     )
     max_ticks: int = Field(
         default=0, description="Max ticks before auto-stop; 0 = unlimited"
