@@ -483,7 +483,7 @@ class HummingbotAccountReader:
             token = str(item.get("token", item.get("asset", ""))).upper()
             base_token = token.split("-")[0].split("/")[0].strip()
             if base_token in _STABLE_QUOTES:
-                available += value
+                available += _available_collateral_value(item, default=value)
         return equity, available
 
     async def _rules(self, connector_name: str, symbol: str) -> Any:
@@ -556,6 +556,11 @@ class HummingbotAccountReader:
     async def _has_open_orders(
         self, account_name: str, connector_name: str, symbol: str
     ) -> bool:
+        # An unreadable order book is UNKNOWN, never empty: callers gate venue
+        # writes on this, so a failure must propagate as GMRejected rather than
+        # read as "no open orders".
+        from condor.brooks.gm import GMRejected
+
         try:
             result = await self._client.trading.get_active_orders(
                 account_names=[account_name],
@@ -563,9 +568,211 @@ class HummingbotAccountReader:
                 trading_pairs=[symbol],
                 limit=50,
             )
-        except Exception:
-            return False
+        except Exception as exc:
+            raise GMRejected(f"open orders read failed: {exc}") from exc
         return bool(_venue_rows(result))
+
+
+def _available_collateral_value(item: Mapping[str, Any], *, default: Decimal) -> Decimal:
+    # Free margin is available_units priced at the row's own price, never the
+    # row's total value. Field spellings are connector-generic (units /
+    # available_units / price); nothing here branches on connector name. When
+    # the venue reports no free/total split, the total value is the only honest
+    # reading and is kept as a documented calibration point.
+    units_raw = item.get("available_units", item.get("available_balance"))
+    if units_raw is None:
+        return default
+    try:
+        free_units = Decimal(str(units_raw))
+    except (InvalidOperation, ValueError, TypeError):
+        return default
+    if not free_units.is_finite() or free_units < 0:
+        return default
+    price_raw = item.get("price", item.get("mark_price", item.get("last_price")))
+    try:
+        price = Decimal(str(price_raw)) if price_raw is not None else None
+    except (InvalidOperation, ValueError, TypeError):
+        price = None
+    if price is None or not price.is_finite() or price <= 0:
+        try:
+            total_units = Decimal(str(item.get("units", item.get("balance", ""))))
+            total_value = Decimal(str(item.get("value", item.get("usd_value", ""))))
+        except (InvalidOperation, ValueError, TypeError):
+            return default
+        if total_units.is_finite() and total_units > 0 and total_value.is_finite():
+            price = total_value / total_units
+        else:
+            return default
+    return free_units * price
+
+
+def _plan_side(side: Any) -> str:
+    normalized = str(side or "").upper()
+    if normalized in ("LONG", "BUY", "BID"):
+        return "LONG"
+    if normalized in ("SHORT", "SELL", "ASK"):
+        return "SHORT"
+    return ""
+
+
+class HummingbotPositionReconciler:
+    """Production ``MainReconciler`` over explicit executor/controller lineage.
+
+    Resolution for (executor_id, controller_id, account, connector, symbol):
+    1. Executor existence: ``search_executors`` scoped to account/connector/
+       symbol/controller must show our executor id, proving the accepted write
+       landed.
+    2. Lineage: ``executors.get_positions_summary`` PositionHold rows carry
+       ``controller_id`` plus ``executor_ids``; the row matching account/
+       connector/symbol whose ``executor_ids`` contains our executor confirms
+       which tracked hold is ours.
+    3. Venue identity: ``trading.get_positions`` rows for the symbol; exactly
+       one row may carry an explicit non-empty venue position id whose side is
+       consistent with the plan. Zero means the venue has not shown it yet;
+       more than one is ambiguous.
+
+    Anything else returns ``None`` and the binding stays submitted for a later
+    retry. Side is a consistency check, never the selector: ownership comes
+    from executor lineage plus the exactly-one venue candidate. Side,
+    quantity, response ordering, and PnL are never used to choose between
+    candidates, and no id is ever invented.
+    """
+
+    def __init__(self, client: Any, controller_id: str) -> None:
+        if not controller_id or not controller_id.strip():
+            raise ValueError("controller_id is required")
+        self._client = client
+        self._controller_id = controller_id
+
+    async def reconcile(
+        self,
+        *,
+        account_name: str,
+        connector_name: str,
+        controller_id: str,
+        symbol: str,
+        side: str,
+        executor_id: str,
+    ) -> str | None:
+        if not executor_id or not symbol:
+            return None
+        try:
+            if not await self._executor_exists(
+                account_name, connector_name, symbol, controller_id, executor_id
+            ):
+                return None
+            if not await self._lineage_holds(
+                account_name, connector_name, symbol, controller_id, executor_id
+            ):
+                return None
+            return await self._venue_identity(
+                account_name, connector_name, symbol, side
+            )
+        except Exception:
+            log.warning(
+                "Brooks MAIN reconciliation read failed; binding stays submitted",
+                exc_info=True,
+            )
+            return None
+
+    async def _executor_exists(
+        self,
+        account_name: str,
+        connector_name: str,
+        symbol: str,
+        controller_id: str,
+        executor_id: str,
+    ) -> bool:
+        result = await self._client.executors.search_executors(
+            account_names=[account_name],
+            connector_names=[connector_name],
+            trading_pairs=[symbol],
+            controller_ids=[controller_id or self._controller_id],
+            limit=1000,
+        )
+        if not isinstance(result, dict) or not isinstance(result.get("data"), list):
+            return False
+        return any(
+            isinstance(row, dict)
+            and str(row.get("executor_id") or row.get("id") or "") == executor_id
+            for row in result["data"]
+        )
+
+    async def _lineage_holds(
+        self,
+        account_name: str,
+        connector_name: str,
+        symbol: str,
+        controller_id: str,
+        executor_id: str,
+    ) -> bool:
+        summary = getattr(self._client.executors, "get_positions_summary", None)
+        if summary is None:
+            return False
+        result = await summary(controller_id=controller_id or self._controller_id)
+        if isinstance(result, dict):
+            rows = result.get("positions", result.get("data", []))
+        elif isinstance(result, list):
+            rows = result
+        else:
+            return False
+        if not isinstance(rows, list):
+            rows = [rows] if isinstance(rows, dict) else []
+        matches = 0
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            if str(row.get("trading_pair") or row.get("symbol") or "") != symbol:
+                continue
+            row_account = row.get("account_name", row.get("account"))
+            if row_account not in (None, "", account_name):
+                continue
+            row_connector = row.get("connector_name", row.get("connector"))
+            if row_connector not in (None, "", connector_name):
+                continue
+            row_controller = row.get("controller_id", row.get("controller"))
+            if row_controller not in (None, "", controller_id or self._controller_id):
+                continue
+            ids = row.get("executor_ids", row.get("executors", []))
+            if isinstance(ids, str):
+                ids = [ids]
+            if not isinstance(ids, list) or executor_id not in [str(i) for i in ids]:
+                continue
+            matches += 1
+        return matches == 1
+
+    async def _venue_identity(
+        self, account_name: str, connector_name: str, symbol: str, side: str
+    ) -> str | None:
+        result = await self._client.trading.get_positions(
+            account_names=[account_name],
+            connector_names=[connector_name],
+            limit=1000,
+        )
+        if not isinstance(result, dict) or not isinstance(result.get("data"), list):
+            return None
+        wanted = _plan_side(side)
+        candidates: list[str] = []
+        for row in result["data"]:
+            if not isinstance(row, dict):
+                continue
+            if _position_symbol(row) != symbol:
+                continue
+            position_id = str(
+                row.get("position_id") or row.get("positionId") or row.get("id") or ""
+            )
+            if not position_id:
+                continue
+            try:
+                row_side = _position_side(row)
+            except ValueError:
+                continue
+            if wanted and row_side != wanted:
+                continue
+            candidates.append(position_id)
+        if len(candidates) != 1:
+            return None
+        return candidates[0]
 
 
 def _first_decimal(
@@ -624,6 +831,7 @@ def build_gm_factory(
         connector_name=connector_name,
         controller_id=controller_id,
     )
+    reconciler = HummingbotPositionReconciler(client, controller_id)
     policy = GMPolicy(
         risk_per_trade_pct=_Decimal(str(policy_config.risk_per_trade_pct)),
         max_positions=int(policy_config.max_positions),
@@ -646,6 +854,7 @@ def build_gm_factory(
             policy=policy,
             reader=reader,
             execution=execution,
+            reconciler=reconciler,
         )
 
     return factory
@@ -665,6 +874,14 @@ def build_watcher_provider(
     Joins persisted bindings (ownership) with fresh venue positions,
     executors, and open orders. A venue failure yields an idle poll (``[]``),
     never a partial snapshot.
+
+    Fills (decision A): recent fills are real FILLED venue orders read through
+    ``trading.search_orders`` with a cursor carried from the venue pagination
+    (falling back to the last fill id). A fills read that fails -- or a client
+    without the endpoint -- degrades that snapshot to empty fills only; the
+    position/executor/order transitions that management actually depends on are
+    still emitted. No fill is ever invented, and a cursor advance is what wakes
+    FILL consumers.
     """
     wanted = [symbol for symbol in symbols if symbol and symbol.strip()]
     root = Path(state_root)
@@ -749,6 +966,9 @@ def build_watcher_provider(
                 for row in orders
                 if str(row.get("trading_pair") or row.get("symbol") or "") == symbol
             ]
+            fills_cursor, recent_fills = await _fills_for_symbol(
+                client, account_name, connector_name, symbol
+            )
             snapshots.append(
                 {
                     "correlation_id": correlation_id,
@@ -760,13 +980,83 @@ def build_watcher_provider(
                         bound_orders,
                         key=lambda item: (item["id"], item["status"]),
                     ),
-                    "fills_cursor": "",
-                    "recent_fills": [],
+                    "fills_cursor": fills_cursor,
+                    "recent_fills": recent_fills,
                 }
             )
         return snapshots
 
     return provider
+
+
+async def _fills_for_symbol(
+    client: Any, account_name: str, connector_name: str, symbol: str
+) -> tuple[str, list[dict[str, Any]]]:
+    search = getattr(getattr(client, "trading", None), "search_orders", None)
+    if search is None:
+        return "", []
+    try:
+        result = await search(
+            account_names=[account_name],
+            connector_names=[connector_name],
+            trading_pairs=[symbol],
+            status="FILLED",
+            limit=50,
+        )
+    except Exception:
+        log.warning(
+            "Brooks watcher fills read failed; snapshot carries no fills",
+            exc_info=True,
+        )
+        return "", []
+    if not isinstance(result, dict):
+        return "", []
+    fills: list[dict[str, Any]] = []
+    for row in _venue_rows(result):
+        sanitized = _sanitize_fill(row, symbol)
+        if sanitized is not None:
+            fills.append(sanitized)
+    fills = fills[-20:]
+    pagination = result.get("pagination")
+    cursor: Any = result.get("next_cursor") or result.get("cursor")
+    if cursor is None and isinstance(pagination, dict):
+        cursor = pagination.get("next_cursor", pagination.get("cursor"))
+    if cursor is None and fills:
+        cursor = fills[-1]["fill_id"]
+    return str(cursor) if cursor is not None else "", fills
+
+
+def _sanitize_fill(row: Mapping[str, Any], symbol: str) -> dict[str, Any] | None:
+    fill_id = row.get("client_order_id") or row.get("order_id") or row.get("id")
+    if fill_id is None or not str(fill_id).strip():
+        return None
+    if str(row.get("trading_pair") or row.get("symbol") or "") != symbol:
+        return None
+    sanitized: dict[str, Any] = {
+        "fill_id": str(fill_id),
+        "order_id": str(fill_id),
+        "symbol": symbol,
+        "status": str(row.get("status") or "FILLED").upper(),
+    }
+    for source_key, target_key in (
+        ("filled_amount", "filled_quantity"),
+        ("executed_amount_base", "filled_quantity"),
+        ("amount", "quantity"),
+        ("price", "price"),
+        ("fill_price", "price"),
+    ):
+        if target_key in sanitized or row.get(source_key) is None:
+            continue
+        try:
+            number = Decimal(str(row[source_key]))
+        except (InvalidOperation, ValueError, TypeError):
+            continue
+        if number.is_finite() and number >= 0:
+            sanitized[target_key] = format(number, "f")
+    side = str(row.get("trade_type") or row.get("side") or "").upper()
+    if side:
+        sanitized["side"] = side
+    return sanitized
 
 
 def _find_position(
