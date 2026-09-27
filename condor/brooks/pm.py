@@ -65,6 +65,7 @@ PM_WAKE_EVENTS = frozenset(
         "HEDGE_REMOVED",
         "TRADER_INTENT_CREATED",
         "MARKET_CONTEXT_UPDATED",
+        "MARKET_ANALYSIS_COMPLETED",
     }
 )
 ANALYST_EVENTS = frozenset({"TRADER_INTENT_CREATED", "MARKET_CONTEXT_UPDATED"})
@@ -352,6 +353,16 @@ class PositionManager:
             return None
         if event_type in ANALYST_EVENTS and not self._has_active_position(context):
             return None
+        if not context.get("market_analysis"):
+            analysis = envelope.get("payload", {}).get("market_analysis")
+            if (
+                analysis is None
+                and envelope.get("payload", {}).get("schema")
+                == "brooks.market-analysis-response.v1"
+            ):
+                analysis = envelope.get("payload")
+            if analysis is not None:
+                context["market_analysis"] = analysis
         context.setdefault("decision_time_ms", envelope.get("created_at_ms"))
         if not context.get("decision_time_ms"):
             raise ValueError("PM requires a decision time")
@@ -393,6 +404,12 @@ class PositionManager:
                 ) from exc
         if getattr(decision, "action", None) not in PM_V1_ACTIONS:
             decision = _fail_closed_decision(decision, ManagementDecisionV2)
+        from condor.brooks.market_analysis import check_pm_anti_loop_guard
+
+        check_pm_anti_loop_guard(
+            getattr(decision, "action", None),
+            prior_market_analysis=context.get("market_analysis"),
+        )
         if getattr(decision, "decision_time_ms", None) != int(
             context["decision_time_ms"]
         ):

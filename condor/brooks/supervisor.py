@@ -79,7 +79,7 @@ _CHILD_NAMES = (
 )
 
 _NO_WRITE_ACTIONS = frozenset({"MANAGEMENT_BLOCKED"})
-_ATTENTION_ACTIONS = frozenset({"REQUEST_MARKET_ANALYSIS", "RECONCILE_STATE"})
+_ATTENTION_ACTIONS = frozenset({"RECONCILE_STATE"})
 
 
 def _as_dict(value: Any) -> dict[str, Any]:
@@ -123,10 +123,64 @@ class GMConsumer:
     """
 
     def __init__(
-        self, *, gm_factory: Callable[[str], Any] | None, publish: Any
+        self,
+        *,
+        gm_factory: Callable[[str], Any] | None,
+        publish: Any,
+        market_analysis_runner: Callable[[Any], Awaitable[Any] | Any] | None = None,
+        agent_key: str | None = None,
+        candle_source: Any | None = None,
+        tools: Sequence[Any] | None = None,
+        store: Any | None = None,
+        user_id: int | None = None,
+        now_fn: Callable[[], int] | None = None,
+        raise_boundary_errors: bool = False,
     ) -> None:
         self.gm_factory = gm_factory
         self.publish = publish
+        self.market_analysis_runner = market_analysis_runner
+        self.agent_key = agent_key
+        self.candle_source = candle_source
+        self.tools = tools
+        self.store = store
+        self.user_id = user_id
+        self.now_fn = now_fn
+        self.raise_boundary_errors = raise_boundary_errors
+        self._latest_analysis: dict[str, Any] = {}
+
+    def _build_default_analyst_runner(
+        self, symbol: str
+    ) -> Callable[[Any], Awaitable[Any]]:
+        async def _run(clean_req: Any) -> Any:
+            from .agent_runner import run_role
+            from .contracts import TradeIntentV2
+            from .market_analysis import filter_read_only_tools
+            from .market_tools import TraderMarketTools
+
+            decision_time = getattr(clean_req, "decision_time_ms", None)
+            if decision_time is None and isinstance(clean_req, Mapping):
+                decision_time = clean_req.get("decision_time_ms")
+            market_tools = TraderMarketTools(
+                source=self.candle_source,
+                decision_time_ms=decision_time,
+            )
+            safe_tools = filter_read_only_tools(market_tools.as_tools())
+            named = {t.__name__: t for t in safe_tools}
+            prompt = (
+                clean_req.model_dump()
+                if hasattr(clean_req, "model_dump")
+                else dict(clean_req)
+            )
+            return await run_role(
+                "TRADER",
+                agent_key=self.agent_key,
+                prompt=prompt,
+                output_model=TradeIntentV2,
+                market_tools=named,
+                user_id=self.user_id,
+            )
+
+        return _run
 
     async def _emit(
         self,
@@ -245,6 +299,112 @@ class GMConsumer:
             action = str(payload.get("action") or "")
             if action in _NO_WRITE_ACTIONS:
                 return None
+
+            if action == "REQUEST_MARKET_ANALYSIS":
+                raw_req = payload.get("market_analysis_request")
+                if raw_req is None:
+                    return await self._emit(
+                        EventType.RECONCILIATION_REQUIRED,
+                        symbol,
+                        correlation_id if isinstance(correlation_id, str) else None,
+                        causation_id if isinstance(causation_id, str) else None,
+                        {
+                            "reason": "REQUEST_MARKET_ANALYSIS lacks market_analysis_request"
+                        },
+                    )
+
+                if correlation_id and correlation_id in self._latest_analysis:
+                    from .market_analysis import check_pm_anti_loop_guard
+
+                    try:
+                        check_pm_anti_loop_guard(
+                            "REQUEST_MARKET_ANALYSIS",
+                            prior_market_analysis=self._latest_analysis[correlation_id],
+                        )
+                    except Exception as exc:
+                        if self.raise_boundary_errors:
+                            raise
+                        return await self._emit(
+                            EventType.RECONCILIATION_REQUIRED,
+                            symbol,
+                            correlation_id,
+                            causation_id if isinstance(causation_id, str) else None,
+                            {
+                                "reason": f"anti-loop guard blocked back-to-back analysis: {exc}"
+                            },
+                        )
+
+                runner = self.market_analysis_runner
+                if (
+                    runner is None
+                    and self.agent_key is not None
+                    and self.candle_source is not None
+                ):
+                    runner = self._build_default_analyst_runner(symbol)
+
+                if runner is None:
+                    return await self._emit(
+                        EventType.RECONCILIATION_REQUIRED,
+                        symbol,
+                        correlation_id if isinstance(correlation_id, str) else None,
+                        causation_id if isinstance(causation_id, str) else None,
+                        {"reason": "market analysis runner is not configured"},
+                    )
+
+                from .market_analysis import (
+                    MarketAnalysisBoundaryError,
+                    async_execute_fresh_market_analysis_handshake,
+                )
+
+                try:
+                    analysis_response = (
+                        await async_execute_fresh_market_analysis_handshake(
+                            request=raw_req,
+                            trader_runner=runner,
+                            tools=self.tools,
+                        )
+                    )
+                except MarketAnalysisBoundaryError as exc:
+                    if self.raise_boundary_errors:
+                        raise
+                    return await self._emit(
+                        EventType.RECONCILIATION_REQUIRED,
+                        symbol,
+                        correlation_id if isinstance(correlation_id, str) else None,
+                        causation_id if isinstance(causation_id, str) else None,
+                        {"reason": f"market analysis boundary violation: {exc}"},
+                    )
+                except Exception as exc:
+                    if self.raise_boundary_errors:
+                        raise
+                    return await self._emit(
+                        EventType.RECONCILIATION_REQUIRED,
+                        symbol,
+                        correlation_id if isinstance(correlation_id, str) else None,
+                        causation_id if isinstance(causation_id, str) else None,
+                        {"reason": f"market analysis execution failed: {exc}"},
+                    )
+
+                if correlation_id:
+                    self._latest_analysis[correlation_id] = analysis_response
+
+                resp_dump = analysis_response.model_dump(mode="json")
+                if self.store is not None and hasattr(
+                    self.store, "save_market_analysis"
+                ):
+                    self.store.save_market_analysis(correlation_id, resp_dump)
+
+                return await self._emit(
+                    EventType.MARKET_ANALYSIS_COMPLETED,
+                    symbol,
+                    correlation_id if isinstance(correlation_id, str) else None,
+                    causation_id if isinstance(causation_id, str) else None,
+                    {"market_analysis": resp_dump},
+                )
+
+            if correlation_id and correlation_id in self._latest_analysis:
+                self._latest_analysis.pop(correlation_id, None)
+
             if action in _ATTENTION_ACTIONS or not action:
                 return await self._emit(
                     EventType.RECONCILIATION_REQUIRED,
@@ -336,6 +496,7 @@ class BrooksSupervisor:
         pm_list_active: Callable[[Any], Any] | None = None,
         gm_factory: Callable[[str], Any] | None = None,
         watcher_snapshots: Callable[[], Any] | None = None,
+        market_analysis_runner: Any | None = None,
         now_fn: Callable[[], int] | None = None,
         sleep_fn: Callable[[float], Awaitable[None]] | None = None,
     ):
@@ -362,6 +523,7 @@ class BrooksSupervisor:
         self._pm_list_active = pm_list_active
         self._gm_factory = gm_factory
         self._watcher_snapshots = watcher_snapshots
+        self._market_analysis_runner = market_analysis_runner
         self._now_fn = now_fn
         self._sleep_fn = sleep_fn
         self._clock: MarketClock | None = None
@@ -372,6 +534,11 @@ class BrooksSupervisor:
         self._gm: GMConsumer | None = None
 
     # -- injection (attach before start; handler/factory swaps also apply live)
+    def attach_market_analysis_runner(self, runner: Any) -> None:
+        self._market_analysis_runner = runner
+        if self._gm is not None:
+            self._gm.market_analysis_runner = runner
+
     def attach_symbols(self, symbols: Iterable[str]) -> None:
         self._symbols = list(symbols)
 
@@ -480,7 +647,16 @@ class BrooksSupervisor:
             self.events,
         )
         self._pm = self._build_pm()
-        self._gm = GMConsumer(gm_factory=self._gm_factory, publish=self.events)
+        self._gm = GMConsumer(
+            gm_factory=self._gm_factory,
+            publish=self.events,
+            market_analysis_runner=self._market_analysis_runner,
+            agent_key=self._agent_key,
+            candle_source=self._candle_source,
+            store=self.store,
+            user_id=self._user_id,
+            now_fn=self._now_fn,
+        )
 
     def _build_trader(self) -> Any | None:
         if (
