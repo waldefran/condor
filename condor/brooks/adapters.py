@@ -257,9 +257,7 @@ class HummingbotAccountReader:
         self._controller_id = controller_id
         self._now_fn = now_fn or _now_ms
 
-    async def read(
-        self, *, account_name: str, connector_name: str, symbol: str
-    ) -> Any:
+    async def read(self, *, account_name: str, connector_name: str, symbol: str) -> Any:
         from condor.brooks.gm import (
             AccountSnapshot,
             GMRejected,
@@ -307,8 +305,7 @@ class HummingbotAccountReader:
         rules = await self._rules(connector_name, symbol)
         try:
             gross = sum(
-                _position_amount(row) * _position_price(row)
-                for row in venue_positions
+                _position_amount(row) * _position_price(row) for row in venue_positions
             )
         except (InvalidOperation, ValueError, TypeError) as exc:
             raise GMRejected(f"position exposure is unreadable: {exc}") from exc
@@ -356,9 +353,7 @@ class HummingbotAccountReader:
                         main_side = _position_side(main_row)
                         main_quantity = _position_amount(main_row)
                     except ValueError as exc:
-                        raise GMRejected(
-                            f"MAIN position is unreadable: {exc}"
-                        ) from exc
+                        raise GMRejected(f"MAIN position is unreadable: {exc}") from exc
                     legs.append(
                         PositionLeg(
                             position_id=main_id or "",
@@ -725,17 +720,13 @@ def build_watcher_provider(
             if not correlation_id:
                 continue
             symbol_positions = positions_by_symbol.get(symbol, [])
-            main_row = _find_position(
-                symbol_positions, binding.get("main_position_id")
-            )
+            main_row = _find_position(symbol_positions, binding.get("main_position_id"))
             hedge_row = _find_position(
                 symbol_positions, binding.get("hedge_position_id")
             )
             bound_executors = [
                 {
-                    "id": str(
-                        row.get("executor_id") or row.get("id") or ""
-                    ),
+                    "id": str(row.get("executor_id") or row.get("id") or ""),
                     "status": str(row.get("status") or "").upper(),
                 }
                 for row in executors
@@ -752,9 +743,7 @@ def build_watcher_provider(
                     ),
                     "status": str(row.get("status") or "").upper(),
                     "filled_qty": str(
-                        row.get("filled_amount")
-                        or row.get("executed_amount_base")
-                        or 0
+                        row.get("filled_amount") or row.get("executed_amount_base") or 0
                     ),
                 }
                 for row in orders
@@ -766,9 +755,7 @@ def build_watcher_provider(
                     "symbol": symbol,
                     "main": _snapshot_leg(main_row),
                     "hedge": _snapshot_leg(hedge_row),
-                    "executors": sorted(
-                        bound_executors, key=lambda item: item["id"]
-                    ),
+                    "executors": sorted(bound_executors, key=lambda item: item["id"]),
                     "open_orders": sorted(
                         bound_orders,
                         key=lambda item: (item["id"], item["status"]),
@@ -817,6 +804,429 @@ def _snapshot_leg(row: Mapping[str, Any] | None) -> dict[str, str]:
     }
 
 
+_PM_ORDER_SIDES = {
+    "LONG": "LONG",
+    "BUY": "LONG",
+    "BID": "LONG",
+    "SHORT": "SHORT",
+    "SELL": "SHORT",
+    "ASK": "SHORT",
+}
+
+
+def build_pm_load_context(
+    client: Any,
+    *,
+    account_name: str,
+    connector_name: str,
+    controller_id: str,
+    state_root: Path | str,
+    now_fn: Callable[[], int] | None = None,
+) -> Callable[[str], Awaitable[dict[str, Any] | None]]:
+    """Production ``pm_load_context`` for the Brooks PositionManager.
+
+    Assembles one consistent, timestamped PM snapshot per correlation id from
+    the persisted binding, fresh MAIN/HEDGE venue positions, bound executors,
+    open orders, the original TradeIntent, the latest TraderIntent and
+    MarketContext, management history, the governing management policy, fresh
+    HedgeState and margin health. The emitted keys are exactly the
+    ``pm._small_context`` allowlist; there are no candles in the initial
+    context -- candles stay on-demand via the PM read tools (limit <= 30
+    through ClosedBarGate).
+
+    Fail-closed: a missing, truncated, unparseable, or ambiguous binding,
+    MAIN/HEDGE ownership, venue snapshot, authoritative store document, or
+    timestamp yields ``None`` so the PM never runs on a guess. Ambient
+    best-effort context (latest TraderIntent/MarketContext) degrades to
+    ``None`` fields instead of blocking. Venue/store failures also yield
+    ``None`` (logged) rather than raising into the supervisor loop.
+    """
+    reader = HummingbotAccountReader(client, state_root, controller_id, now_fn=now_fn)
+    root = Path(state_root)
+    clock = now_fn or _now_ms
+
+    async def load(correlation_id: str) -> dict[str, Any] | None:
+        try:
+            return await _pm_snapshot(
+                reader,
+                client,
+                root,
+                account_name=account_name,
+                connector_name=connector_name,
+                controller_id=controller_id,
+                correlation_id=correlation_id,
+                now_ms=clock(),
+            )
+        except Exception:
+            log.warning(
+                "Brooks PM context for %r is unavailable; PM stays idle",
+                correlation_id,
+                exc_info=True,
+            )
+            return None
+
+    return load
+
+
+def _pm_read_json(path: Path) -> Any:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+async def _pm_snapshot(
+    reader: HummingbotAccountReader,
+    client: Any,
+    root: Path,
+    *,
+    account_name: str,
+    connector_name: str,
+    controller_id: str,
+    correlation_id: str,
+    now_ms: int,
+) -> dict[str, Any] | None:
+    """Assemble one PM snapshot; ``None`` when anything authoritative is off."""
+    import re
+
+    from condor.brooks.contracts import (
+        HedgeStateV1,
+        ManagementPolicyContext,
+        MarketContextV1,
+        TradeIntentV2,
+    )
+    from condor.brooks.hedge import build_hedge_state
+    from condor.brooks.pm import PM_V1_ACTIONS
+    from condor.brooks.store import BrooksStore
+
+    if not isinstance(correlation_id, str) or not re.fullmatch(
+        r"[A-Za-z0-9_-]+", correlation_id
+    ):
+        return None
+    if isinstance(now_ms, bool) or not isinstance(now_ms, int) or now_ms <= 0:
+        return None
+    matches = [
+        binding
+        for binding in read_bindings(
+            root,
+            account_name=account_name,
+            connector_name=connector_name,
+            controller_id=controller_id,
+        )
+        if binding.get("correlation_id") == correlation_id
+    ]
+    if len(matches) != 1:
+        return None
+    binding = matches[0]
+    symbol = binding.get("symbol")
+    if not isinstance(symbol, str) or not symbol.strip():
+        return None
+    main_position_id = binding.get("main_position_id")
+    if not isinstance(main_position_id, str) or not main_position_id:
+        return None
+    hedge_position_id = binding.get("hedge_position_id")
+    if hedge_position_id is not None and (
+        not isinstance(hedge_position_id, str)
+        or not hedge_position_id
+        or hedge_position_id == main_position_id
+    ):
+        return None
+    # Fresh venue snapshot; HummingbotAccountReader raises GMRejected when any
+    # leg is missing, truncated, or unparseable.
+    snapshot = await reader.read(
+        account_name=account_name, connector_name=connector_name, symbol=symbol
+    )
+    legs = list(snapshot.positions or [])
+    main_legs = [
+        leg
+        for leg in legs
+        if leg.ownership_role == "MAIN" and leg.position_id == main_position_id
+    ]
+    if len(main_legs) != 1:
+        return None
+    try:
+        if Decimal(main_legs[0].quantity) <= 0:
+            return None
+    except InvalidOperation:
+        return None
+    if (
+        hedge_position_id is not None
+        and len(
+            [
+                leg
+                for leg in legs
+                if leg.ownership_role == "HEDGE"
+                and leg.position_id == hedge_position_id
+            ]
+        )
+        != 1
+    ):
+        return None
+    hedge = build_hedge_state(
+        legs,
+        main_position_id=main_position_id,
+        hedge_position_id=hedge_position_id,
+        as_of_ms=now_ms,
+    )
+    if hedge.structure_status not in ("ok", "single_main"):
+        return None
+    # net_exposure is the signed net mark-notional exposure, i.e. the same
+    # measurement build_hedge_state reports as net_exposure_usd.
+    hedge_state = HedgeStateV1.model_validate(
+        {
+            "schema": hedge.schema,
+            "main_side": hedge.main_side,
+            "main_size": hedge.main_size,
+            "hedge_side": hedge.hedge_side,
+            "hedge_size": hedge.hedge_size,
+            "net_exposure": hedge.net_exposure_usd,
+            "hedge_ratio": hedge.hedge_ratio,
+            "main_position_id": hedge.main_position_id,
+            "hedge_position_id": hedge.hedge_position_id,
+            "unresolved": hedge.unresolved,
+            "structure_status": hedge.structure_status,
+            "net_exposure_usd": hedge.net_exposure_usd,
+            "gross_exposure_usd": hedge.gross_exposure_usd,
+            "ratio_basis": hedge.ratio_basis,
+        }
+    ).model_dump(mode="json")
+    # Authoritative per-trade documents (GM root). The entry path writes the
+    # original intent before the binding, so a binding without a matching
+    # intent is a torn write: fail closed.
+    original_raw = _pm_read_json(
+        root / "trades" / correlation_id / "original_trade_intent.json"
+    )
+    if not isinstance(original_raw, dict):
+        return None
+    original_intent = TradeIntentV2.model_validate(original_raw).model_dump(mode="json")
+    if original_intent["symbol"] != symbol:
+        return None
+    # Supervisor store documents (brooks_state). Management history must be a
+    # JSONL list of mappings; latest ambient intents degrade to None.
+    history_rows = BrooksStore.read_jsonl(
+        root / "brooks_state" / "trades" / correlation_id / "management_history.jsonl"
+    )
+    if any(not isinstance(row, dict) for row in history_rows):
+        return None
+    latest_trader = _pm_latest_intent(root, "trader", symbol)
+    latest_market = _pm_latest_context(root, symbol)
+    # Bound executors: the read itself must be complete; rows without an
+    # identity cannot be referenced, so they are skipped, never guessed.
+    executors_result = await client.executors.search_executors(
+        account_names=[account_name],
+        connector_names=[connector_name],
+        trading_pairs=[symbol],
+        controller_ids=[controller_id],
+        limit=1000,
+    )
+    if not isinstance(executors_result, dict) or not isinstance(
+        executors_result.get("data"), list
+    ):
+        return None
+    if len(executors_result["data"]) >= 1000 or executors_result.get("next_cursor"):
+        return None
+    bound_executors = [
+        sanitized
+        for row in executors_result["data"]
+        if isinstance(row, dict)
+        and (sanitized := _pm_sanitize_executor(row)) is not None
+    ]
+    # Open orders are protection-relevant: any unscoped or unidentifiable row
+    # fails the whole snapshot closed instead of hiding an order.
+    orders_result = await client.trading.get_active_orders(
+        account_names=[account_name],
+        connector_names=[connector_name],
+        trading_pairs=[symbol],
+        limit=200,
+    )
+    if not isinstance(orders_result, dict) or not isinstance(
+        orders_result.get("data"), list
+    ):
+        return None
+    open_orders = []
+    for row in orders_result["data"]:
+        if not isinstance(row, dict):
+            return None
+        if str(row.get("trading_pair") or row.get("symbol") or "") != symbol:
+            return None
+        sanitized = _pm_sanitize_order(row, symbol, now_ms)
+        if sanitized is None:
+            return None
+        open_orders.append(sanitized)
+    management_policy = ManagementPolicyContext.model_validate(
+        {
+            "policy_id": f"brooks-pm-v1:{controller_id}",
+            "version": "1",
+            "policy_family": "brooks-position-management-v1",
+            # No strategy-stop mandate is wired for V1, so the PM must not
+            # force protection on an otherwise coherent position; the skill
+            # treats an unmet stop mandate as an intervention trigger.
+            "strategy_stop_required": False,
+            "allowed_management_actions": sorted(PM_V1_ACTIONS),
+            "protection_semantics": (
+                "gm-compiled: PM decisions are advisory; only the "
+                "deterministic GM may write to the venue."
+            ),
+        }
+    ).model_dump(mode="json")
+    margin_health = _pm_margin_health(
+        snapshot.equity, snapshot.available_margin, snapshot.gross_exposure
+    )
+    quote = symbol.rsplit("-", 1)[-1].rsplit("/", 1)[-1].strip() or symbol
+    main_leg = main_legs[0]
+    main_position = {
+        "position_id": main_leg.position_id,
+        "symbol": main_leg.symbol,
+        "side": main_leg.side,
+        "quantity": main_leg.quantity,
+        "mark_price": main_leg.mark_price,
+        "ownership_role": main_leg.ownership_role,
+        "as_of_ms": now_ms,
+    }
+    return {
+        "correlation_id": correlation_id,
+        "symbol": symbol,
+        "decision_time_ms": now_ms,
+        "account": {
+            "equity": format(snapshot.equity, "f"),
+            "available_margin": format(snapshot.available_margin, "f"),
+            "currency": quote,
+            "position_mode": snapshot.position_mode,
+            "as_of_ms": now_ms,
+        },
+        "positions": [
+            {
+                "position_id": leg.position_id,
+                "symbol": leg.symbol,
+                "side": leg.side,
+                "quantity": leg.quantity,
+                "mark_price": leg.mark_price,
+                "ownership_role": leg.ownership_role,
+                "as_of_ms": now_ms,
+            }
+            for leg in legs
+        ],
+        "position": main_position,
+        "executor_state": {
+            "as_of_ms": now_ms,
+            "controller_id": controller_id,
+            "executors": bound_executors,
+        },
+        "open_orders": open_orders,
+        "recent_fills": [],
+        "fills_since_last_event": [],
+        "original_trade_intent": original_intent,
+        "latest_trader_intent": latest_trader,
+        "latest_market_context": latest_market,
+        "market_analysis": None,
+        "management_history": history_rows[-10:],
+        "management_policy": management_policy,
+        "hedge_state": hedge_state,
+        "margin_health": margin_health,
+    }
+
+
+def _pm_latest_intent(root: Path, role: str, symbol: str) -> dict[str, Any] | None:
+    """Latest ambient TraderIntent for this symbol; ``None`` when not usable."""
+    from condor.brooks.contracts import TradeIntentV2
+
+    raw = _pm_read_json(root / "brooks_state" / role / "latest.json")
+    if not isinstance(raw, dict):
+        return None
+    try:
+        intent = TradeIntentV2.model_validate(raw).model_dump(mode="json")
+    except Exception:
+        return None
+    return intent if intent.get("symbol") == symbol else None
+
+
+def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
+    """Latest ambient MarketContext for this symbol; ``None`` when not usable."""
+    from condor.brooks.contracts import MarketContextV1
+
+    raw = _pm_read_json(root / "brooks_state" / "htf" / "latest.json")
+    if not isinstance(raw, dict):
+        return None
+    try:
+        context = MarketContextV1.model_validate(raw).model_dump(mode="json")
+    except Exception:
+        return None
+    return context if context.get("symbol") == symbol else None
+
+
+def _pm_sanitize_executor(row: Mapping[str, Any]) -> dict[str, Any] | None:
+    """Best-effort executor status; rows without an identity are skipped."""
+    executor_id = row.get("executor_id") or row.get("id")
+    if executor_id is None or not str(executor_id).strip():
+        return None
+    sanitized: dict[str, Any] = {
+        "executor_id": str(executor_id),
+        "status": str(row.get("status") or "UNKNOWN").upper(),
+    }
+    for key in ("trading_pair", "symbol", "controller_id", "controller_ids"):
+        if row.get(key) is not None:
+            sanitized[key] = row[key]
+    return sanitized
+
+
+def _pm_sanitize_order(
+    row: Mapping[str, Any], symbol: str, now_ms: int
+) -> dict[str, Any] | None:
+    """Protection-relevant order facts; ``None`` when identity/side is unclear.
+
+    Quantity, filled quantity, and price are included only when they parse as
+    decimals -- omitted, never zero-filled, when the venue leaves them out.
+    """
+    order_id = row.get("client_order_id") or row.get("order_id") or row.get("id")
+    if order_id is None or not str(order_id).strip():
+        return None
+    side = _PM_ORDER_SIDES.get(str(row.get("side") or "").upper())
+    if side is None:
+        return None
+    sanitized: dict[str, Any] = {
+        "order_id": str(order_id),
+        "symbol": symbol,
+        "side": side,
+        "order_type": str(row.get("order_type") or row.get("type") or "UNKNOWN"),
+        "status": str(row.get("status") or "UNKNOWN").upper(),
+        "as_of_ms": now_ms,
+    }
+    for source_key, target_key in (
+        ("quantity", "quantity"),
+        ("amount", "quantity"),
+        ("filled_quantity", "filled_quantity"),
+        ("filled_amount", "filled_quantity"),
+        ("executed_amount_base", "filled_quantity"),
+        ("price", "price"),
+        ("limit_price", "price"),
+    ):
+        if target_key in sanitized or row.get(source_key) is None:
+            continue
+        try:
+            number = Decimal(str(row[source_key]))
+        except (InvalidOperation, ValueError, TypeError):
+            continue
+        if number.is_finite() and number >= 0:
+            sanitized[target_key] = format(number, "f")
+    reduce_only = row.get("reduce_only")
+    if isinstance(reduce_only, bool):
+        sanitized["reduce_only"] = reduce_only
+    return sanitized
+
+
+def _pm_margin_health(
+    equity: Decimal, available_margin: Decimal, gross_exposure: Decimal
+) -> str:
+    """Conservative first calibration: free collateral decides the category."""
+    if available_margin <= 0:
+        return "CRITICAL"
+    if equity > 0 and available_margin < equity * Decimal("0.2"):
+        return "WARNING"
+    if gross_exposure > 0 and available_margin <= 0:
+        return "CRITICAL"
+    return "SAFE"
+
+
 @dataclass(frozen=True)
 class WireResult:
     ok: bool
@@ -836,8 +1246,9 @@ async def wire_supervisor(
     """Attach production collaborators to a Brooks supervisor before start.
 
     Returns ``ok=False`` with a setup reason instead of raising: the caller
-    logs it and starts inert (no writes). PM seams stay store-backed via the
-    supervisor defaults, which are idle without venue bindings.
+    logs it and starts inert (no writes). The production PM context builder
+    is wired as ``pm_load_context``; it stays fail-closed (``None``) without
+    venue bindings or when ownership cannot be established unambiguously.
     """
     from condor.brooks.config import BrooksConfig
 
@@ -886,9 +1297,7 @@ async def wire_supervisor(
     if effective_key:
         supervisor.attach_agent_key(effective_key, user_id)
     else:
-        log.warning(
-            "brooks_agents has no agent_key; Trader/HTF/PM roles stay idle."
-        )
+        log.warning("brooks_agents has no agent_key; Trader/HTF/PM roles stay idle.")
     supervisor.attach_watcher_snapshots(
         build_watcher_provider(
             client,
@@ -907,6 +1316,15 @@ async def wire_supervisor(
             controller_id=controller,
             state_root=Path(strategy_home),
             policy_config=brooks_config.gm,
+        )
+    )
+    supervisor.attach_pm(
+        load_context=build_pm_load_context(
+            client,
+            account_name=account,
+            connector_name=connector,
+            controller_id=controller,
+            state_root=Path(strategy_home),
         )
     )
     return WireResult(ok=True)
