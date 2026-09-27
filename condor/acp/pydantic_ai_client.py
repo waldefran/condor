@@ -57,6 +57,43 @@ DEFAULT_BASE_URLS: dict[str, str] = {
     "openrouter": "https://openrouter.ai/api/v1",
 }
 
+# Header the OpenCode Go API requires for routing (https://opencode.ai/zen/go/v1).
+# Sent only when the effective OpenAI-compatible base_url points at opencode.ai;
+# every other backend gets no extra headers.
+OPENCODE_SESSION_HEADER = "x-opencode-session"
+OPENCODE_USER_AGENT = "condor-brooks/1.0"
+
+
+def _is_opencode_base_url(base_url: str | None) -> bool:
+    """True when ``base_url`` points at opencode.ai (any path under it)."""
+    if not base_url:
+        return False
+    try:
+        host = (urlparse(base_url).hostname or "").lower()
+    except Exception:
+        return False
+    return host == "opencode.ai" or host.endswith(".opencode.ai")
+
+
+def opencode_default_headers(
+    base_url: str | None, session_id: str | None = None
+) -> dict[str, str]:
+    """Headers for an OpenAI-compatible client aimed at ``base_url``.
+
+    Returns the ``x-opencode-session`` + ``User-Agent`` mapping for opencode.ai
+    URLs, ``{}`` for anything else. ``session_id`` wins; then
+    ``OPENCODE_SESSION_ID``; then a fresh random id (callers that need
+    stability pass their per-client id explicitly).
+    """
+    if not _is_opencode_base_url(base_url):
+        return {}
+    sid = (session_id or "").strip() or os.environ.get(
+        "OPENCODE_SESSION_ID", ""
+    ).strip()
+    if not sid:
+        sid = uuid.uuid4().hex
+    return {OPENCODE_SESSION_HEADER: sid, "User-Agent": OPENCODE_USER_AGENT}
+
 
 # Global semaphores keyed by base URL so all clients pointing at the same
 # inference server (e.g. LM Studio) share one slot, regardless of which
@@ -418,6 +455,10 @@ class PydanticAIClient:
         self.extra_env = extra_env
         self.base_url = base_url
         self.api_key = api_key
+        # Stable id for the OpenCode Go API's x-opencode-session header,
+        # generated once per client so a conversation routes consistently.
+        # OPENCODE_SESSION_ID env wins when set (resolved at request time).
+        self._opencode_session_id = uuid.uuid4().hex
         # Who the model is told it is, delivered at system level as pydantic-ai
         # ``instructions``. The twin of ACPClient's ``_meta.systemPrompt.append``
         # (client.py): without it a bound Agent answers as the host instead of
@@ -464,6 +505,11 @@ class PydanticAIClient:
         # life (FEAT-120). The session takes per-turn deltas of it; nothing
         # here knows what a turn is.
         self.usage = TokenUsage()
+
+    def _opencode_client_kwargs(self, base_url: str | None) -> dict[str, Any]:
+        sid = os.environ.get("OPENCODE_SESSION_ID", "").strip() or self._opencode_session_id
+        headers = opencode_default_headers(base_url, sid)
+        return {"default_headers": headers} if headers else {}
 
     async def _build_model(self) -> Any:
         """Build the pydantic-ai model object with sensible defaults.
@@ -523,6 +569,9 @@ class PydanticAIClient:
                 base_url=base_url or DEFAULT_BASE_URLS["openrouter"],
                 api_key=api_key,
                 timeout=_local_timeout,
+                **self._opencode_client_kwargs(
+                    base_url or DEFAULT_BASE_URLS["openrouter"]
+                ),
             )
             return _make_openai_compat_model(
                 model_id, OpenAIProvider(openai_client=openai_client)
@@ -554,6 +603,7 @@ class PydanticAIClient:
                 base_url=base_url,
                 api_key=api_key,
                 timeout=_local_timeout,
+                **self._opencode_client_kwargs(base_url),
             )
             return _make_openai_compat_model(
                 model_id, OpenAIProvider(openai_client=openai_client)
@@ -570,6 +620,7 @@ class PydanticAIClient:
                 base_url=base_url,
                 api_key="not-needed",
                 timeout=_local_timeout,
+                **self._opencode_client_kwargs(base_url),
             )
             return _make_openai_compat_model(
                 model_id, OpenAIProvider(openai_client=openai_client)
@@ -581,6 +632,7 @@ class PydanticAIClient:
                 base_url=base_url,
                 api_key="not-needed",
                 timeout=_local_timeout,
+                **self._opencode_client_kwargs(base_url),
             )
             return _make_openai_compat_model(
                 model_id, OpenAIProvider(openai_client=openai_client)
