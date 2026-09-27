@@ -50,6 +50,7 @@ module.
 from __future__ import annotations
 
 import asyncio
+import inspect
 import logging
 import time
 from collections.abc import Awaitable, Callable, Iterable, Mapping
@@ -121,7 +122,9 @@ class GMConsumer:
       timeout that may have been accepted is reconciled, never retried blind.
     """
 
-    def __init__(self, *, gm_factory: Callable[[str], Any] | None, publish: Any) -> None:
+    def __init__(
+        self, *, gm_factory: Callable[[str], Any] | None, publish: Any
+    ) -> None:
         self.gm_factory = gm_factory
         self.publish = publish
 
@@ -171,7 +174,9 @@ class GMConsumer:
 
         envelope = _as_dict(event)
         raw_type = envelope.get("type")
-        event_type = raw_type.value if isinstance(raw_type, EventType) else str(raw_type or "")
+        event_type = (
+            raw_type.value if isinstance(raw_type, EventType) else str(raw_type or "")
+        )
         symbol = str(envelope.get("symbol") or "")
         correlation_id = envelope.get("correlation_id")
         causation_id = envelope.get("event_id")
@@ -184,16 +189,23 @@ class GMConsumer:
             decision = str(intent.get("decision") or "")
             if decision == "NO_TRADE":
                 return None
+            if bool(
+                payload.get("shadow_mode", False) or intent.get("shadow_mode", False)
+            ):
+                return None
             if decision not in ("ENTER_LONG", "ENTER_SHORT"):
                 return await self._emit(
-                    EventType.RECONCILIATION_REQUIRED, symbol,
+                    EventType.RECONCILIATION_REQUIRED,
+                    symbol,
                     correlation_id if isinstance(correlation_id, str) else None,
                     causation_id if isinstance(causation_id, str) else None,
                     {"reason": f"ambiguous trader decision: {decision!r}"},
                 )
             if not isinstance(correlation_id, str) or not correlation_id:
                 return await self._emit(
-                    EventType.RECONCILIATION_REQUIRED, symbol, None,
+                    EventType.RECONCILIATION_REQUIRED,
+                    symbol,
+                    None,
                     causation_id if isinstance(causation_id, str) else None,
                     {"reason": "entry intent lacks correlation_id"},
                 )
@@ -203,69 +215,100 @@ class GMConsumer:
                 )
             except GMRejected as exc:
                 return await self._emit(
-                    EventType.GM_ENTRY_REJECTED, symbol, correlation_id,
+                    EventType.GM_ENTRY_REJECTED,
+                    symbol,
+                    correlation_id,
                     causation_id if isinstance(causation_id, str) else None,
                     {"reason": str(exc)},
                 )
             except Exception as exc:
                 return await self._emit(
-                    EventType.RECONCILIATION_REQUIRED, symbol, correlation_id,
+                    EventType.RECONCILIATION_REQUIRED,
+                    symbol,
+                    correlation_id,
                     causation_id if isinstance(causation_id, str) else None,
                     {"reason": f"ambiguous entry outcome: {exc!r}"},
                 )
             if binding is None:
                 return None
             return await self._emit(
-                EventType.GM_ENTRY_APPROVED, symbol, correlation_id,
+                EventType.GM_ENTRY_APPROVED,
+                symbol,
+                correlation_id,
                 causation_id if isinstance(causation_id, str) else None,
                 {"binding": _dump(binding)},
             )
 
         if event_type == EventType.MANAGEMENT_INTENT_CREATED.value:
+            if bool(payload.get("shadow_mode", False)):
+                return None
             action = str(payload.get("action") or "")
             if action in _NO_WRITE_ACTIONS:
                 return None
             if action in _ATTENTION_ACTIONS or not action:
                 return await self._emit(
-                    EventType.RECONCILIATION_REQUIRED, symbol,
+                    EventType.RECONCILIATION_REQUIRED,
+                    symbol,
                     correlation_id if isinstance(correlation_id, str) else None,
                     causation_id if isinstance(causation_id, str) else None,
                     {"reason": f"management action needs attention: {action!r}"},
                 )
             if not isinstance(correlation_id, str) or not correlation_id:
                 return await self._emit(
-                    EventType.RECONCILIATION_REQUIRED, symbol, None,
+                    EventType.RECONCILIATION_REQUIRED,
+                    symbol,
+                    None,
                     causation_id if isinstance(causation_id, str) else None,
                     {"reason": "management intent lacks correlation_id"},
                 )
-            decision_id = payload.get("decision_id")
-            if not isinstance(decision_id, str) or not decision_id:
-                decision_id = (
-                    causation_id
-                    if isinstance(causation_id, str) and causation_id
-                    else str(uuid4())
-                )
             try:
-                result = await self._gm_for(symbol).execute_management(
-                    correlation_id=correlation_id,
-                    decision_id=decision_id,
-                    action=action,
-                    reduce_fraction=payload.get("reduce_fraction"),
-                )
+                gm = self._gm_for(symbol)
+                sig = inspect.signature(gm.execute_management)
+                if "decision" in sig.parameters or any(
+                    p.kind == inspect.Parameter.VAR_KEYWORD
+                    for p in sig.parameters.values()
+                ):
+                    result = await gm.execute_management(
+                        correlation_id=correlation_id,
+                        decision=payload,
+                    )
+                else:
+                    decision_id = payload.get("decision_id")
+                    if not isinstance(decision_id, str) or not decision_id:
+                        decision_id = (
+                            causation_id
+                            if isinstance(causation_id, str) and causation_id
+                            else str(uuid4())
+                        )
+                    result = await gm.execute_management(
+                        correlation_id=correlation_id,
+                        decision_id=decision_id,
+                        action=action,
+                        reduce_fraction=payload.get("reduce_fraction"),
+                    )
             except GMRejected as exc:
                 return await self._emit(
-                    EventType.GM_MANAGEMENT_REJECTED, symbol, correlation_id,
+                    EventType.GM_MANAGEMENT_REJECTED,
+                    symbol,
+                    correlation_id,
                     causation_id if isinstance(causation_id, str) else None,
                     {"reason": str(exc), "action": action},
                 )
             except Exception as exc:
                 return await self._emit(
-                    EventType.RECONCILIATION_REQUIRED, symbol, correlation_id,
+                    EventType.RECONCILIATION_REQUIRED,
+                    symbol,
+                    correlation_id,
                     causation_id if isinstance(causation_id, str) else None,
-                    {"reason": f"ambiguous management outcome: {exc!r}", "action": action},
+                    {
+                        "reason": f"ambiguous management outcome: {exc!r}",
+                        "action": action,
+                    },
                 )
             return await self._emit(
-                EventType.GM_MANAGEMENT_APPROVED, symbol, correlation_id,
+                EventType.GM_MANAGEMENT_APPROVED,
+                symbol,
+                correlation_id,
                 causation_id if isinstance(causation_id, str) else None,
                 {"result": _dump(result), "action": action},
             )
@@ -339,10 +382,14 @@ class BrooksSupervisor:
         self._agent_key = agent_key
         self._user_id = user_id
 
-    def attach_trader_handler(self, handler: Callable[[BrooksEvent], Awaitable[Any]]) -> None:
+    def attach_trader_handler(
+        self, handler: Callable[[BrooksEvent], Awaitable[Any]]
+    ) -> None:
         self._trader_handler = handler
 
-    def attach_htf_handler(self, handler: Callable[[BrooksEvent], Awaitable[Any]]) -> None:
+    def attach_htf_handler(
+        self, handler: Callable[[BrooksEvent], Awaitable[Any]]
+    ) -> None:
         self._htf_handler = handler
 
     def attach_pm_handler(self, handler: Callable[[Any], Awaitable[Any]]) -> None:
@@ -436,7 +483,11 @@ class BrooksSupervisor:
         self._gm = GMConsumer(gm_factory=self._gm_factory, publish=self.events)
 
     def _build_trader(self) -> Any | None:
-        if self._trader_handler is not None or self._agent_key is None or self._candle_source is None:
+        if (
+            self._trader_handler is not None
+            or self._agent_key is None
+            or self._candle_source is None
+        ):
             return None
         from .trader import TraderConsumer
 
@@ -450,7 +501,11 @@ class BrooksSupervisor:
         )
 
     def _build_htf(self) -> Any | None:
-        if self._htf_handler is not None or self._agent_key is None or self._candle_source is None:
+        if (
+            self._htf_handler is not None
+            or self._agent_key is None
+            or self._candle_source is None
+        ):
             return None
         from .htf_analyst import HTFAnalystConsumer
 
@@ -476,7 +531,8 @@ class BrooksSupervisor:
             publish=self.events,
             candle_source=self._candle_source,
             record_market_read=self._pm_record_market_read or self._default_pm_record,
-            list_active_correlations=self._pm_list_active or self._default_pm_list_active,
+            list_active_correlations=self._pm_list_active
+            or self._default_pm_list_active,
             agent_key=self._agent_key,
         )
 
@@ -487,7 +543,11 @@ class BrooksSupervisor:
 
     async def _default_pm_save(self, correlation_id: str, decision: Any) -> None:
         assert self.store is not None
-        dumped = decision.model_dump(mode="json") if hasattr(decision, "model_dump") else dict(decision)
+        dumped = (
+            decision.model_dump(mode="json")
+            if hasattr(decision, "model_dump")
+            else dict(decision)
+        )
         self.store.write_trade_document(
             correlation_id, "latest_management_intent.json", dumped
         )
@@ -500,7 +560,9 @@ class BrooksSupervisor:
             },
         )
 
-    async def _default_pm_record(self, correlation_id: str, record: dict[str, Any]) -> None:
+    async def _default_pm_record(
+        self, correlation_id: str, record: dict[str, Any]
+    ) -> None:
         return None
 
     async def _default_pm_list_active(self, symbol: Any) -> list[str]:
@@ -571,7 +633,9 @@ class BrooksSupervisor:
                 try:
                     await handle(event)
                 except Exception:
-                    log.exception("Brooks %s failed for event %s", owner, event.event_id)
+                    log.exception(
+                        "Brooks %s failed for event %s", owner, event.event_id
+                    )
         finally:
             self.events.unsubscribe(queue)
 

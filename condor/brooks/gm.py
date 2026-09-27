@@ -12,6 +12,7 @@ from dataclasses import asdict, dataclass
 from decimal import ROUND_DOWN, Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Literal, Protocol
+from uuid import uuid4
 
 from .execution import ExecutionRejected, HummingbotExecutionPort
 from .hedge import (
@@ -342,10 +343,16 @@ class BrooksGM:
             os.fsync(file.fileno())
 
     async def execute_entry(
-        self, intent: Any, *, correlation_id: str
+        self, intent: Any, *, correlation_id: str, shadow_mode: bool = False
     ) -> dict[str, Any] | None:
         trade = _data(intent)
         if trade.get("decision") == "NO_TRADE":
+            return None
+        if shadow_mode or bool(trade.get("shadow_mode", False)):
+            return None
+        if isinstance(trade.get("intent"), dict) and bool(
+            trade["intent"].get("shadow_mode", False)
+        ):
             return None
         symbol = trade.get("symbol")
         if not isinstance(symbol, str) or not symbol:
@@ -409,32 +416,60 @@ class BrooksGM:
         self,
         *,
         correlation_id: str,
-        decision_id: str,
-        action: str,
-        reduce_fraction: Decimal | None = None,
+        decision_id: str | None = None,
+        action: str | None = None,
+        reduce_fraction: Decimal | str | None = None,
         target_hedge_ratio: str | Decimal | None = None,
         expected_state: HedgeState | dict[str, Any] | None = None,
         plan_main_position_id: str | None = None,
         plan_hedge_position_id: str | None = None,
         decision: Any = None,
+        shadow_mode: bool = False,
     ) -> dict[str, Any]:
         if decision is not None:
             data = _data(decision) if not isinstance(decision, dict) else decision
-            action = data.get("action", action)
-            decision_id = data.get("decision_id", decision_id)
+            if action is None or not action:
+                action = data.get("action")
+            if decision_id is None or not decision_id:
+                decision_id = data.get("decision_id")
+            if reduce_fraction is None:
+                reduce_fraction = data.get("reduce_fraction")
+            if shadow_mode or bool(data.get("shadow_mode", False)):
+                shadow_mode = True
             if data.get("hedge_plan"):
                 hp = data["hedge_plan"]
                 if hasattr(hp, "model_dump"):
                     hp = hp.model_dump(mode="json")
-                if target_hedge_ratio is None:
-                    target_hedge_ratio = hp.get("target_hedge_ratio")
-                if plan_main_position_id is None:
-                    plan_main_position_id = hp.get("main_position_id")
-                if plan_hedge_position_id is None:
-                    plan_hedge_position_id = hp.get("hedge_position_id")
+                if isinstance(hp, dict):
+                    if target_hedge_ratio is None:
+                        target_hedge_ratio = hp.get("target_hedge_ratio")
+                    if plan_main_position_id is None:
+                        plan_main_position_id = hp.get("main_position_id")
+                    if plan_hedge_position_id is None:
+                        plan_hedge_position_id = hp.get("hedge_position_id")
+                else:
+                    if target_hedge_ratio is None:
+                        target_hedge_ratio = getattr(hp, "target_hedge_ratio", None)
+                    if plan_main_position_id is None:
+                        plan_main_position_id = getattr(hp, "main_position_id", None)
+                    if plan_hedge_position_id is None:
+                        plan_hedge_position_id = getattr(hp, "hedge_position_id", None)
+
+        if shadow_mode:
+            return {
+                "action": action or "HOLD",
+                "status": "no_write",
+                "shadow_mode": True,
+            }
 
         if action == "HOLD":
             return {"action": "HOLD", "status": "no_write"}
+
+        if action == "MANAGEMENT_BLOCKED":
+            return {"action": "MANAGEMENT_BLOCKED", "status": "no_write"}
+
+        if not decision_id:
+            decision_id = str(uuid4())
 
         if action in ("HEDGE", "INCREASE_HEDGE", "REDUCE_HEDGE", "REMOVE_HEDGE"):
             return await self._execute_hedge(
@@ -556,13 +591,14 @@ class BrooksGM:
         self,
         *,
         correlation_id: str,
-        decision_id: str,
-        action: str,
-        target_hedge_ratio: str | Decimal,
+        decision_id: str | None = None,
+        action: str | None = None,
+        target_hedge_ratio: str | Decimal | None = None,
         expected_state: HedgeState | dict[str, Any] | None = None,
         plan_main_position_id: str | None = None,
         plan_hedge_position_id: str | None = None,
         decision: Any = None,
+        shadow_mode: bool = False,
     ) -> dict[str, Any]:
         return await self.execute_management(
             correlation_id=correlation_id,
@@ -573,6 +609,7 @@ class BrooksGM:
             plan_main_position_id=plan_main_position_id,
             plan_hedge_position_id=plan_hedge_position_id,
             decision=decision,
+            shadow_mode=shadow_mode,
         )
 
     async def _execute_hedge(

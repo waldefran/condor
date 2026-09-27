@@ -8,6 +8,8 @@ from decimal import Decimal
 
 import pytest
 
+from condor.brooks.contracts import HedgePlanV2, ManagementDecisionV2
+from condor.brooks.events import BrooksEvent, EventType
 from condor.brooks.execution import ExecutionRejected, HummingbotExecutionPort
 from condor.brooks.gm import (
     AccountSnapshot,
@@ -18,6 +20,7 @@ from condor.brooks.gm import (
     compile_main,
 )
 from condor.brooks.hedge import PositionLeg, build_hedge_state
+from condor.brooks.supervisor import GMConsumer
 
 
 def D(value):
@@ -424,3 +427,288 @@ def test_management_dispatches_hedge_action(tmp_path):
     )
     assert (tmp_path / "trades/c1/management/d_hedge.json").exists()
     assert (tmp_path / "trades/c1/hedge_state.json").exists()
+
+
+def test_management_full_decision_pass_through(tmp_path):
+    gate, reader, port = gm(tmp_path)
+    asyncio.run(gate.execute_entry(intent(), correlation_id="c1"))
+
+    # 1. Full decision pass-through for REDUCE
+    reader.state = managed_state(main_quantity=D("2.0"))
+    decision_reduce = {
+        "schema": "brooks.management-decision.v2",
+        "role": "POSITION_MANAGER",
+        "decision_time_ms": int(time.time() * 1000),
+        "action": "REDUCE",
+        "position_ids": ["position-main"],
+        "reason": "thesis calls for de-risking",
+        "evidence": {
+            "observations": ["pullback"],
+            "evidence_for": ["weakening"],
+            "evidence_against": ["trend"],
+        },
+        "risk": {
+            "exposure_before": ["long"],
+            "exposure_after": ["long partial"],
+            "protection_status": "adequate",
+            "costs_considered": ["fees"],
+            "uncertainty": "low",
+        },
+        "execution": {"orders": [], "cancel_order_ids": [], "replace_orders": []},
+        "hedge_plan": None,
+        "market_analysis_request": None,
+        "conditions_that_change_action": ["reversal"],
+        "reduce_fraction": "0.30",
+        "decision_id": "d_full_reduce",
+    }
+    result_reduce = asyncio.run(
+        gate.execute_management(
+            correlation_id="c1",
+            decision=decision_reduce,
+        )
+    )
+    assert result_reduce["status"] == "submitted"
+    assert result_reduce["quantity"] == "0.60"
+    assert port.calls[-1] == (
+        "reduce",
+        {"symbol": "BTC-USDT", "side": "LONG", "quantity": D("0.60"), "leverage": 2},
+    )
+
+    # 2. Full decision pass-through for HEDGE
+    now = int(time.time() * 1000)
+    m1 = PositionLeg("position-main", "BTC-USDT", "LONG", "2.0", "100", "MAIN")
+    pre_state = build_hedge_state(
+        [m1],
+        main_position_id="position-main",
+        hedge_position_id=None,
+        as_of_ms=now - 20,
+    )
+    snap_pre = managed_state(as_of_ms=now - 10, positions=[m1], main_quantity=D("2.0"))
+    h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.6", "100", "HEDGE")
+    snap_post = managed_state(
+        as_of_ms=now,
+        positions=[m1, h1],
+        hedge_position_id="hedge-1",
+        hedge_quantity=D("0.6"),
+    )
+    snapshots = [snap_pre, snap_post]
+
+    async def multi_read(**kwargs):
+        reader.calls += 1
+        return snapshots.pop(0) if len(snapshots) > 1 else snapshots[0]
+
+    reader.read = multi_read
+    decision_hedge = {
+        "schema": "brooks.management-decision.v2",
+        "role": "POSITION_MANAGER",
+        "decision_time_ms": int(time.time() * 1000),
+        "action": "HEDGE",
+        "position_ids": ["position-main"],
+        "reason": "thesis calls for hedge protection",
+        "evidence": {
+            "observations": ["distribution"],
+            "evidence_for": ["resistance"],
+            "evidence_against": ["trend"],
+        },
+        "risk": {
+            "exposure_before": ["long"],
+            "exposure_after": ["hedged"],
+            "protection_status": "adequate",
+            "costs_considered": ["fees"],
+            "uncertainty": "medium",
+        },
+        "execution": {"orders": [], "cancel_order_ids": [], "replace_orders": []},
+        "hedge_plan": {
+            "objective": "protect capital",
+            "target_hedge_ratio": "0.30",
+            "main_position_id": "position-main",
+            "hedge_position_id": None,
+            "ratio_basis": "absolute_mark_notional",
+            "expected_effect_on_exposure": "hedge",
+            "costs": ["fees"],
+            "unlock_condition": "persistence",
+            "failure_condition": "break",
+        },
+        "market_analysis_request": None,
+        "conditions_that_change_action": ["reversal"],
+        "decision_id": "d_full_hedge",
+    }
+    result_hedge = asyncio.run(
+        gate.execute_management(
+            correlation_id="c1",
+            decision=decision_hedge,
+            expected_state=pre_state,
+        )
+    )
+    assert result_hedge["status"] == "submitted"
+    assert port.calls[-1] == (
+        "hedge",
+        {
+            "symbol": "BTC-USDT",
+            "side": "SELL",
+            "quantity": D("0.60"),
+            "position_action": "OPEN",
+            "leverage": 2,
+        },
+    )
+    assert (tmp_path / "trades/c1/management/d_full_hedge.json").exists()
+
+
+def test_management_reduce_fraction_math(tmp_path):
+    gate, reader, port = gm(tmp_path)
+    asyncio.run(gate.execute_entry(intent(), correlation_id="c1"))
+
+    # Fraction >= 1 rejected
+    reader.state = managed_state(main_quantity=D("2.0"))
+    with pytest.raises(GMRejected, match="below one"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1",
+                decision_id="d_bad1",
+                action="REDUCE",
+                reduce_fraction=D("1.0"),
+            )
+        )
+    with pytest.raises(GMRejected, match="below one"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1",
+                decision_id="d_bad2",
+                action="REDUCE",
+                reduce_fraction=D("1.5"),
+            )
+        )
+
+    # Nonpositive fraction rejected
+    with pytest.raises(GMRejected, match="positive"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1",
+                decision_id="d_bad3",
+                action="REDUCE",
+                reduce_fraction=D("0"),
+            )
+        )
+    with pytest.raises(GMRejected, match="positive"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1",
+                decision_id="d_bad4",
+                action="REDUCE",
+                reduce_fraction=D("-0.5"),
+            )
+        )
+
+    # Reduction too small (below min_amount) rejected
+    reader.state = managed_state(
+        main_quantity=D("2.0"),
+        rules=VenueRules(D("0.01"), D("0.1"), D("10"), 5),  # min_amount=0.1
+    )
+    with pytest.raises(GMRejected, match="too small"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1",
+                decision_id="d_bad5",
+                action="REDUCE",
+                reduce_fraction=D("0.01"),  # 2.0 * 0.01 = 0.02 < 0.1
+            )
+        )
+
+    # Reduction below min_notional rejected
+    reader.state = managed_state(
+        main_quantity=D("2.0"),
+        mark_price=D("10"),
+        rules=VenueRules(D("0.01"), D("0.01"), D("50"), 5),  # min_notional=50
+    )
+    with pytest.raises(GMRejected, match="minimum notional"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1",
+                decision_id="d_bad6",
+                action="REDUCE",
+                reduce_fraction=D("0.2"),  # 2.0 * 0.2 = 0.4; 0.4 * 10 = 4 < 50
+            )
+        )
+
+    # Reduction that would close all rejected
+    reader.state = managed_state(
+        main_quantity=D("0.01"),
+        rules=VenueRules(D("0.01"), D("0.01"), D("0.01"), 5),
+    )
+    with pytest.raises(GMRejected, match="would close all"):
+        asyncio.run(
+            gate.execute_management(
+                correlation_id="c1",
+                decision_id="d_bad7",
+                action="REDUCE",
+                reduce_fraction=D("0.99"),  # quantizes to 0.01 == quantity
+            )
+        )
+
+
+def test_gm_consumer_management_pass_through(tmp_path):
+    gate, reader, port = gm(tmp_path)
+    asyncio.run(gate.execute_entry(intent(), correlation_id="c1"))
+
+    published = []
+    consumer = GMConsumer(
+        gm_factory=lambda sym: gate,
+        publish=published.append,
+    )
+
+    # 1. HOLD -> no write, GM_MANAGEMENT_APPROVED
+    hold_event = BrooksEvent(
+        type=EventType.MANAGEMENT_INTENT_CREATED,
+        symbol="BTC-USDT",
+        correlation_id="c1",
+        payload={"action": "HOLD"},
+    )
+    result = asyncio.run(consumer.handle(hold_event))
+    assert result["type"] == EventType.GM_MANAGEMENT_APPROVED.value
+    assert result["payload"]["result"]["action"] == "HOLD"
+    assert result["payload"]["result"]["status"] == "no_write"
+    assert len(published) == 1
+
+    # 2. MANAGEMENT_BLOCKED -> explicit no-write, None returned, nothing published
+    blocked_event = BrooksEvent(
+        type=EventType.MANAGEMENT_INTENT_CREATED,
+        symbol="BTC-USDT",
+        correlation_id="c1",
+        payload={"action": "MANAGEMENT_BLOCKED"},
+    )
+    assert asyncio.run(consumer.handle(blocked_event)) is None
+    assert len(published) == 1
+
+    # 3. REDUCE full decision pass-through
+    reader.state = managed_state(main_quantity=D("2.0"))
+    reduce_event = BrooksEvent(
+        type=EventType.MANAGEMENT_INTENT_CREATED,
+        symbol="BTC-USDT",
+        correlation_id="c1",
+        payload={
+            "action": "REDUCE",
+            "decision_id": "d_consumer_reduce",
+            "reduce_fraction": "0.25",
+        },
+    )
+    res_red = asyncio.run(consumer.handle(reduce_event))
+    assert res_red["type"] == EventType.GM_MANAGEMENT_APPROVED.value
+    assert port.calls[-1] == (
+        "reduce",
+        {"symbol": "BTC-USDT", "side": "LONG", "quantity": D("0.50"), "leverage": 2},
+    )
+
+    # 4. REDUCE GMRejected -> GM_MANAGEMENT_REJECTED
+    bad_reduce_event = BrooksEvent(
+        type=EventType.MANAGEMENT_INTENT_CREATED,
+        symbol="BTC-USDT",
+        correlation_id="c1",
+        payload={
+            "action": "REDUCE",
+            "decision_id": "d_consumer_bad",
+            "reduce_fraction": "1.5",
+        },
+    )
+    res_bad = asyncio.run(consumer.handle(bad_reduce_event))
+    assert res_bad["type"] == EventType.GM_MANAGEMENT_REJECTED.value
+    assert res_bad["payload"]["action"] == "REDUCE"
