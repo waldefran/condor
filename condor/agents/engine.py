@@ -266,6 +266,7 @@ class TickEngine:
             self._brooks_supervisor = BrooksSupervisor(
                 self.strategy.home, BrooksConfig.from_engine_config(self.config)
             )
+            await self._wire_brooks_production()
             await self._brooks_supervisor.start()
         self._running = True
         self._bot = bot
@@ -1196,6 +1197,37 @@ class TickEngine:
 
         server = cm.get_server(server_name)
         return server_name, server
+
+    async def _wire_brooks_production(self) -> None:
+        """Attach production Hummingbot collaborators (brooks_agents only).
+
+        Fail-closed: missing config or an unreachable server logs a clear
+        setup error and leaves the supervisor inert (no market data, no venue
+        reads, no writes). Never raises into the runtime.
+        """
+        supervisor = self._brooks_supervisor
+        if supervisor is None:
+            return
+        try:
+            from condor.brooks import adapters as brooks_adapters
+
+            wired = await brooks_adapters.wire_supervisor(
+                supervisor,
+                self.config,
+                strategy_home=self.strategy.home,
+                agent_key=self._agent_key(),
+                user_id=self.user_id,
+                agent_id=self.agent_id,
+                get_client=self._get_client,
+            )
+            if not wired.ok:
+                log.error("TickEngine %s: %s", self.agent_id, wired.reason)
+        except Exception:
+            log.exception(
+                "TickEngine %s: brooks_agents wiring failed; starting inert "
+                "(no writes)",
+                self.agent_id,
+            )
 
     async def _get_client(self):
         """Get the Hummingbot API client for this agent."""

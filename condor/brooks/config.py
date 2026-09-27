@@ -16,6 +16,20 @@ class PeriodicWakeConfig(BaseModel):
     frequency_sec: int = Field(gt=0)
 
 
+class BrooksGMPolicyConfig(BaseModel):
+    """Deterministic GM risk policy; defaults mirror gm.GMPolicy."""
+
+    risk_per_trade_pct: str = "0.01"
+    max_positions: int = 2
+    max_gross_exposure_pct: str = "2"
+    leverage: int = 2
+    take_profit_r: str = "2"
+    time_limit_sec: int = 3600
+    max_trigger_drift_pct: str = "0.01"
+    max_snapshot_age_ms: int = 15_000
+    max_intent_age_ms: int = 7_200_000
+
+
 class BrooksConfig(BaseModel):
     trader: MarketWakeConfig = Field(
         default_factory=lambda: MarketWakeConfig(timeframe="1h", wake_offset_sec=2)
@@ -29,6 +43,20 @@ class BrooksConfig(BaseModel):
     position_watcher: PeriodicWakeConfig = Field(
         default_factory=lambda: PeriodicWakeConfig(frequency_sec=10)
     )
+    # -- production venue binding (all optional; empty means inert) --
+    # Venue symbols the clock publishes for (e.g. ["BTC-USDT"]).
+    symbols: list[str] = Field(default_factory=list)
+    # Hummingbot account/connector the Brooks lifecycle trades through.
+    account_name: str = ""
+    connector_name: str = ""
+    # Executor owner tag; the engine defaults it to its own agent_id
+    # (controller_id == agent_id, the executor-mode convention) when empty.
+    controller_id: str = ""
+    # Optional overrides; the engine otherwise resolves these from its own
+    # top-level run config (agent_key) and server resolution (server_name).
+    server_name: str | None = None
+    agent_key: str | None = None
+    gm: BrooksGMPolicyConfig = Field(default_factory=BrooksGMPolicyConfig)
 
     @classmethod
     def from_engine_config(cls, config: dict[str, Any]) -> BrooksConfig:
