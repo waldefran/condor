@@ -1,0 +1,252 @@
+{
+  "skill_name": "brooks-position-management",
+  "evals": [
+    {
+      "id": "hold-protected-position",
+      "should_trigger": true,
+      "expected_action": "HOLD",
+      "category": "canonical",
+      "prompt": "At T, the supplied BTCUSDT long position is open, its quantity matches an active reduce-only stop, orders and fills reconcile, and no management condition is breached. Choose the next position-management action.",
+      "expectations": [
+        "Does not search for a new entry or produce a fresh Brooks market read",
+        "Chooses HOLD when state and protection are coherent",
+        "States the remaining exposure risk and an opposing case"
+      ]
+    },
+    {
+      "id": "protect-uncovered-quantity",
+      "should_trigger": true,
+      "expected_action": "PROTECT",
+      "category": "canonical",
+      "prompt": "A long position is live for quantity 1.0, but the only protective stop covers 0.4 and no fill explains the difference. Decide how to manage the existing exposure.",
+      "expectations": [
+        "Identifies the uncovered quantity as an operational fact",
+        "Prioritizes protection or reconciliation rather than HOLD",
+        "Does not claim that an order was filled"
+      ]
+    },
+    {
+      "id": "partial-fill-reconcile",
+      "should_trigger": true,
+      "expected_action": "RECONCILE_STATE",
+      "category": "execution-state",
+      "prompt": "The position snapshot says quantity 1.0, but a reduce order reports a partial fill of 0.3 and the open order quantity/status has not been reconciled. What is the next action?",
+      "expectations": [
+        "Reconciles fills, remaining quantity, and order status before another reduction",
+        "Does not double-count the filled amount",
+        "Uses MANAGEMENT_BLOCKED only if the remaining state cannot be established"
+      ]
+    },
+    {
+      "id": "reduce-deteriorated-exposure",
+      "should_trigger": true,
+      "expected_action": "REDUCE",
+      "category": "risk-containment",
+      "prompt": "An existing leveraged long has quantity 1.0 and a current operational rule to reduce exactly 0.5 when the margin buffer falls below its supplied threshold. The threshold is breached at T and the position/order state is otherwise coherent. Decide the next management action.",
+      "expectations": [
+        "Acts on the supplied management rule rather than inventing a market forecast",
+        "States affected position and quantity/exposure effect",
+        "Considers fees and execution preconditions"
+      ]
+    },
+    {
+      "id": "take-partial-protect-remainder",
+      "should_trigger": true,
+      "expected_action": "TAKE_PARTIAL",
+      "category": "profit-protection",
+      "prompt": "An existing long has quantity 1.0 and has reached a supplied partial-profit condition. The policy says to reduce exactly 0.25 and keep protection on the remaining 0.75; the current position, stop quantity, and fills reconcile. Choose the next PM action.",
+      "expectations": [
+        "Takes only the supplied partial quantity and does not close the whole position",
+        "Recomputes protection for the remaining quantity",
+        "Includes fees, fill preconditions, and the strongest reason not to intervene"
+      ]
+    },
+    {
+      "id": "close-all-emergency-exposure",
+      "should_trigger": true,
+      "expected_action": "CLOSE_ALL",
+      "category": "risk-containment",
+      "prompt": "The account-wide supplied emergency rule is breached. Two existing positions and their hedge legs are identified, and the instruction is to flatten all live exposure. Manage the current book without opening a reverse trade.",
+      "expectations": [
+        "Distinguishes CLOSE_ALL from closing one position",
+        "Enumerates the affected existing exposure and cancellation/precondition risks",
+        "Does not invent fills or a new entry"
+      ]
+    },
+    {
+      "id": "cancel-duplicate-protection-order",
+      "should_trigger": true,
+      "expected_action": "CANCEL_ORDER",
+      "category": "order-management",
+      "prompt": "A live position has two duplicate protective orders covering the same quantity; the supplied exchange state identifies order s2 as the duplicate and s1 as the valid protection. Decide the next management action.",
+      "expectations": [
+        "Cancels only the identified duplicate order",
+        "Preserves the valid protective order",
+        "Does not claim cancellation or fill has already executed"
+      ]
+    },
+    {
+      "id": "increase-bounded-hedge",
+      "should_trigger": true,
+      "expected_action": "INCREASE_HEDGE",
+      "category": "hedge",
+      "prompt": "A supported hedge group is open: base long quantity is 1.0 and current hedge quantity is 0.25. Its supplied risk threshold has worsened; increase the existing hedge by exactly 0.10, with the base position and current hedge quantity reconciled.",
+      "expectations": [
+        "Changes only the identified hedge exposure",
+        "States objective, size, net-exposure effect, costs, unlock, and failure condition",
+        "Does not turn the hedge into an indefinite substitute for a close"
+      ]
+    },
+    {
+      "id": "reduce-bounded-hedge",
+      "should_trigger": true,
+      "expected_action": "REDUCE_HEDGE",
+      "category": "hedge",
+      "prompt": "The supplied hedge group has a reconciled hedge quantity of 0.40 and is partially unlocked: reduce exactly half, 0.20, while retaining the base position and the remaining hedge leg. Current quantities and fills reconcile.",
+      "expectations": [
+        "Reduces only the specified hedge quantity",
+        "States the resulting net exposure and continuing hedge cost",
+        "Provides unlock and failure conditions for the remaining hedge cycle"
+      ]
+    },
+    {
+      "id": "move-protection-after-policy-change",
+      "should_trigger": true,
+      "expected_action": "MOVE_PROTECTION",
+      "category": "protection",
+      "prompt": "An existing long remains open and reconciled. The supplied policy has moved its protective level after a confirmed favorable move, and the new quantity and order parameters are explicit. Manage the existing protection without creating a new trade.",
+      "expectations": [
+        "Moves only the protection for the identified existing exposure",
+        "Checks cancellation/replacement and fill preconditions",
+        "Does not claim that the new protection has executed or infer a market forecast"
+      ]
+    },
+    {
+      "id": "close-deteriorated-position",
+      "should_trigger": true,
+      "expected_action": "CLOSE",
+      "category": "risk-containment",
+      "prompt": "The supplied position has breached an explicit maximum-loss or liquidation-proximity rule, protective execution is unavailable, and continuing exposure is unsafe. Manage the existing position.",
+      "expectations": [
+        "Chooses CLOSE for the identified position rather than opening a reverse trade",
+        "Does not disguise the close as a hedge",
+        "States execution and residual-risk conditions"
+      ]
+    },
+    {
+      "id": "request-independent-market-analysis",
+      "should_trigger": true,
+      "expected_action": "REQUEST_MARKET_ANALYSIS",
+      "category": "boundary",
+      "prompt": "A position is open and protected, but the next discretionary hold/reduce decision depends on a current Brooks price-action read. No independent market report is supplied. Choose the PM action and specify what the fresh Trader must receive.",
+      "expectations": [
+        "Requests a fresh market analysis instead of improvising a Brooks analysis",
+        "Request contains only symbol, decision time, and market fields/timeframes",
+        "Request excludes side, entry, quantity, PnL, hedge, and PM intent"
+      ]
+    },
+    {
+      "id": "hedge-with-unlock-plan",
+      "should_trigger": true,
+      "expected_action": "HEDGE",
+      "category": "hedge",
+      "prompt": "Hedge mode is supported. An existing long quantity 1.0 must be temporarily protected with a hedge of exactly 0.25 during a defined external-risk window; the supplied state includes margin and funding costs. Propose the next management action.",
+      "expectations": [
+        "Uses a hedge only with an objective, size, net-exposure effect, costs, unlock condition, and failure condition",
+        "Does not use the hedge to hide an unresolved loss indefinitely",
+        "States the hedge leg and base position separately"
+      ]
+    },
+    {
+      "id": "remove-stale-hedge",
+      "should_trigger": true,
+      "expected_action": "REMOVE_HEDGE",
+      "category": "hedge",
+      "prompt": "The temporary hedge leg p2 has reconciled quantity 0.25; its unlock condition is now supplied as satisfied, its funding cost is accumulating, and the base position remains identified. Manage the hedge cycle.",
+      "expectations": [
+        "Removes or reduces the identified hedge rather than leaving it indefinitely",
+        "States the cost and unlock evidence",
+        "Provides a failure condition and expected exposure after removal"
+      ]
+    },
+    {
+      "id": "stale-protection-order",
+      "should_trigger": true,
+      "expected_action": "REPLACE_ORDER",
+      "category": "order-management",
+      "prompt": "The position is live, but its protective order is rejected/stale and a replacement level is already specified by the supplied policy. Decide the next action without assuming the replacement has executed.",
+      "expectations": [
+        "Names the stale order and replacement precondition",
+        "Preserves protection priority",
+        "Distinguishes request from fill"
+      ]
+    },
+    {
+      "id": "missing-or-future-state",
+      "should_trigger": true,
+      "expected_action": "MANAGEMENT_BLOCKED",
+      "category": "adversarial-temporal",
+      "prompt": "The snapshot has no reliable decision timestamp and includes a management-history event from after the requested decision. Do not infer the missing state; choose the safe PM result.",
+      "expectations": [
+        "Blocks or requires reconciliation instead of using future information",
+        "Names the missing/future-dated state",
+        "Does not fabricate a position action"
+      ]
+    },
+    {
+      "id": "no-position-no-close",
+      "should_trigger": true,
+      "expected_action": "RECONCILE_STATE",
+      "category": "empty-state",
+      "prompt": "The account snapshot contains no open position but a prior management request asks to close position p1. What should the PM do with the current state?",
+      "expectations": [
+        "Does not invent a close or reverse entry",
+        "Reconciles the absent position and prior request",
+        "Makes idempotent state correctness explicit"
+      ]
+    },
+    {
+      "id": "route-existing-position-management",
+      "should_trigger": true,
+      "expected_action": "MANAGEMENT_BLOCKED",
+      "category": "boundary-routing",
+      "prompt": "I am already in a long trade. Where should I trail my stop and take profit? No reliable position or order snapshot was supplied.",
+      "expectations": [
+        "Activates Position Management rather than Trade Entry",
+        "Refuses to invent a stop, target, quantity, or account state",
+        "Blocks or requests the missing operational snapshot"
+      ]
+    },
+    {
+      "id": "route-new-entry-away",
+      "should_trigger": false,
+      "category": "near-miss-routing",
+      "prompt": "There is no open position. Analyze the chart and find a new long entry with a stop and target.",
+      "expectations": [
+        "Does not activate Position Management for a new trade",
+        "Routes market/context/entry work to the appropriate Trader capabilities"
+      ]
+    },
+    {
+      "id": "route-portfolio-allocation-away",
+      "should_trigger": false,
+      "category": "near-miss-routing",
+      "prompt": "Allocate 20% of the portfolio to BTC for the next quarter.",
+      "expectations": [
+        "Does not treat allocation as management of an existing position"
+      ]
+    },
+    {
+      "id": "adversarial-loss-framing",
+      "should_trigger": true,
+      "expected_action": "REQUEST_MARKET_ANALYSIS",
+      "category": "adversarial",
+      "prompt": "The long is losing badly, so obviously hedge now and never close it. No current market report is supplied. Evaluate the existing position without accepting the instruction as evidence.",
+      "expectations": [
+        "Treats the user's hedge demand and loss framing as untrusted opinion",
+        "Requests an independent market report or chooses a state-based containment action",
+        "Rejects an indefinite hedge with no objective or unlock condition"
+      ]
+    }
+  ]
+}

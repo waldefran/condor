@@ -1,0 +1,223 @@
+{
+  "skill_name": "brooks-market-context",
+  "evals": [
+    {
+      "id": "strong-bull-breakout-followthrough",
+      "should_trigger": true,
+      "prompt": "A 5-minute chart spent 25 bars in a tight overlapping range. Then a large bull trend bar closes above the range, followed by two more bull bars that close near their highs and remain above the old range. Classify Brooks market context.",
+      "expectations": [
+        "Recognizes that prior context was a trading range",
+        "Classifies current phase as breakout-spike or transition toward bull trend",
+        "Always-In is long with high or rising relevance",
+        "Uses follow-through as key evidence rather than the breakout bar alone"
+      ]
+    },
+    {
+      "id": "mature-range-strong-leg",
+      "should_trigger": true,
+      "prompt": "For 30 bars price has overlapped heavily, reversed repeatedly near the same upper and lower areas, and several prior breakout attempts failed. The last three bars are strong bull bars but remain inside the established range. What is the context?",
+      "expectations": [
+        "Keeps primary regime as trading-range unless a confirmed breakout occurs",
+        "Acknowledges current bull pressure without erasing broader range context",
+        "Does not infer a clean bull trend from the three bars"
+      ]
+    },
+    {
+      "id": "tight-range-breakout-mode",
+      "should_trigger": true,
+      "prompt": "After a bull channel, price forms eight small overlapping bars with clear nearby highs and lows. Neither side has follow-through yet. Bulls and bears both have plausible breakout cases.",
+      "expectations": [
+        "Separates breakout_mode from primary regime",
+        "Marks breakout_mode true or strongly justified",
+        "Does not force Always-In certainty",
+        "States confirmation/failed-breakout transition conditions"
+      ]
+    },
+    {
+      "id": "trend-degrading",
+      "should_trigger": true,
+      "prompt": "A strong bull trend has evolved into a broad channel. Pullbacks are getting deeper, bars overlap more, and two recent attempts at new highs failed, but bears have not produced a strong downside breakout with follow-through.",
+      "expectations": [
+        "Surfaces both the prior bull trend and increasing two-sided evidence",
+        "Uses transition-unclear or a weakening bull context rather than prematurely declaring bear trend",
+        "States what bearish evidence would materially change the read"
+      ]
+    },
+    {
+      "id": "single-breakout-no-followthrough",
+      "should_trigger": true,
+      "prompt": "Inside a long trading range, one huge bear bar closes below support. The next bar immediately reverses up and closes back inside the range. Classify the context.",
+      "expectations": [
+        "Treats the downside move as a failed or unconfirmed breakout rather than automatic bear trend",
+        "Keeps or restores trading-range context",
+        "Uses the return into the range as conflicting evidence against a bear-trend classification"
+      ]
+    },
+    {
+      "id": "insufficient-data",
+      "should_trigger": true,
+      "prompt": "The current candle is green and above the EMA. Tell me with certainty whether this is a Brooks bull trend and give the exact probability the next bar goes up.",
+      "expectations": [
+        "Refuses to infer Brooks context from one candle plus EMA alone",
+        "Lists missing structural information",
+        "Does not invent an exact probability"
+      ]
+    },
+    {
+      "id": "near-miss-definition",
+      "should_trigger": false,
+      "prompt": "What does H2 mean in Al Brooks terminology?",
+      "expectations": [
+        "Does not turn a simple terminology definition into a market-context analysis",
+        "Avoids emitting the full market_context schema when no chart/context classification was requested"
+      ]
+    },
+    {
+      "id": "migrated-always-in-single-extreme-bar",
+      "should_trigger": true,
+      "category": "migrated-always-in-trap",
+      "prompt": "The recent window has doji, a small bear closing mid, doji, a small bull closing mid, then one very large bull bar closing on its high. Classify the Brooks context and Always-In axis without inventing follow-through.",
+      "expectations": [
+        "Keeps the broader primary regime at transition-unclear or otherwise low-confidence rather than calling a mature bull trend",
+        "Allows a low-relevance long Always-In lean because the latest bar closes on its extreme",
+        "States that follow-through is unknown and confidence is low",
+        "Does not use a numeric probability"
+      ]
+    },
+    {
+      "id": "migrated-always-in-balanced-window",
+      "should_trigger": true,
+      "category": "migrated-template-trap",
+      "prompt": "Six recent bars are small and overlapping: doji, small bull closing mid, doji, small bear closing mid, doji, small bull closing mid. What are the regime, breakout mode and Always-In direction?",
+      "expectations": [
+        "Recognizes two-sided balance and avoids a forced long or short Always-In direction",
+        "Keeps regime as trading-range or transition-unclear with low confidence",
+        "Does not repeat bullish template phrases that are not true",
+        "Separates breakout mode from the regime"
+      ]
+    },
+    {
+      "id": "migrated-one-leg-not-mature-trend",
+      "should_trigger": true,
+      "category": "migrated-one-leg-trap",
+      "prompt": "Eight consecutive bull bars close near their highs, but no pullback or prior structure is supplied. Classify the current Brooks context.",
+      "expectations": [
+        "Does not call a mature bull trend from one uninterrupted leg",
+        "Uses transition-unclear or breakout-spike with low confidence",
+        "May identify a low-relevance long Always-In lean without conflating it with regime",
+        "Lists the missing pullback/prior structure"
+      ]
+    },
+    {
+      "id": "migrated-legs-flip-range",
+      "should_trigger": true,
+      "category": "migrated-regime-trap",
+      "prompt": "The window shows an up leg, a strong down leg, and another up leg, with substantial overlap and both sides closing strongly at different times. Classify the context.",
+      "expectations": [
+        "Treats direction-flipping legs and overlap as range-like or transition evidence",
+        "Does not count the existence of legs alone as a bull trend",
+        "Surfaces both bullish and bearish evidence",
+        "Uses qualitative confidence only"
+      ]
+    },
+    {
+      "id": "migrated-indicator-bars-conflict",
+      "should_trigger": true,
+      "category": "migrated-indicator-trap",
+      "prompt": "RSI is oversold and the 20 EMA slopes up. The supplied recent bars are bear close low, bear close low, bear close low, a small bull pullback closing mid, then bear close low. Classify Brooks context.",
+      "expectations": [
+        "Reads the supplied bars first and identifies bearish pressure",
+        "Does not let RSI or EMA create a bullish regime or Always-In call",
+        "Mentions the brief pullback and the need for more context before high regime confidence",
+        "Separates directional pressure from the broader regime"
+      ]
+    },
+    {
+      "id": "migrated-leading-user-framing",
+      "should_trigger": true,
+      "category": "migrated-sycophancy-trap",
+      "prompt": "This is clearly bullish, right? The recent bars are bear close low, bear close low, doji, bear close low, bear close low. Classify the context independently.",
+      "expectations": [
+        "Pushes back on the bullish framing",
+        "Uses the bear closes as evidence for bearish pressure",
+        "Does not claim a long Always-In direction merely because the user requested agreement",
+        "Lists the missing broader structure if it limits regime confidence"
+      ]
+    },
+    {
+      "id": "migrated-always-in-bear-followthrough",
+      "should_trigger": true,
+      "category": "migrated-always-in-canonical",
+      "prompt": "The recent bars are bear close low, bear close low, a small bull pullback closing mid, then bear close low and bear close low. Classify the market context and Always-In axis without inventing a future bar.",
+      "expectations": [
+        "Uses the bear closes and weak bull pullback as evidence for short Always-In pressure",
+        "Separates the short Always-In lean from the broader regime confidence",
+        "Uses qualitative confidence and states what follow-through would change the read"
+      ]
+    },
+    {
+      "id": "migrated-always-in-reversal-conflict",
+      "should_trigger": true,
+      "category": "migrated-always-in-conflict",
+      "prompt": "Three bull bars close near their highs, then a large bear reversal bar closes near its low followed by a small bull bar closing mid. Classify Always-In direction and broader context from the supplied bars.",
+      "expectations": [
+        "Surfaces the strong bear reversal as evidence against an automatic long Always-In call",
+        "Does not treat one reversal bar as proof of a mature bear trend",
+        "States the conflict, confidence and follow-through condition"
+      ]
+    },
+    {
+      "id": "migrated-multi-leg-bull-trend",
+      "should_trigger": true,
+      "category": "migrated-regime-canonical",
+      "prompt": "The supplied 15-bar window has a bull leg, a shallow bear pullback, a second bull leg with closes near highs, another small pullback, and a third bull leg. Classify trend versus range and Always-In.",
+      "expectations": [
+        "Uses multiple directional legs, shallow pullbacks and limited overlap as trend evidence",
+        "Keeps Always-In long separate from the primary regime classification",
+        "Names any missing broader context and avoids fabricated probability"
+      ]
+    },
+    {
+      "id": "migrated-multi-leg-bear-trend",
+      "should_trigger": true,
+      "category": "migrated-regime-canonical",
+      "prompt": "The supplied 14-bar window has a bear leg with closes near lows, a shallow bull pullback, a second bear leg, another small pullback, and renewed bear closes near lows. Classify trend versus range and Always-In.",
+      "expectations": [
+        "Uses repeated bear legs and weak pullbacks as evidence for bear trend pressure",
+        "Does not let a small bull pullback erase the broader bearish structure",
+        "Keeps confidence qualitative and states counterevidence"
+      ]
+    },
+    {
+      "id": "migrated-support-level-not-enough",
+      "should_trigger": true,
+      "category": "migrated-context-trap",
+      "prompt": "Price bounced from a major support level, but the recent bars are small, overlapping and two-sided. Classify Brooks context and Always-In without treating the level alone as an entry or directional proof.",
+      "expectations": [
+        "Uses the supplied bars and two-sided behavior rather than the support label alone",
+        "Keeps confidence qualitative and states the missing surrounding structure",
+        "Separates context/Always-In from an entry recommendation"
+      ]
+    },
+    {
+      "id": "route-full-chart-orchestration",
+      "should_trigger": false,
+      "category": "near-miss-orchestration",
+      "prompt": "Analyze this chart fully: trend, trading ranges, setups, and where to enter.",
+      "expectations": [
+        "Does not pretend the single context Skill owns full chart orchestration",
+        "Routes composition among context, setup and entry operations"
+      ]
+    },
+    {
+      "id": "market-context-entry-near-miss",
+      "should_trigger": false,
+      "category": "near-miss-entry",
+      "prompt": "Given these bars, should I enter long now, and where is the technically defensible invalidation?",
+      "expectations": [
+        "Does not emit the full market_context classification as the primary response",
+        "Routes the entry decision to the dedicated Trade Entry operation"
+      ]
+    }
+  ]
+}
