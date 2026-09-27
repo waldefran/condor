@@ -19,11 +19,13 @@ cherry-pick -- this module never imports them at module scope):
   ``close_time_ms: int`` and ``model_dump(exclude_none=True) -> dict``
   with ``high``/``low``/``close`` decimal strings.
 - ``condor.brooks.agent_runner.run_role``: async callable used only when no
-  ``runner`` is injected, called as ``run_role("POSITION_MANAGER",
-  agent_key=..., tools=<name->callable>, context=<small dict>,
-  output_model=ManagementDecisionV2, timeout_sec=...)``. Tests and the
-  Integrator inject a fake/real runner instead (any object with async
-  ``run(role, **kwargs)`` or an async callable with the same shape).
+  ``runner`` is injected, called with the single canonical convention
+  ``run_role("POSITION_MANAGER", prompt=<small dict>,
+  output_model=ManagementDecisionV2, market_tools=<name->callable>,
+  agent_key=..., timeout_sec=..., max_tool_calls=...,
+  user_id=...)``. Tests and the Integrator inject a fake/real runner
+  instead (an async callable with the SAME convention, or any object with
+  an async ``run`` method taking the same arguments).
 - ``condor.brooks.events.BrooksEvent`` / ``EventType``: used only when
   ``publish`` exposes a ``.publish`` method (real EventBus); otherwise the
   plain ``MANAGEMENT_INTENT_CREATED`` envelope dict is passed to the
@@ -300,6 +302,8 @@ class PositionManager:
         list_active_correlations: Callable[[str | None], Any] | None = None,
         agent_key: str | None = None,
         timeout_sec: float = 60,
+        max_tool_calls: int = 8,
+        user_id: int | None = None,
     ) -> None:
         self.runner = runner
         if runner is None and not agent_key:
@@ -312,6 +316,8 @@ class PositionManager:
         self.list_active_correlations = list_active_correlations
         self.agent_key = agent_key
         self.timeout_sec = timeout_sec
+        self.max_tool_calls = max_tool_calls
+        self.user_id = user_id
 
     async def handle_event(self, event: Mapping[str, Any]) -> Any | None:
         envelope = _as_dict(event)
@@ -364,13 +370,19 @@ class PositionManager:
 
             runner = run_role
         run = getattr(runner, "run", runner)
+        # Single canonical role-runner convention (shared with Trader/HTF):
+        # run_role(role, prompt, output_model, market_tools, *, agent_key,
+        # timeout_sec, max_tool_calls, user_id). No silent adapters, no dual
+        # keyword spellings (tools/context are not accepted).
         decision = await run(
             "POSITION_MANAGER",
-            agent_key=self.agent_key,
-            tools=tools.named_tools(),
-            context=_small_context(context),
+            prompt=_small_context(context),
             output_model=ManagementDecisionV2,
+            market_tools=tools.named_tools(),
+            agent_key=self.agent_key,
             timeout_sec=self.timeout_sec,
+            max_tool_calls=self.max_tool_calls,
+            user_id=self.user_id,
         )
         if not isinstance(decision, ManagementDecisionV2):
             try:

@@ -222,10 +222,10 @@ async def test_pm_wakes_only_for_bound_positions_and_runs_read_only_tool_loop(
     class FakeRunner:
         async def run(self, role, **kwargs):
             assert role == "POSITION_MANAGER"
-            assert len(kwargs["context"]["recent_fills"]) == 10
-            assert len(kwargs["context"]["management_history"]) == 10
-            assert "candles" not in kwargs["context"]
-            by_name = kwargs["tools"]
+            assert len(kwargs["prompt"]["recent_fills"]) == 10
+            assert len(kwargs["prompt"]["management_history"]) == 10
+            assert "candles" not in kwargs["prompt"]
+            by_name = kwargs["market_tools"]
             assert await by_name["get_position_state"]() == {"qty": "1"}
             assert len(await by_name["get_candles"]("BTC-USDT", "1h", 5)) == 5
             return {"action": "HOLD", "decision_time_ms": 1000}
@@ -334,7 +334,7 @@ async def test_pm_unknown_action_fails_closed_to_blocked(monkeypatch, gate_modul
 
     class UnknownRunner:
         async def run(self, role, **kwargs):
-            assert "create_position_executor" not in kwargs["tools"]
+            assert "create_position_executor" not in kwargs["market_tools"]
             return {"action": "BUY", "decision_time_ms": 1000}
 
     async def candle_source(symbol, timeframe, limit):
@@ -413,7 +413,7 @@ async def test_pm_initial_context_has_no_candle_dump(monkeypatch, gate_module):
 
     class CaptureRunner:
         async def run(self, role, **kwargs):
-            seen.update(kwargs["context"])
+            seen.update(kwargs["prompt"])
             return {"action": "HOLD", "decision_time_ms": 1000}
 
     async def candle_source(symbol, timeframe, limit):
