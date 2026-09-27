@@ -40,11 +40,16 @@ def _quantity(value: Any) -> str:
 
 def _position(value: Any) -> dict[str, str]:
     data = _mapping(value)
-    return {
+    position = {
         "id": str(data.get("position_id") or data.get("id") or ""),
         "side": str(data.get("side") or "").upper(),
         "qty": _quantity(data.get("qty", data.get("quantity", data.get("size", 0)))),
     }
+    if Decimal(position["qty"]) > 0 and (
+        not position["id"] or position["side"] not in {"LONG", "SHORT"}
+    ):
+        raise ValueError("active position requires explicit ownership id and side")
+    return position
 
 
 def _orders(value: Any) -> list[dict[str, str]]:
