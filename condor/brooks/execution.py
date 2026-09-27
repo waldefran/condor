@@ -137,6 +137,58 @@ class HummingbotExecutionPort:
             )
         return executor_id
 
+    async def execute_hedge(
+        self,
+        *,
+        symbol: str,
+        side: str | int,
+        quantity: Decimal | str,
+        position_action: str,
+        leverage: int,
+    ) -> str:
+        if not symbol:
+            raise ValueError("symbol is required")
+        if side not in ("BUY", "SELL", "LONG", "SHORT", 1, 2):
+            raise ValueError(f"invalid hedge side: {side!r}")
+        if position_action not in ("OPEN", "CLOSE"):
+            raise ValueError(
+                f"invalid position_action: {position_action!r}; must be OPEN or CLOSE"
+            )
+        if isinstance(leverage, bool) or not isinstance(leverage, int) or leverage < 1:
+            raise ValueError("leverage must be a positive integer")
+        amount = _positive(quantity, "quantity")
+        order_side = 1 if side in ("BUY", "LONG", 1) else 2
+        result = await executor_create.create_order_executor(
+            self.client,
+            connector_name=self.connector_name,
+            trading_pair=symbol,
+            side=order_side,
+            amount=str(amount),
+            execution_strategy="MARKET",
+            leverage=leverage,
+            position_action=position_action,
+            account_name=self.account_name,
+            controller_id=self.controller_id,
+            save_as_default=False,
+        )
+        return _accepted(result)
+
+    async def get_position_mode(self) -> str:
+        if not hasattr(self.client, "trading") or not hasattr(
+            self.client.trading, "get_position_mode"
+        ):
+            raise ExecutionRejected("client lacks trading.get_position_mode")
+        result = await self.client.trading.get_position_mode(
+            account_name=self.account_name,
+            connector_name=self.connector_name,
+        )
+        if not isinstance(result, dict) or result.get("error"):
+            raise ExecutionRejected(f"get_position_mode rejected: {result!r}")
+        mode = result.get("position_mode")
+        if not isinstance(mode, str) or not mode.strip():
+            raise ExecutionRejected("get_position_mode returned no position_mode")
+        return mode.strip().upper()
+
     async def get_state(self, *, symbol: str) -> dict[str, Any]:
         """Return raw fresh reads; the GM must validate their shape and ownership."""
         positions = await self.client.trading.get_positions(

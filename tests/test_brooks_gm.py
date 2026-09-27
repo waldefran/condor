@@ -17,6 +17,7 @@ from condor.brooks.gm import (
     VenueRules,
     compile_main,
 )
+from condor.brooks.hedge import PositionLeg, build_hedge_state
 
 
 def D(value):
@@ -69,6 +70,10 @@ class FakePort:
         self.controller_id = "brooks"
         self.calls = []
         self.raise_on_open = False
+        self.position_mode = "HEDGE"
+
+    async def get_position_mode(self):
+        return self.position_mode
 
     async def open_main(self, **kwargs):
         self.calls.append(("open", kwargs))
@@ -83,6 +88,10 @@ class FakePort:
     async def close_main(self, **kwargs):
         self.calls.append(("close", kwargs))
         return kwargs["executor_id"]
+
+    async def execute_hedge(self, **kwargs):
+        self.calls.append(("hedge", kwargs))
+        return "exec-hedge"
 
 
 def gm(tmp_path, state=None, port=None):
@@ -365,3 +374,53 @@ def test_hummingbot_port_rejects_ambiguous_response(monkeypatch):
                 time_limit_sec=3600,
             )
         )
+
+
+def test_management_dispatches_hedge_action(tmp_path):
+    gate, reader, port = gm(tmp_path)
+    asyncio.run(gate.execute_entry(intent(), correlation_id="c1"))
+    now = int(time.time() * 1000)
+    m1 = PositionLeg("position-main", "BTC-USDT", "LONG", "2.0", "100", "MAIN")
+    pre_state = build_hedge_state(
+        [m1],
+        main_position_id="position-main",
+        hedge_position_id=None,
+        as_of_ms=now - 20,
+    )
+    snap_pre = managed_state(as_of_ms=now - 10, positions=[m1])
+    h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.5", "100", "HEDGE")
+    snap_post = managed_state(
+        as_of_ms=now,
+        positions=[m1, h1],
+        hedge_position_id="hedge-1",
+        hedge_quantity=D("0.5"),
+    )
+    snapshots = [snap_pre, snap_post]
+
+    async def multi_read(**kwargs):
+        reader.calls += 1
+        return snapshots.pop(0) if len(snapshots) > 1 else snapshots[0]
+
+    reader.read = multi_read
+    result = asyncio.run(
+        gate.execute_management(
+            correlation_id="c1",
+            decision_id="d_hedge",
+            action="HEDGE",
+            target_hedge_ratio=D("0.25"),
+            expected_state=pre_state,
+        )
+    )
+    assert result["status"] == "submitted"
+    assert port.calls[-1] == (
+        "hedge",
+        {
+            "symbol": "BTC-USDT",
+            "side": "SELL",
+            "quantity": D("0.50"),
+            "position_action": "OPEN",
+            "leverage": 2,
+        },
+    )
+    assert (tmp_path / "trades/c1/management/d_hedge.json").exists()
+    assert (tmp_path / "trades/c1/hedge_state.json").exists()

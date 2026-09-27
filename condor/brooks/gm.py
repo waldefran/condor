@@ -7,12 +7,23 @@ import fcntl
 import json
 import os
 import time
-from dataclasses import dataclass
+from collections.abc import Sequence
+from dataclasses import asdict, dataclass
 from decimal import ROUND_DOWN, Decimal, InvalidOperation
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 
-from .execution import HummingbotExecutionPort
+from .execution import ExecutionRejected, HummingbotExecutionPort
+from .hedge import (
+    HedgeBlocked,
+    HedgeCommand,
+    HedgeResult,
+    HedgeState,
+    PositionLeg,
+    assess_hedge_result,
+    build_hedge_state,
+    compile_hedge_action,
+)
 
 
 class GMRejected(ValueError):
@@ -69,6 +80,15 @@ class AccountSnapshot:
     main_executor_id: str | None = None
     main_side: str | None = None
     main_quantity: Decimal = Decimal(0)
+    position_mode: str | None = None
+    positions: Sequence[PositionLeg] | None = None
+    hedge_position_id: str | None = None
+    hedge_executor_id: str | None = None
+    hedge_side: str | None = None
+    hedge_quantity: Decimal = Decimal(0)
+    hedge_mark_price: Decimal | None = None
+    pending_orders: bool = False
+    filled_quantity: str | Decimal | None = None
 
 
 class AccountStateReader(Protocol):
@@ -312,6 +332,15 @@ class BrooksGM:
             os.fsync(file.fileno())
         os.replace(temp, path)
 
+    @staticmethod
+    def _append_execution(path: Path, data: dict[str, Any]) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        line = json.dumps(data, sort_keys=True, default=str) + "\n"
+        with path.open("a", encoding="utf-8") as file:
+            file.write(line)
+            file.flush()
+            os.fsync(file.fileno())
+
     async def execute_entry(
         self, intent: Any, *, correlation_id: str
     ) -> dict[str, Any] | None:
@@ -383,7 +412,45 @@ class BrooksGM:
         decision_id: str,
         action: str,
         reduce_fraction: Decimal | None = None,
+        target_hedge_ratio: str | Decimal | None = None,
+        expected_state: HedgeState | dict[str, Any] | None = None,
+        plan_main_position_id: str | None = None,
+        plan_hedge_position_id: str | None = None,
+        decision: Any = None,
     ) -> dict[str, Any]:
+        if decision is not None:
+            data = _data(decision) if not isinstance(decision, dict) else decision
+            action = data.get("action", action)
+            decision_id = data.get("decision_id", decision_id)
+            if data.get("hedge_plan"):
+                hp = data["hedge_plan"]
+                if hasattr(hp, "model_dump"):
+                    hp = hp.model_dump(mode="json")
+                if target_hedge_ratio is None:
+                    target_hedge_ratio = hp.get("target_hedge_ratio")
+                if plan_main_position_id is None:
+                    plan_main_position_id = hp.get("main_position_id")
+                if plan_hedge_position_id is None:
+                    plan_hedge_position_id = hp.get("hedge_position_id")
+
+        if action == "HOLD":
+            return {"action": "HOLD", "status": "no_write"}
+
+        if action in ("HEDGE", "INCREASE_HEDGE", "REDUCE_HEDGE", "REMOVE_HEDGE"):
+            return await self._execute_hedge(
+                correlation_id=correlation_id,
+                decision_id=decision_id,
+                action=action,
+                target_hedge_ratio=target_hedge_ratio,
+                expected_state=expected_state,
+                plan_main_position_id=plan_main_position_id,
+                plan_hedge_position_id=plan_hedge_position_id,
+            )
+
+        if action not in ("REDUCE", "CLOSE"):
+            raise GMRejected("unsupported management action")
+        if not decision_id or not all(c.isalnum() or c in "-_" for c in decision_id):
+            raise GMRejected("unsafe decision_id")
         trade_dir = self._trade_dir(correlation_id)
         binding_path = trade_dir / "binding.json"
         if not binding_path.exists():
@@ -392,12 +459,6 @@ class BrooksGM:
         symbol = binding.get("symbol")
         if not isinstance(symbol, str) or not symbol:
             raise GMRejected("MAIN binding has no symbol")
-        if action == "HOLD":
-            return {"action": "HOLD", "status": "no_write"}
-        if action not in ("REDUCE", "CLOSE"):
-            raise GMRejected("unsupported management action")
-        if not decision_id or not all(c.isalnum() or c in "-_" for c in decision_id):
-            raise GMRejected("unsafe decision_id")
         lock, fd = await self._locked(symbol)
         try:
             # Re-read under lock: neither the PM snapshot nor the earlier binding
@@ -444,6 +505,9 @@ class BrooksGM:
                 and state.main_position_id != binding["main_position_id"]
             ):
                 raise GMRejected("MAIN position id changed")
+            if not binding.get("main_position_id") and state.main_position_id:
+                binding["main_position_id"] = state.main_position_id
+                self._replace(binding_path, binding)
             quantity = _decimal(state.main_quantity, "main_quantity")
             if action == "REDUCE":
                 fraction = _decimal(reduce_fraction, "reduce_fraction")
@@ -485,5 +549,484 @@ class BrooksGM:
             record.update(status="submitted", executor_id=executor_id)
             self._replace(record_path, record)
             return record
+        finally:
+            self._unlock(lock, fd)
+
+    async def execute_hedge(
+        self,
+        *,
+        correlation_id: str,
+        decision_id: str,
+        action: str,
+        target_hedge_ratio: str | Decimal,
+        expected_state: HedgeState | dict[str, Any] | None = None,
+        plan_main_position_id: str | None = None,
+        plan_hedge_position_id: str | None = None,
+        decision: Any = None,
+    ) -> dict[str, Any]:
+        return await self.execute_management(
+            correlation_id=correlation_id,
+            decision_id=decision_id,
+            action=action,
+            target_hedge_ratio=target_hedge_ratio,
+            expected_state=expected_state,
+            plan_main_position_id=plan_main_position_id,
+            plan_hedge_position_id=plan_hedge_position_id,
+            decision=decision,
+        )
+
+    async def _execute_hedge(
+        self,
+        *,
+        correlation_id: str,
+        decision_id: str,
+        action: str,
+        target_hedge_ratio: str | Decimal | None,
+        expected_state: HedgeState | dict[str, Any] | None,
+        plan_main_position_id: str | None,
+        plan_hedge_position_id: str | None,
+    ) -> dict[str, Any]:
+        if target_hedge_ratio is None:
+            raise GMRejected("target_hedge_ratio is required for hedge action")
+        if not decision_id or not all(c.isalnum() or c in "-_" for c in decision_id):
+            raise GMRejected("unsafe decision_id")
+
+        trade_dir = self._trade_dir(correlation_id)
+        binding_path = trade_dir / "binding.json"
+        if not binding_path.exists():
+            raise GMRejected("MAIN binding is missing")
+        binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        symbol = binding.get("symbol")
+        if not isinstance(symbol, str) or not symbol:
+            raise GMRejected("MAIN binding has no symbol")
+
+        lock, fd = await self._locked(symbol)
+        try:
+            binding = json.loads(binding_path.read_text(encoding="utf-8"))
+            if binding.get("status") == "reconciliation_required":
+                raise GMRejected(
+                    "trade is in reconciliation_required state; reconcile before retry"
+                )
+            if binding.get("status") not in (
+                "submitted",
+                "reconciled",
+            ) or not binding.get("main_executor_id"):
+                raise GMRejected("MAIN execution is not confirmed")
+            if (
+                binding.get("account_name") != self.account_name
+                or binding.get("connector_name") != self.connector_name
+                or binding.get("controller_id") != self.execution.controller_id
+            ):
+                raise GMRejected(
+                    "MAIN binding belongs to a different account or controller"
+                )
+
+            record_path = trade_dir / "management" / f"{decision_id}.json"
+            if record_path.exists():
+                raise GMRejected("decision already submitted; reconcile before retry")
+
+            mgmt_dir = trade_dir / "management"
+            if mgmt_dir.exists():
+                for prev_file in mgmt_dir.glob("*.json"):
+                    try:
+                        prev_rec = json.loads(prev_file.read_text(encoding="utf-8"))
+                        if prev_rec.get("status") in (
+                            "submitting",
+                            "reconciliation_required",
+                        ):
+                            raise GMRejected(
+                                "prior management decision is unreconciled; reconcile before retry"
+                            )
+                    except (json.JSONDecodeError, OSError):
+                        pass
+
+            persisted_main_id = binding.get("main_position_id")
+            persisted_hedge_id = binding.get("hedge_position_id")
+
+            if (
+                plan_main_position_id
+                and persisted_main_id
+                and plan_main_position_id != persisted_main_id
+            ):
+                raise GMRejected("plan main_position_id does not match binding")
+
+            if action == "HEDGE":
+                if persisted_hedge_id:
+                    raise GMRejected(
+                        "HEDGE requested but hedge position already exists; use INCREASE_HEDGE"
+                    )
+                hedge_pos_id = None
+            else:
+                if not persisted_hedge_id and not plan_hedge_position_id:
+                    raise GMRejected(
+                        f"{action} requested but no hedge position is bound; use HEDGE first"
+                    )
+                if (
+                    plan_hedge_position_id
+                    and persisted_hedge_id
+                    and plan_hedge_position_id != persisted_hedge_id
+                ):
+                    raise GMRejected("plan hedge_position_id does not match binding")
+                hedge_pos_id = persisted_hedge_id or plan_hedge_position_id
+
+            state = await self.reader.read(
+                account_name=self.account_name,
+                connector_name=self.connector_name,
+                symbol=symbol,
+            )
+            now = int(time.time() * 1000)
+            if (
+                state.as_of_ms > now
+                or now - state.as_of_ms > self.policy.max_snapshot_age_ms
+            ):
+                raise GMRejected("account snapshot is stale")
+            equity = _decimal(state.equity, "equity")
+            margin = _decimal(
+                state.available_margin, "available_margin", positive=False
+            )
+            mark = _decimal(state.mark_price, "mark_price")
+            gross = _decimal(state.gross_exposure, "gross_exposure", positive=False)
+
+            hedge_mode = getattr(state, "position_mode", None)
+            if not hedge_mode and hasattr(self.execution, "get_position_mode"):
+                try:
+                    hedge_mode = await self.execution.get_position_mode()
+                except Exception as exc:
+                    raise GMRejected(
+                        f"cannot confirm HEDGE position mode: {exc}"
+                    ) from exc
+            if hedge_mode != "HEDGE":
+                raise GMRejected(
+                    "account/connector is not confirmed in HEDGE position mode"
+                )
+
+            main_pos_id = (
+                persisted_main_id or plan_main_position_id or state.main_position_id
+            )
+            if not main_pos_id:
+                raise GMRejected("no authoritative MAIN position ID")
+
+            if state.positions is not None:
+                legs = state.positions
+            else:
+                legs = []
+                if state.main_position_id and state.main_quantity > 0:
+                    legs.append(
+                        PositionLeg(
+                            position_id=state.main_position_id,
+                            symbol=symbol,
+                            side=state.main_side or binding.get("main_side"),
+                            quantity=str(state.main_quantity),
+                            mark_price=str(state.mark_price),
+                            ownership_role="MAIN",
+                        )
+                    )
+                h_id = getattr(state, "hedge_position_id", None) or persisted_hedge_id
+                h_qty = getattr(state, "hedge_quantity", Decimal(0))
+                if h_id and h_qty > 0:
+                    h_side = getattr(state, "hedge_side", None)
+                    if not h_side:
+                        main_s = state.main_side or binding.get("main_side")
+                        h_side = "SHORT" if main_s == "LONG" else "LONG"
+                    h_mark = (
+                        getattr(state, "hedge_mark_price", None) or state.mark_price
+                    )
+                    legs.append(
+                        PositionLeg(
+                            position_id=h_id,
+                            symbol=symbol,
+                            side=h_side,
+                            quantity=str(h_qty),
+                            mark_price=str(h_mark),
+                            ownership_role="HEDGE",
+                        )
+                    )
+
+            try:
+                fresh_state = build_hedge_state(
+                    legs,
+                    main_position_id=main_pos_id,
+                    hedge_position_id=hedge_pos_id,
+                    as_of_ms=state.as_of_ms,
+                )
+            except HedgeBlocked as exc:
+                raise GMRejected(f"cannot rebuild hedge state: {exc}") from exc
+
+            if fresh_state.unresolved:
+                raise GMRejected(
+                    f"hedge structure unresolved: {fresh_state.structure_status}"
+                )
+
+            resolved_expected = expected_state
+            if resolved_expected is None:
+                saved_path = trade_dir / "hedge_state.json"
+                if saved_path.exists():
+                    try:
+                        resolved_expected = HedgeState(
+                            **json.loads(saved_path.read_text(encoding="utf-8"))
+                        )
+                    except Exception as exc:
+                        raise GMRejected(
+                            f"cannot load saved hedge state: {exc}"
+                        ) from exc
+                else:
+                    raise GMRejected("expected_state is required for hedge action")
+            elif isinstance(resolved_expected, dict):
+                resolved_expected = HedgeState(**resolved_expected)
+
+            pending_orders = getattr(state, "pending_orders", False)
+            try:
+                command = compile_hedge_action(
+                    action,  # type: ignore
+                    target_hedge_ratio=str(target_hedge_ratio),
+                    plan_main_position_id=main_pos_id,
+                    plan_hedge_position_id=hedge_pos_id,
+                    expected_state=resolved_expected,
+                    fresh_state=fresh_state,
+                    hedge_mode_confirmed=True,
+                    pending_order=pending_orders,
+                    quantity_increment=(
+                        str(state.rules.amount_step)
+                        if state.rules.amount_step
+                        else None
+                    ),
+                    minimum_quantity=(
+                        str(state.rules.min_amount) if state.rules.min_amount else None
+                    ),
+                )
+            except HedgeBlocked as exc:
+                raise GMRejected(f"hedge compilation rejected: {exc}") from exc
+
+            cmd_qty = _decimal(command.quantity, "command.quantity", positive=True)
+            mark_p = _decimal(
+                fresh_state.hedge_mark_price
+                or fresh_state.mark_price
+                or state.mark_price,
+                "mark_price",
+                positive=True,
+            )
+            delta_notional = cmd_qty * mark_p
+
+            if command.position_action == "OPEN":
+                if delta_notional < state.rules.min_notional:
+                    raise GMRejected(
+                        "hedge delta notional is below venue minimum notional"
+                    )
+                if self.policy.leverage > state.rules.max_leverage:
+                    raise GMRejected("leverage exceeds venue rule")
+                margin_required = delta_notional / Decimal(self.policy.leverage)
+                if margin_required > margin:
+                    raise GMRejected("available margin is insufficient for hedge")
+                gross_pct = _decimal(
+                    self.policy.max_gross_exposure_pct, "max_gross_exposure_pct"
+                )
+                if gross + delta_notional > equity * gross_pct:
+                    raise GMRejected("gross exposure cap exceeded")
+            else:
+                if (
+                    action == "REDUCE_HEDGE"
+                    and delta_notional < state.rules.min_notional
+                ):
+                    raise GMRejected(
+                        "hedge reduction notional is below venue minimum notional"
+                    )
+
+            record = {
+                "decision_id": decision_id,
+                "action": action,
+                "target_hedge_ratio": str(target_hedge_ratio),
+                "quantity": command.quantity,
+                "side": command.side,
+                "position_action": command.position_action,
+                "status": "submitting",
+                "created_at_ms": int(time.time() * 1000),
+            }
+            self._write_new(record_path, record)
+
+            executor_id = None
+            write_error = None
+            outcome: Literal["succeeded", "failed", "unknown"] = "succeeded"
+            try:
+                executor_id = await self.execution.execute_hedge(
+                    symbol=symbol,
+                    side=command.side,
+                    quantity=cmd_qty,
+                    position_action=command.position_action,
+                    leverage=self.policy.leverage,
+                )
+            except ExecutionRejected as exc:
+                outcome = "failed"
+                write_error = exc
+            except Exception as exc:
+                outcome = "unknown"
+                write_error = exc
+
+            reconciled_snapshot = None
+            reconciled_state = None
+            try:
+                reconciled_snapshot = await self.reader.read(
+                    account_name=self.account_name,
+                    connector_name=self.connector_name,
+                    symbol=symbol,
+                )
+                if reconciled_snapshot.positions is not None:
+                    rec_legs = reconciled_snapshot.positions
+                else:
+                    rec_legs = []
+                    if (
+                        reconciled_snapshot.main_position_id
+                        and reconciled_snapshot.main_quantity > 0
+                    ):
+                        rec_legs.append(
+                            PositionLeg(
+                                position_id=reconciled_snapshot.main_position_id,
+                                symbol=symbol,
+                                side=reconciled_snapshot.main_side
+                                or binding.get("main_side"),
+                                quantity=str(reconciled_snapshot.main_quantity),
+                                mark_price=str(reconciled_snapshot.mark_price),
+                                ownership_role="MAIN",
+                            )
+                        )
+                    rec_h_id = getattr(
+                        reconciled_snapshot, "hedge_position_id", None
+                    ) or (hedge_pos_id if action != "REMOVE_HEDGE" else None)
+                    rec_h_qty = getattr(
+                        reconciled_snapshot, "hedge_quantity", Decimal(0)
+                    )
+                    if rec_h_id and rec_h_qty > 0:
+                        rec_h_side = getattr(reconciled_snapshot, "hedge_side", None)
+                        if not rec_h_side:
+                            main_s = reconciled_snapshot.main_side or binding.get(
+                                "main_side"
+                            )
+                            rec_h_side = "SHORT" if main_s == "LONG" else "LONG"
+                        rec_h_mark = (
+                            getattr(reconciled_snapshot, "hedge_mark_price", None)
+                            or reconciled_snapshot.mark_price
+                        )
+                        rec_legs.append(
+                            PositionLeg(
+                                position_id=rec_h_id,
+                                symbol=symbol,
+                                side=rec_h_side,
+                                quantity=str(rec_h_qty),
+                                mark_price=str(rec_h_mark),
+                                ownership_role="HEDGE",
+                            )
+                        )
+                if action == "HEDGE":
+                    h_legs = [leg for leg in rec_legs if leg.ownership_role == "HEDGE"]
+                    rec_target_h_id = (
+                        h_legs[0].position_id
+                        if len(h_legs) == 1
+                        else getattr(reconciled_snapshot, "hedge_position_id", None)
+                    )
+                elif action == "REMOVE_HEDGE":
+                    rec_target_h_id = None
+                else:
+                    rec_target_h_id = hedge_pos_id
+
+                reconciled_state = build_hedge_state(
+                    rec_legs,
+                    main_position_id=main_pos_id,
+                    hedge_position_id=rec_target_h_id,
+                    as_of_ms=reconciled_snapshot.as_of_ms,
+                )
+            except Exception:
+                reconciled_state = None
+
+            if (
+                reconciled_snapshot is not None
+                and getattr(reconciled_snapshot, "filled_quantity", None) is not None
+            ):
+                filled_qty_str = str(reconciled_snapshot.filled_quantity)
+            elif outcome == "succeeded" and reconciled_state is not None:
+                diff = abs(
+                    Decimal(reconciled_state.hedge_size)
+                    - Decimal(fresh_state.hedge_size)
+                )
+                filled_qty_str = format(diff, "f")
+            else:
+                filled_qty_str = "0"
+
+            assessment = assess_hedge_result(
+                command,
+                outcome=outcome,
+                filled_quantity=filled_qty_str,
+                reconciled_state=reconciled_state,
+            )
+
+            if assessment.status == "confirmed":
+                record.update(
+                    status="submitted",
+                    executor_id=executor_id,
+                    filled_quantity=filled_qty_str,
+                    assessment="confirmed",
+                )
+                self._replace(record_path, record)
+                self._replace(trade_dir / "hedge_state.json", asdict(reconciled_state))
+
+                if action in ("HEDGE", "INCREASE_HEDGE"):
+                    if reconciled_state.hedge_position_id:
+                        binding["hedge_position_id"] = (
+                            reconciled_state.hedge_position_id
+                        )
+                    if executor_id:
+                        binding["hedge_executor_id"] = executor_id
+                    binding["hedge_size"] = reconciled_state.hedge_size
+                elif action == "REMOVE_HEDGE":
+                    binding["hedge_position_id"] = None
+                    binding["hedge_executor_id"] = None
+                    binding["hedge_size"] = "0"
+                elif action == "REDUCE_HEDGE":
+                    binding["hedge_size"] = reconciled_state.hedge_size
+                if (
+                    not binding.get("main_position_id")
+                    and reconciled_state.main_position_id
+                ):
+                    binding["main_position_id"] = reconciled_state.main_position_id
+
+                self._replace(binding_path, binding)
+
+                execution_entry = {
+                    "decision_id": decision_id,
+                    "action": action,
+                    "status": "confirmed",
+                    "executor_id": executor_id,
+                    "quantity": command.quantity,
+                    "filled_quantity": filled_qty_str,
+                    "target_hedge_ratio": command.target_hedge_ratio,
+                    "timestamp_ms": int(time.time() * 1000),
+                }
+                self._append_execution(trade_dir / "executions.jsonl", execution_entry)
+                return record
+
+            if assessment.status == "failed":
+                record.update(
+                    status="failed",
+                    reason=assessment.reason,
+                    error=str(write_error) if write_error else None,
+                )
+                self._replace(record_path, record)
+                raise GMRejected(f"hedge execution failed: {assessment.reason}")
+
+            # status in ("partial", "ambiguous")
+            record.update(
+                status="reconciliation_required",
+                assessment_status=assessment.status,
+                reason=assessment.reason,
+                executor_id=executor_id,
+                filled_quantity=filled_qty_str,
+                error=str(write_error) if write_error else None,
+            )
+            self._replace(record_path, record)
+            binding["status"] = "reconciliation_required"
+            self._replace(binding_path, binding)
+            if write_error and isinstance(write_error, (TimeoutError, ConnectionError)):
+                raise write_error
+            raise GMRejected(
+                f"hedge execution requires reconciliation ({assessment.status}): {assessment.reason}"
+            )
         finally:
             self._unlock(lock, fd)
