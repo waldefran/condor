@@ -98,6 +98,29 @@ class AccountStateReader(Protocol):
     ) -> AccountSnapshot: ...
 
 
+class MainReconciler(Protocol):
+    """Deterministic MAIN identity from explicit executor lineage.
+
+    Returns the venue position id bound to this executor, or ``None`` when the
+    venue has not shown it yet or the read is ambiguous. Never raises for a
+    venue miss: ``None`` keeps the binding ``submitted`` for a later retry.
+    Implementations must resolve ownership from executor/controller lineage
+    (executor ids, controller id, account, connector, symbol), never from
+    position side, quantity, ordering, or PnL alone.
+    """
+
+    async def reconcile(
+        self,
+        *,
+        account_name: str,
+        connector_name: str,
+        controller_id: str,
+        symbol: str,
+        side: str,
+        executor_id: str,
+    ) -> str | None: ...
+
+
 @dataclass(frozen=True)
 class GMPolicy:
     risk_per_trade_pct: Decimal
@@ -256,6 +279,7 @@ class BrooksGM:
         policy: GMPolicy,
         reader: AccountStateReader,
         execution: HummingbotExecutionPort,
+        reconciler: MainReconciler | None = None,
     ):
         self.account_name = account_name
         self.connector_name = connector_name
@@ -263,6 +287,7 @@ class BrooksGM:
         self.policy = policy
         self.reader = reader
         self.execution = execution
+        self.reconciler = reconciler
 
     async def _locked(self, symbol: str):
         key = (self.account_name, self.connector_name, symbol)
@@ -408,6 +433,77 @@ class BrooksGM:
             binding["executor_id"] = executor_id
             binding["status"] = "submitted"
             self._replace(binding_path, binding)
+            await self._try_reconcile_binding(binding_path, binding)
+            return json.loads(binding_path.read_text(encoding="utf-8"))
+        finally:
+            self._unlock(lock, fd)
+
+    async def _try_reconcile_binding(
+        self, binding_path: Path, binding: dict[str, Any]
+    ) -> None:
+        # Best-effort: the venue read may lag the accepted executor, so a miss
+        # or a reconciler failure keeps the binding submitted for reconcile_main.
+        if self.reconciler is None:
+            return
+        try:
+            position_id = await self.reconciler.reconcile(
+                account_name=self.account_name,
+                connector_name=self.connector_name,
+                controller_id=self.execution.controller_id,
+                symbol=binding.get("symbol", ""),
+                side=binding.get("main_side", ""),
+                executor_id=binding.get("main_executor_id", ""),
+            )
+        except Exception:
+            return
+        if isinstance(position_id, str) and position_id:
+            binding["main_position_id"] = position_id
+            binding["status"] = "reconciled"
+            self._replace(binding_path, binding)
+
+    async def reconcile_main(self, correlation_id: str) -> dict[str, Any]:
+        """Retry MAIN reconciliation for a submitted binding.
+
+        Returns the binding, reconciled when the venue now shows the executor's
+        position, unchanged (still submitted) when it does not. Never invents
+        an identity: without an explicit lineage match the binding is untouched.
+        """
+        trade_dir = self._trade_dir(correlation_id)
+        binding_path = trade_dir / "binding.json"
+        if not binding_path.exists():
+            raise GMRejected("MAIN binding is missing")
+        binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        symbol = binding.get("symbol")
+        if not isinstance(symbol, str) or not symbol:
+            raise GMRejected("MAIN binding has no symbol")
+        lock, fd = await self._locked(symbol)
+        try:
+            binding = json.loads(binding_path.read_text(encoding="utf-8"))
+            if binding.get("status") == "reconciled" and binding.get(
+                "main_position_id"
+            ):
+                return binding
+            if binding.get("status") not in ("submitting", "submitted") or not binding.get(
+                "main_executor_id"
+            ):
+                raise GMRejected("MAIN execution is not confirmed")
+            if self.reconciler is None:
+                raise GMRejected("no reconciler is attached")
+            try:
+                position_id = await self.reconciler.reconcile(
+                    account_name=self.account_name,
+                    connector_name=self.connector_name,
+                    controller_id=self.execution.controller_id,
+                    symbol=symbol,
+                    side=binding.get("main_side", ""),
+                    executor_id=binding.get("main_executor_id", ""),
+                )
+            except Exception as exc:
+                raise GMRejected(f"reconciliation read failed: {exc}") from exc
+            if isinstance(position_id, str) and position_id:
+                binding["main_position_id"] = position_id
+                binding["status"] = "reconciled"
+                self._replace(binding_path, binding)
             return binding
         finally:
             self._unlock(lock, fd)
@@ -499,9 +595,10 @@ class BrooksGM:
             # Re-read under lock: neither the PM snapshot nor the earlier binding
             # is an authority for current quantity or ownership.
             binding = json.loads(binding_path.read_text(encoding="utf-8"))
-            if binding.get("status") != "submitted" or not binding.get(
-                "main_executor_id"
-            ):
+            if binding.get("status") not in (
+                "submitted",
+                "reconciled",
+            ) or not binding.get("main_executor_id"):
                 raise GMRejected("MAIN execution is not confirmed")
             if (
                 binding.get("account_name") != self.account_name
