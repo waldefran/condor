@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from decimal import Decimal
 
 from condor.agents.agent import Agent
 from condor.agents.engine import TickEngine
@@ -28,6 +29,12 @@ class FakeMarketData:
 
     async def get_candles(self, connector_name, trading_pair, interval, max_records=None):
         self._outer.calls.append(("get_candles", trading_pair, interval))
+        return {"data": [dict(row) for row in self._outer.candle_rows]}
+
+    async def get_historical_candles(
+        self, connector_name, trading_pair, interval, start_time=None, end_time=None
+    ):
+        self._outer.calls.append(("get_historical_candles", trading_pair, interval))
         return {"data": [dict(row) for row in self._outer.candle_rows]}
 
     async def get_prices(self, connector_name, trading_pairs):
@@ -74,6 +81,13 @@ class FakeExecutors:
         if self._outer.fail_venue:
             raise ConnectionError("venue down")
         return {"data": [dict(row) for row in self._outer.executor_rows]}
+
+    async def get_executor(self, executor_id=None):
+        self._outer.calls.append(("get_executor", executor_id))
+        for row in self._outer.executor_rows:
+            if row.get("executor_id") == executor_id or row.get("id") == executor_id:
+                return dict(row)
+        raise RuntimeError(f"executor {executor_id} not found")
 
 
 class FakePortfolio:
@@ -314,6 +328,126 @@ def test_account_reader_reports_flat_book_without_bindings(tmp_path):
     assert snapshot.available_margin == 1000
     assert snapshot.mark_price == 50000
     assert snapshot.main_position_id is None
+
+
+def test_executor_confirmation_prefers_direct_read_and_checks_scope(tmp_path):
+    from condor.brooks.adapters import _confirmed_executor
+
+    fake = FakeClient()
+    fake.executor_rows = [
+        {
+            "executor_id": "e1",
+            "status": "RUNNING",
+            "account_name": "acct",
+            "connector_name": "binance_perpetual",
+            "trading_pair": "BTC-USDT",
+            "controller_id": "ctrl",
+        }
+    ]
+
+    async def exercise(**kwargs):
+        return await _confirmed_executor(fake, **kwargs)
+
+    base = dict(
+        account_name="acct",
+        connector_name="binance_perpetual",
+        controller_id="ctrl",
+        symbol="BTC-USDT",
+        executor_id="e1",
+    )
+    assert asyncio.run(exercise(**base)) is True
+    assert ("get_executor", "e1") in fake.calls
+    assert not any(call[0] == "search_executors" for call in fake.calls)
+    wrong = dict(base, controller_id="someone-else")
+    assert asyncio.run(exercise(**wrong)) is False
+    missing = dict(base, executor_id="nope")
+    assert asyncio.run(exercise(**missing)) is False
+
+
+def test_reader_resolves_creator_paired_hedge_on_id_less_venue(tmp_path):
+    trades = tmp_path / "trades" / "trade-1"
+    trades.mkdir(parents=True)
+    (trades / "binding.json").write_text(
+        json.dumps(
+            {
+                "schema": "condor.brooks.trade-binding.v1",
+                "correlation_id": "trade-1",
+                "account_name": "acct",
+                "connector_name": "binance_perpetual",
+                "controller_id": "ctrl",
+                "symbol": "BTC-USDT",
+                "main_side": "LONG",
+                "main_position_id": "executor:exec-main-1",
+                "main_executor_id": "exec-main-1",
+                "hedge_position_id": "executor:exec-h1",
+                "hedge_executor_id": "exec-h1",
+                "hedge_size": "0.3",
+                "status": "reconciled",
+            }
+        )
+    )
+    fake = FakeClient()
+    fake.prices = {"BTC-USDT": 50000.0}
+    fake.positions = [
+        {
+            "trading_pair": "BTC-USDT",
+            "side": "LONG",
+            "amount": 1.0,
+            "entry_price": 49000.0,
+        },
+        {
+            "trading_pair": "BTC-USDT",
+            "side": "SHORT",
+            "amount": -0.3,
+            "entry_price": 49500.0,
+        },
+    ]
+    fake.executor_rows = [
+        {
+            "executor_id": "exec-main-1",
+            "status": "RUNNING",
+            "account_name": "acct",
+            "connector_name": "binance_perpetual",
+            "trading_pair": "BTC-USDT",
+            "controller_id": "ctrl",
+        },
+        {
+            "executor_id": "exec-h1",
+            "status": "TERMINATED",
+            "account_name": "acct",
+            "connector_name": "binance_perpetual",
+            "trading_pair": "BTC-USDT",
+            "controller_id": "ctrl",
+        },
+    ]
+    fake.portfolio_state = {
+        "acct": {
+            "binance_perpetual": [
+                {"token": "USDC", "value": 10000.0},
+            ]
+        }
+    }
+    fake.rules = {
+        "BTC-USDT": {
+            "min_base_amount_increment": "0.001",
+            "min_order_size": "0.001",
+            "min_notional_size": "10",
+        }
+    }
+    reader = HummingbotAccountReader(fake, tmp_path, "ctrl")
+
+    async def exercise():
+        return await reader.read(
+            account_name="acct", connector_name="binance_perpetual", symbol="BTC-USDT"
+        )
+
+    snapshot = asyncio.run(exercise())
+    assert snapshot.structure_status == "single_main"
+    assert snapshot.main_position_id == "executor:exec-main-1"
+    assert snapshot.main_quantity == Decimal("1.0")
+    assert snapshot.hedge_position_id == "executor:exec-h1"
+    assert snapshot.hedge_quantity == Decimal("0.3")
+    assert snapshot.rules.max_leverage is None
 
 
 def test_account_reader_resolves_main_from_binding_only(tmp_path):

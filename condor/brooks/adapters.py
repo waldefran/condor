@@ -11,7 +11,11 @@ Fail-closed contract: a venue read that is missing, truncated, or unparseable
 raises ``GMRejected`` (entry/management) or yields an idle poll (watcher)
 rather than an estimate. Two documented calibration points for the later
 demo/testnet step: (1) equity/available-margin labeling below, (2) trading-rule
-key spellings.
+key spellings -- the live venue serves a bare pair-keyed rules map with the
+notional floor spelled ``min_notional_size`` and no ``max_leverage`` key; both
+are accepted below, while a missing max is treated as "no venue cap known"
+(the operator-configured policy leverage still sizes, the venue still
+validates the write) rather than a rejection.
 """
 
 from __future__ import annotations
@@ -37,6 +41,113 @@ _STABLE_QUOTES = frozenset(
     {"USDT", "USDC", "USD", "BUSD", "FDUSD", "TUSD", "DAI", "USDE", "PYUSD"}
 )
 _BINDING_SCHEMA = "condor.brooks.trade-binding.v1"
+#: Prefix for executor-derived position identities (see below).
+_EXECUTOR_IDENTITY_PREFIX = "executor:"
+
+
+def _explicit_position_id(row: Mapping[str, Any]) -> str:
+    """A venue-issued position id, or ``""`` when the venue supplies none."""
+    return str(row.get("position_id") or row.get("positionId") or row.get("id") or "")
+
+
+def _is_executor_identity(value: Any) -> bool:
+    """Whether a binding id is an executor-derived pointer, not a venue id."""
+    return (
+        isinstance(value, str)
+        and value.startswith(_EXECUTOR_IDENTITY_PREFIX)
+        and len(value) > len(_EXECUTOR_IDENTITY_PREFIX)
+    )
+
+
+def _executor_identity(executor_id: str) -> str:
+    return f"{_EXECUTOR_IDENTITY_PREFIX}{executor_id}"
+
+
+async def _confirmed_executor(
+    client: Any,
+    *,
+    account_name: str,
+    connector_name: str,
+    controller_id: str,
+    symbol: str,
+    executor_id: str,
+) -> bool:
+    """Exactly one executor row carries our id: proof our write landed.
+
+    Identity match only -- side, amount, and status are never used to select.
+    The direct single-executor read comes first so confirmation never waits
+    on the laggy search index; its scope fields must still match, otherwise
+    the id is treated as foreign and confirmation fails closed.
+    """
+    fetcher = getattr(getattr(client, "executors", None), "get_executor", None)
+    if fetcher is not None:
+        try:
+            row = await fetcher(executor_id=executor_id)
+        except Exception:
+            row = None
+        if isinstance(row, dict):
+            if str(row.get("executor_id") or row.get("id") or "") != executor_id:
+                return False
+            if (
+                str(row.get("account_name") or "") not in ("", account_name)
+                or str(row.get("connector_name") or "") not in ("", connector_name)
+                or str(row.get("trading_pair") or row.get("symbol") or "")
+                not in ("", symbol)
+                or str(row.get("controller_id") or "") not in ("", controller_id)
+            ):
+                return False
+            return True
+    try:
+        result = await client.executors.search_executors(
+            account_names=[account_name],
+            connector_names=[connector_name],
+            trading_pairs=[symbol],
+            controller_ids=[controller_id],
+            limit=1000,
+        )
+    except Exception:
+        return False
+    if not isinstance(result, dict) or not isinstance(result.get("data"), list):
+        return False
+    matches = [
+        row
+        for row in result["data"]
+        if isinstance(row, dict)
+        and str(row.get("executor_id") or row.get("id") or "") == executor_id
+    ]
+    return len(matches) == 1
+
+
+def _sole_consistent_row(
+    rows: Sequence[Mapping[str, Any]], symbol: str, wanted_side: str
+) -> Mapping[str, Any] | None:
+    """The exactly-one id-less venue row for (symbol, side), else ``None``.
+
+    Engages only when the venue supplies no explicit position ids at all, so
+    an id-capable venue always stays on the strict lineage path. Side remains
+    a consistency check (mismatch or multiplicity yields ``None``); selection
+    is by uniqueness, never by size, ordering, or PnL, and no id is invented.
+    """
+    if any(_explicit_position_id(row) for row in rows):
+        return None
+    wanted = _plan_side(wanted_side)
+    candidates: list[Mapping[str, Any]] = []
+    for row in rows:
+        if _position_symbol(row) != symbol:
+            continue
+        try:
+            row_side = _position_side(row)
+            quantity = _position_amount(row)
+        except ValueError:
+            return None
+        if wanted and row_side != wanted:
+            continue
+        if quantity <= 0:
+            continue
+        candidates.append(row)
+    if len(candidates) != 1:
+        return None
+    return candidates[0]
 
 
 def _now_ms() -> int:
@@ -119,12 +230,14 @@ class HummingbotCandleSource:
             raise ValueError("limit must be a positive integer")
         canonical = _canonical_timeframe(timeframe)
         interval_ms = _BROOKS_INTERVAL_MS[canonical]
+        now_ms = self._now_fn()
         rows = await fetch_historical_candles(
             self._client,
             self._connector,
             symbol,
             canonical,
-            start_time=None,
+            start_time=now_ms // 1000 - (limit + 1) * (interval_ms // 1000),
+            end_time=now_ms // 1000,
             limit=limit + 1,
         )
         now_ms = self._now_fn()
@@ -212,6 +325,20 @@ def _position_price(row: Mapping[str, Any]) -> Decimal:
         if row.get(key) is not None:
             return Decimal(str(row[key]))
     raise ValueError("venue position row has no price")
+
+
+def _row_price(row: Mapping[str, Any], fresh_mark: Decimal) -> Decimal:
+    """Row price for exposure math, else the fresh venue mark for the symbol.
+
+    Both are venue facts, never estimates; rows with no usable amount still
+    reject the read in the caller.
+    """
+    try:
+        return _position_price(row)
+    except ValueError:
+        if not isinstance(fresh_mark, Decimal) or not fresh_mark.is_finite():
+            raise
+        return fresh_mark
 
 
 def _position_side(row: Mapping[str, Any]) -> str:
@@ -305,7 +432,8 @@ class HummingbotAccountReader:
         rules = await self._rules(connector_name, symbol)
         try:
             gross = sum(
-                _position_amount(row) * _position_price(row) for row in venue_positions
+                _position_amount(row) * _row_price(row, mark_price)
+                for row in venue_positions
             )
         except (InvalidOperation, ValueError, TypeError) as exc:
             raise GMRejected(f"position exposure is unreadable: {exc}") from exc
@@ -338,57 +466,78 @@ class HummingbotAccountReader:
                 main_executor = binding.get("main_executor_id")
                 hedge_id = binding.get("hedge_position_id")
                 hedge_executor = binding.get("hedge_executor_id")
-                by_id = {
-                    str(
-                        row.get("position_id")
-                        or row.get("positionId")
-                        or row.get("id")
-                        or ""
-                    ): row
-                    for row in venue_positions
-                }
-                main_row = by_id.get(main_id or "")
-                if main_row is not None:
-                    try:
-                        main_side = _position_side(main_row)
-                        main_quantity = _position_amount(main_row)
-                    except ValueError as exc:
-                        raise GMRejected(f"MAIN position is unreadable: {exc}") from exc
-                    legs.append(
-                        PositionLeg(
-                            position_id=main_id or "",
-                            symbol=symbol,
-                            side=main_side,
-                            quantity=format(main_quantity, "f"),
-                            mark_price=format(mark_price, "f"),
-                            ownership_role="MAIN",
-                        )
+                if _is_executor_identity(main_id) and not any(
+                    _explicit_position_id(row) for row in venue_positions
+                ):
+                    (
+                        structure,
+                        main_side,
+                        main_quantity,
+                        hedge_side,
+                        hedge_quantity,
+                        legs,
+                    ) = await self._executor_owned_legs(
+                        binding,
+                        venue_positions,
+                        symbol=symbol,
+                        mark_price=mark_price,
+                        account_name=account_name,
+                        connector_name=connector_name,
                     )
-                    structure = "single_main"
-                elif main_id:
-                    structure = "main_binding_without_venue_position"
                 else:
-                    structure = "main_unresolved"
-                if hedge_id:
-                    hedge_row = by_id.get(hedge_id)
-                    if hedge_row is not None:
+                    by_id = {
+                        str(
+                            row.get("position_id")
+                            or row.get("positionId")
+                            or row.get("id")
+                            or ""
+                        ): row
+                        for row in venue_positions
+                    }
+                    main_row = by_id.get(main_id or "")
+                    if main_row is not None:
                         try:
-                            hedge_side = _position_side(hedge_row)
-                            hedge_quantity = _position_amount(hedge_row)
+                            main_side = _position_side(main_row)
+                            main_quantity = _position_amount(main_row)
                         except ValueError as exc:
                             raise GMRejected(
-                                f"HEDGE position is unreadable: {exc}"
+                                f"MAIN position is unreadable: {exc}"
                             ) from exc
                         legs.append(
                             PositionLeg(
-                                position_id=hedge_id,
+                                position_id=main_id or "",
                                 symbol=symbol,
-                                side=hedge_side,
-                                quantity=format(hedge_quantity, "f"),
+                                side=main_side,
+                                quantity=format(main_quantity, "f"),
                                 mark_price=format(mark_price, "f"),
-                                ownership_role="HEDGE",
+                                ownership_role="MAIN",
                             )
                         )
+                        structure = "single_main"
+                    elif main_id:
+                        structure = "main_binding_without_venue_position"
+                    else:
+                        structure = "main_unresolved"
+                    if hedge_id:
+                        hedge_row = by_id.get(hedge_id)
+                        if hedge_row is not None:
+                            try:
+                                hedge_side = _position_side(hedge_row)
+                                hedge_quantity = _position_amount(hedge_row)
+                            except ValueError as exc:
+                                raise GMRejected(
+                                    f"HEDGE position is unreadable: {exc}"
+                                ) from exc
+                            legs.append(
+                                PositionLeg(
+                                    position_id=hedge_id,
+                                    symbol=symbol,
+                                    side=hedge_side,
+                                    quantity=format(hedge_quantity, "f"),
+                                    mark_price=format(mark_price, "f"),
+                                    ownership_role="HEDGE",
+                                )
+                            )
         elif venue_positions:
             structure = "unbound_venue_positions"
         try:
@@ -439,6 +588,132 @@ class HummingbotAccountReader:
         if not price.is_finite() or price <= 0:
             raise GMRejected("mark price is not positive")
         return price
+
+    async def _executor_owned_legs(
+        self,
+        binding: Mapping[str, Any],
+        venue_positions: Sequence[Mapping[str, Any]],
+        *,
+        symbol: str,
+        mark_price: Decimal,
+        account_name: str,
+        connector_name: str,
+    ) -> tuple[str, str | None, Decimal, str | None, Decimal, list[Any]]:
+        """Resolve MAIN/HEDGE legs through the bound executors, not venue ids.
+
+        For venues that issue no position ids (and no executor lineage holds),
+        the binding carries ``executor:<executor_id>`` pointers instead. Each
+        pointer is confirmed by exact executor-id match; the venue must then
+        show exactly one same-side row per bound leg. Side stays a consistency
+        check -- multiplicity leaves the structure unresolved, and an
+        unparseable same-symbol row rejects the read rather than letting
+        uniqueness be claimed over it. Quantity is deliberately NOT checked
+        here: post-write reads must resolve the new size, and the GM
+        assessment corroborates quantities against the command instead.
+        """
+        from condor.brooks.gm import GMRejected
+        from condor.brooks.hedge import PositionLeg
+
+        empty: tuple[str, str | None, Decimal, str | None, Decimal, list[Any]] = (
+            "main_unresolved",
+            None,
+            Decimal(0),
+            None,
+            Decimal(0),
+            [],
+        )
+        main_tag = binding.get("main_position_id")
+        main_executor = binding.get("main_executor_id")
+        expected_main = _plan_side(binding.get("main_side"))
+        if (
+            not _is_executor_identity(main_tag)
+            or not isinstance(main_executor, str)
+            or not main_executor
+            or main_tag != _executor_identity(main_executor)
+            or not expected_main
+        ):
+            return empty
+        if not await _confirmed_executor(
+            self._client,
+            account_name=account_name,
+            connector_name=connector_name,
+            controller_id=self._controller_id,
+            symbol=symbol,
+            executor_id=main_executor,
+        ):
+            return empty
+        same: list[Decimal] = []
+        other: list[tuple[str, Decimal]] = []
+        for row in venue_positions:
+            if _position_symbol(row) != symbol:
+                continue
+            try:
+                side = _position_side(row)
+                quantity = _position_amount(row)
+            except ValueError as exc:
+                raise GMRejected(f"MAIN position is unreadable: {exc}") from exc
+            if quantity <= 0:
+                continue
+            if side == expected_main:
+                same.append(quantity)
+            else:
+                other.append((side, quantity))
+        if not same:
+            return ("main_binding_without_venue_position",) + empty[1:]
+        if len(same) != 1:
+            return empty
+        main_quantity = same[0]
+        legs: list[Any] = [
+            PositionLeg(
+                position_id=main_tag,
+                symbol=symbol,
+                side=expected_main,
+                quantity=format(main_quantity, "f"),
+                mark_price=format(mark_price, "f"),
+                ownership_role="MAIN",
+            )
+        ]
+        hedge_side: str | None = None
+        hedge_quantity = Decimal(0)
+        hedge_tag = binding.get("hedge_position_id")
+        hedge_executor = binding.get("hedge_executor_id")
+        if (
+            _is_executor_identity(hedge_tag)
+            and isinstance(hedge_executor, str)
+            and hedge_executor
+            and hedge_tag == _executor_identity(hedge_executor)
+            and await _confirmed_executor(
+                self._client,
+                account_name=account_name,
+                connector_name=connector_name,
+                controller_id=self._controller_id,
+                symbol=symbol,
+                executor_id=hedge_executor,
+            )
+        ):
+            expected_hedge = "SHORT" if expected_main == "LONG" else "LONG"
+            matches = [quantity for side, quantity in other if side == expected_hedge]
+            if len(matches) == 1:
+                hedge_side = expected_hedge
+                hedge_quantity = matches[0]
+                legs.append(
+                    PositionLeg(
+                        position_id=hedge_tag,
+                        symbol=symbol,
+                        side=hedge_side,
+                        quantity=format(hedge_quantity, "f"),
+                        mark_price=format(mark_price, "f"),
+                        ownership_role="HEDGE",
+                    )
+                )
+        return (
+            "single_main",
+            expected_main,
+            main_quantity,
+            hedge_side,
+            hedge_quantity,
+            legs,
+        )
 
     async def _collateral(
         self, account_name: str, connector_name: str
@@ -507,6 +782,9 @@ class HummingbotAccountReader:
                     candidates.extend(
                         item for item in section if isinstance(item, dict)
                     )
+            nested = result.get(symbol)
+            if isinstance(nested, dict):
+                candidates.append(nested)
             candidates.append(result)
         amount_step = _first_decimal(
             candidates,
@@ -518,7 +796,13 @@ class HummingbotAccountReader:
         )
         min_notional = _first_decimal(
             candidates,
-            ("min_notional", "min_order_value", "min_cost", "min_quote_amount"),
+            (
+                "min_notional_size",
+                "min_notional",
+                "min_order_value",
+                "min_cost",
+                "min_quote_amount",
+            ),
         )
         max_leverage_raw = _first_decimal(
             candidates, ("max_leverage", "leverage_max", "maximum_leverage")
@@ -527,18 +811,20 @@ class HummingbotAccountReader:
             amount_step is None
             or min_amount is None
             or min_notional is None
-            or max_leverage_raw is None
             or amount_step <= 0
             or min_amount <= 0
             or min_notional <= 0
-            or max_leverage_raw < 1
         ):
+            raise GMRejected("venue trading rules are incomplete")
+        if max_leverage_raw is not None and max_leverage_raw < 1:
             raise GMRejected("venue trading rules are incomplete")
         return VenueRules(
             amount_step=amount_step,
             min_amount=min_amount,
             min_notional=min_notional,
-            max_leverage=int(max_leverage_raw),
+            max_leverage=(
+                int(max_leverage_raw) if max_leverage_raw is not None else None
+            ),
         )
 
     async def _position_mode(
@@ -630,6 +916,10 @@ class HummingbotPositionReconciler:
        one row may carry an explicit non-empty venue position id whose side is
        consistent with the plan. Zero means the venue has not shown it yet;
        more than one is ambiguous.
+    4. Id-less venues: when no row for the symbol carries any venue position
+       id (and no lineage hold names the executor), the binding resolves to
+       ``executor:<executor_id>`` -- a transparent pointer to the confirmed
+       write receipt, valid only while exactly one side-consistent row exists.
 
     Anything else returns ``None`` and the binding stays submitted for a later
     retry. Side is a consistency check, never the selector: ownership comes
@@ -661,13 +951,20 @@ class HummingbotPositionReconciler:
                 account_name, connector_name, symbol, controller_id, executor_id
             ):
                 return None
-            if not await self._lineage_holds(
-                account_name, connector_name, symbol, controller_id, executor_id
-            ):
+            rows = await self._symbol_rows(account_name, connector_name, symbol)
+            if rows is None:
                 return None
-            return await self._venue_identity(
-                account_name, connector_name, symbol, side
-            )
+            if any(_explicit_position_id(row) for row in rows):
+                if not await self._lineage_holds(
+                    account_name, connector_name, symbol, controller_id, executor_id
+                ):
+                    return None
+                return await self._venue_identity(
+                    account_name, connector_name, symbol, side
+                )
+            if _sole_consistent_row(rows, symbol, side) is None:
+                return None
+            return _executor_identity(executor_id)
         except Exception:
             log.warning(
                 "Brooks MAIN reconciliation read failed; binding stays submitted",
@@ -702,6 +999,11 @@ class HummingbotPositionReconciler:
                 account_name, connector_name, symbol, controller_id, hedge_executor_id
             ):
                 return None
+            rows = await self._symbol_rows(account_name, connector_name, symbol)
+            if rows is None:
+                return None
+            if not any(_explicit_position_id(row) for row in rows):
+                return self._derived_hedge_leg(rows, symbol, hedge_side, hedge_executor_id)
             if not await self._lineage_holds(
                 account_name, connector_name, symbol, controller_id, hedge_executor_id
             ):
@@ -715,6 +1017,49 @@ class HummingbotPositionReconciler:
                 exc_info=True,
             )
             return None
+
+    async def _symbol_rows(
+        self, account_name: str, connector_name: str, symbol: str
+    ) -> list[dict[str, Any]] | None:
+        """Fresh venue rows for one symbol, or ``None`` when unreadable."""
+        result = await self._client.trading.get_positions(
+            account_names=[account_name],
+            connector_names=[connector_name],
+            limit=1000,
+        )
+        if not isinstance(result, dict) or not isinstance(result.get("data"), list):
+            return None
+        return [
+            row
+            for row in result["data"]
+            if isinstance(row, dict) and _position_symbol(row) == symbol
+        ]
+
+    @staticmethod
+    def _derived_hedge_leg(
+        rows: list[dict[str, Any]], symbol: str, hedge_side: str, hedge_executor_id: str
+    ) -> dict[str, str] | None:
+        """First-HEDGE leg on an id-less venue: exactly one consistent row."""
+        row = _sole_consistent_row(rows, symbol, hedge_side)
+        if row is None:
+            return None
+        try:
+            quantity = _position_amount(row)
+            try:
+                price = _position_price(row)
+            except ValueError:
+                entry = row.get("entry_price", row.get("entryPrice"))
+                price = Decimal(str(entry))
+        except (InvalidOperation, ValueError, TypeError):
+            return None
+        if quantity <= 0 or price <= 0:
+            return None
+        return {
+            "position_id": _executor_identity(hedge_executor_id),
+            "side": _plan_side(hedge_side) or _position_side(row),
+            "quantity": format(quantity, "f"),
+            "mark_price": format(price, "f"),
+        }
 
     async def _hedge_venue_leg(
         self,
@@ -773,19 +1118,13 @@ class HummingbotPositionReconciler:
         controller_id: str,
         executor_id: str,
     ) -> bool:
-        result = await self._client.executors.search_executors(
-            account_names=[account_name],
-            connector_names=[connector_name],
-            trading_pairs=[symbol],
-            controller_ids=[controller_id or self._controller_id],
-            limit=1000,
-        )
-        if not isinstance(result, dict) or not isinstance(result.get("data"), list):
-            return False
-        return any(
-            isinstance(row, dict)
-            and str(row.get("executor_id") or row.get("id") or "") == executor_id
-            for row in result["data"]
+        return await _confirmed_executor(
+            self._client,
+            account_name=account_name,
+            connector_name=connector_name,
+            controller_id=controller_id or self._controller_id,
+            symbol=symbol,
+            executor_id=executor_id,
         )
 
     async def _lineage_holds(
@@ -1027,9 +1366,33 @@ def build_watcher_provider(
             if not correlation_id:
                 continue
             symbol_positions = positions_by_symbol.get(symbol, [])
-            main_row = _find_position(symbol_positions, binding.get("main_position_id"))
+            main_side = _plan_side(binding.get("main_side"))
+            main_tag = str(binding.get("main_position_id") or "")
+            main_row = _find_position(
+                symbol_positions,
+                binding.get("main_position_id"),
+                symbol=symbol,
+                side=main_side or None,
+            )
+            hedge_side = (
+                "SHORT" if main_side == "LONG" else "LONG" if main_side else ""
+            )
+            hedge_tag = str(binding.get("hedge_position_id") or "")
             hedge_row = _find_position(
-                symbol_positions, binding.get("hedge_position_id")
+                symbol_positions,
+                binding.get("hedge_position_id"),
+                symbol=symbol,
+                side=hedge_side or None,
+            )
+            main_leg = (
+                _snapshot_owned_leg(main_row, main_tag)
+                if _is_executor_identity(main_tag)
+                else _snapshot_leg(main_row)
+            )
+            hedge_leg = (
+                _snapshot_owned_leg(hedge_row, hedge_tag)
+                if _is_executor_identity(hedge_tag)
+                else _snapshot_leg(hedge_row)
             )
             bound_executors = [
                 {
@@ -1063,8 +1426,8 @@ def build_watcher_provider(
                 {
                     "correlation_id": correlation_id,
                     "symbol": symbol,
-                    "main": _snapshot_leg(main_row),
-                    "hedge": _snapshot_leg(hedge_row),
+                    "main": main_leg,
+                    "hedge": hedge_leg,
                     "executors": sorted(bound_executors, key=lambda item: item["id"]),
                     "open_orders": sorted(
                         bound_orders,
@@ -1150,11 +1513,19 @@ def _sanitize_fill(row: Mapping[str, Any], symbol: str) -> dict[str, Any] | None
 
 
 def _find_position(
-    rows: Sequence[Mapping[str, Any]], position_id: Any
+    rows: Sequence[Mapping[str, Any]],
+    position_id: Any,
+    *,
+    symbol: str = "",
+    side: str | None = None,
 ) -> Mapping[str, Any] | None:
     if not position_id:
         return None
     wanted = str(position_id)
+    if _is_executor_identity(wanted):
+        if not symbol or not side:
+            return None
+        return _sole_consistent_row(rows, symbol, side)
     for row in rows:
         current = str(
             row.get("position_id") or row.get("positionId") or row.get("id") or ""
@@ -1182,6 +1553,28 @@ def _snapshot_leg(row: Mapping[str, Any] | None) -> dict[str, str]:
         "side": side if quantity > 0 else "",
         "qty": format(quantity, "f"),
     }
+
+
+def _snapshot_owned_leg(
+    row: Mapping[str, Any] | None, identity: str
+) -> dict[str, str]:
+    """Snapshot leg for an executor-resolved row, stamped with the binding tag.
+
+    The raw row on an id-less venue carries no id, so the plain snapshot
+    would zero it and the watcher would never report the transition. The
+    stamped id is the binding's own ``executor:`` pointer -- resolved by the
+    same uniqueness rule as the reader, never invented here.
+    """
+    if row is None or not _is_executor_identity(identity):
+        return {"id": "", "side": "", "qty": "0"}
+    try:
+        side = _position_side(row)
+        quantity = _position_amount(row)
+    except ValueError:
+        return {"id": "", "side": "", "qty": "0"}
+    if quantity <= 0 or side not in {"LONG", "SHORT"}:
+        return {"id": "", "side": "", "qty": "0"}
+    return {"id": identity, "side": side, "qty": format(quantity, "f")}
 
 
 _PM_ORDER_SIDES = {
