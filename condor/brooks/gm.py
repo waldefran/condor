@@ -932,7 +932,25 @@ class BrooksGM:
                             f"cannot load saved hedge state: {exc}"
                         ) from exc
                 else:
-                    raise GMRejected("expected_state is required for hedge action")
+                    # Consumer-routed first HEDGE carries no expected state and
+                    # no file exists yet. Treat the just-read snapshot as the
+                    # decision basis, stamped strictly older so the freshness
+                    # guard below still compares two distinct instants; an
+                    # unreadable or ambiguous snapshot keeps failing closed.
+                    try:
+                        resolved_expected = build_hedge_state(
+                            legs,
+                            main_position_id=main_pos_id,
+                            hedge_position_id=hedge_pos_id,
+                            as_of_ms=state.as_of_ms - 1,
+                        )
+                    except HedgeBlocked as exc:
+                        raise GMRejected(f"cannot rebuild hedge state: {exc}") from exc
+                    if resolved_expected.unresolved:
+                        raise GMRejected(
+                            "hedge structure unresolved: "
+                            f"{resolved_expected.structure_status}"
+                        )
             elif isinstance(resolved_expected, dict):
                 resolved_expected = HedgeState(**resolved_expected)
 
