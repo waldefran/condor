@@ -709,6 +709,34 @@ class BrooksGM:
             shadow_mode=shadow_mode,
         )
 
+    async def _resolve_first_hedge_leg(
+        self,
+        *,
+        symbol: str,
+        binding: dict[str, Any],
+        main_position_id: str | None,
+        main_side: str | None,
+        hedge_executor_id: str | None,
+    ) -> dict[str, str] | None:
+        reconciler = getattr(self.reconciler, "reconcile_hedge", None)
+        if reconciler is None or not hedge_executor_id or not main_position_id:
+            return None
+        hedge_side = (
+            "SHORT" if (main_side or binding.get("main_side")) == "LONG" else "LONG"
+        )
+        try:
+            return await reconciler(
+                account_name=self.account_name,
+                connector_name=self.connector_name,
+                controller_id=self.execution.controller_id,
+                symbol=symbol,
+                main_position_id=main_position_id,
+                hedge_side=hedge_side,
+                hedge_executor_id=hedge_executor_id,
+            )
+        except Exception:
+            return None
+
     async def _execute_hedge(
         self,
         *,
@@ -1051,11 +1079,37 @@ class BrooksGM:
                         )
                 if action == "HEDGE":
                     h_legs = [leg for leg in rec_legs if leg.ownership_role == "HEDGE"]
-                    rec_target_h_id = (
-                        h_legs[0].position_id
-                        if len(h_legs) == 1
-                        else getattr(reconciled_snapshot, "hedge_position_id", None)
-                    )
+                    if len(h_legs) == 1:
+                        rec_target_h_id = h_legs[0].position_id
+                    elif getattr(reconciled_snapshot, "hedge_position_id", None):
+                        rec_target_h_id = getattr(
+                            reconciled_snapshot, "hedge_position_id", None
+                        )
+                    else:
+                        # First HEDGE: the binding carries no hedge id yet, so the
+                        # reader cannot see the new leg. Resolve it through hedge
+                        # executor lineage instead of inventing it; None stays on
+                        # the fail-closed ambiguous path below.
+                        rec_target_h_id = None
+                        resolved = await self._resolve_first_hedge_leg(
+                            symbol=symbol,
+                            binding=binding,
+                            main_position_id=main_pos_id,
+                            main_side=fresh_state.main_side,
+                            hedge_executor_id=executor_id,
+                        )
+                        if resolved is not None:
+                            rec_legs = list(rec_legs) + [
+                                PositionLeg(
+                                    position_id=resolved["position_id"],
+                                    symbol=symbol,
+                                    side=resolved["side"],
+                                    quantity=resolved["quantity"],
+                                    mark_price=resolved["mark_price"],
+                                    ownership_role="HEDGE",
+                                )
+                            ]
+                            rec_target_h_id = resolved["position_id"]
                 elif action == "REMOVE_HEDGE":
                     rec_target_h_id = None
                 else:

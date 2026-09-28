@@ -675,6 +675,96 @@ class HummingbotPositionReconciler:
             )
             return None
 
+    async def reconcile_hedge(
+        self,
+        *,
+        account_name: str,
+        connector_name: str,
+        controller_id: str,
+        symbol: str,
+        main_position_id: str,
+        hedge_side: str,
+        hedge_executor_id: str,
+    ) -> dict[str, str] | None:
+        """Resolve a freshly opened hedge leg through executor lineage.
+
+        Mirrors :meth:`reconcile` for the first HEDGE, whose venue position id
+        is not yet bound: the hedge executor must exist and sit in exactly one
+        lineage hold, and exactly one non-MAIN venue position with the expected
+        hedge side may carry an explicit id. Returns the leg facts the GM needs
+        to build its reconciled HedgeState, or ``None`` to stay fail-closed.
+        Side is a consistency check, never the selector, and no id is invented.
+        """
+        if not hedge_executor_id or not symbol or not main_position_id:
+            return None
+        try:
+            if not await self._executor_exists(
+                account_name, connector_name, symbol, controller_id, hedge_executor_id
+            ):
+                return None
+            if not await self._lineage_holds(
+                account_name, connector_name, symbol, controller_id, hedge_executor_id
+            ):
+                return None
+            return await self._hedge_venue_leg(
+                account_name, connector_name, symbol, main_position_id, hedge_side
+            )
+        except Exception:
+            log.warning(
+                "Brooks HEDGE reconciliation read failed; hedge stays unconfirmed",
+                exc_info=True,
+            )
+            return None
+
+    async def _hedge_venue_leg(
+        self,
+        account_name: str,
+        connector_name: str,
+        symbol: str,
+        main_position_id: str,
+        hedge_side: str,
+    ) -> dict[str, str] | None:
+        result = await self._client.trading.get_positions(
+            account_names=[account_name],
+            connector_names=[connector_name],
+            limit=1000,
+        )
+        if not isinstance(result, dict) or not isinstance(result.get("data"), list):
+            return None
+        wanted = _plan_side(hedge_side)
+        candidates: list[dict[str, str]] = []
+        for row in result["data"]:
+            if not isinstance(row, dict):
+                continue
+            if _position_symbol(row) != symbol:
+                continue
+            position_id = str(
+                row.get("position_id") or row.get("positionId") or row.get("id") or ""
+            )
+            if not position_id or position_id == main_position_id:
+                continue
+            try:
+                row_side = _position_side(row)
+                quantity = _position_amount(row)
+                price = _position_price(row)
+            except ValueError:
+                continue
+            if wanted and row_side != wanted:
+                continue
+            if quantity <= 0 or price <= 0:
+                continue
+            candidates.append(
+                {
+                    "position_id": position_id,
+                    "side": row_side,
+                    "quantity": format(quantity, "f"),
+                    "mark_price": format(price, "f"),
+                }
+            )
+        if len(candidates) != 1:
+            return None
+        return candidates[0]
+
     async def _executor_exists(
         self,
         account_name: str,
