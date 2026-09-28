@@ -240,3 +240,23 @@ def test_restart_rebuilds_explicit_open_main_and_hedge():
         compile_action("REMOVE_HEDGE", "0", restarted).hedge_position_id
         == persisted_hedge_id
     )
+
+
+def test_mark_only_move_keeps_fingerprint_but_structure_change_trips_stale():
+    active = state((MAIN, HEDGE), hedge_id="hedge-1")
+    moved = state(
+        (replace(MAIN, mark_price="101"), replace(HEDGE, mark_price="99")),
+        hedge_id="hedge-1",
+        at=active.as_of_ms + 1,
+    )
+    assert moved.fingerprint == active.fingerprint
+    assert moved.hedge_ratio != active.hedge_ratio
+    compile_action("INCREASE_HEDGE", "0.5", active, after=moved)
+    changed = state(
+        (MAIN, replace(HEDGE, quantity="0.31")),
+        hedge_id="hedge-1",
+        at=active.as_of_ms + 1,
+    )
+    assert changed.fingerprint != active.fingerprint
+    with pytest.raises(HedgeBlocked):
+        compile_action("INCREASE_HEDGE", "0.5", active, after=changed)

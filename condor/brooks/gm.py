@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import fcntl
 import json
+import logging
 import os
 import time
 from collections.abc import Sequence
@@ -29,6 +30,40 @@ from .hedge import (
 
 class GMRejected(ValueError):
     """An intent cannot safely become a venue write."""
+
+
+log = logging.getLogger(__name__)
+
+
+#: Fresh pre-write reads retried while the structure is unresolved (read-only).
+#: The demo venue splits a just-changed leg into transient rows that merge
+#: within a minute or so; deterministic rejections still fail immediately.
+_HEDGE_FRESH_READS = 6
+_HEDGE_FRESH_DELAY_SEC = 10.0
+#: Sized for venue read-after-write races: the demo venue transiently
+#: misreports the just-written leg for tens of seconds while settled reads
+#: are exact, so a short window would wedge on noise.
+_HEDGE_RECORROBORATE_READS = 6
+_HEDGE_RECORROBORATE_DELAY_SEC = 10.0
+
+
+def _hedge_filled_quantity(
+    reconciled_snapshot: Any,
+    reconciled_state: Any,
+    fresh_state: Any,
+    outcome: str,
+) -> str:
+    if (
+        reconciled_snapshot is not None
+        and getattr(reconciled_snapshot, "filled_quantity", None) is not None
+    ):
+        return str(reconciled_snapshot.filled_quantity)
+    if outcome == "succeeded" and reconciled_state is not None:
+        diff = abs(
+            Decimal(reconciled_state.hedge_size) - Decimal(fresh_state.hedge_size)
+        )
+        return format(diff, "f")
+    return "0"
 
 
 def _decimal(value: Any, name: str, *, positive: bool = True) -> Decimal:
@@ -58,7 +93,9 @@ class VenueRules:
     amount_step: Decimal
     min_amount: Decimal
     min_notional: Decimal
-    max_leverage: int
+    # None when the venue publishes no leverage cap: the policy leverage then
+    # sizes (margin-checked) and the venue validates the write. Never invented.
+    max_leverage: int | None
 
 
 @dataclass(frozen=True)
@@ -215,7 +252,10 @@ def compile_main(
         or policy.leverage < 1
     ):
         raise GMRejected("invalid leverage")
-    if policy.leverage > snapshot.rules.max_leverage:
+    if (
+        snapshot.rules.max_leverage is not None
+        and policy.leverage > snapshot.rules.max_leverage
+    ):
         raise GMRejected("leverage exceeds venue rule")
     if not isinstance(policy.time_limit_sec, int) or policy.time_limit_sec < 1:
         raise GMRejected("time limit is required")
@@ -737,6 +777,250 @@ class BrooksGM:
         except Exception:
             return None
 
+    async def _read_hedge_state(
+        self,
+        *,
+        symbol: str,
+        binding: dict[str, Any],
+        main_pos_id: str | None,
+        hedge_pos_id: str | None,
+        action: str,
+        fresh_state: HedgeState,
+        hedge_executor_id: str | None,
+    ) -> tuple[Any, HedgeState | None]:
+        """One fresh read shaped as post-write HedgeState; ``None`` when off."""
+        reconciled_snapshot = None
+        try:
+            reconciled_snapshot = await self.reader.read(
+                account_name=self.account_name,
+                connector_name=self.connector_name,
+                symbol=symbol,
+            )
+            if reconciled_snapshot.positions is not None:
+                rec_legs = reconciled_snapshot.positions
+            else:
+                rec_legs = []
+                if (
+                    reconciled_snapshot.main_position_id
+                    and reconciled_snapshot.main_quantity > 0
+                ):
+                    rec_legs.append(
+                        PositionLeg(
+                            position_id=reconciled_snapshot.main_position_id,
+                            symbol=symbol,
+                            side=reconciled_snapshot.main_side
+                            or binding.get("main_side"),
+                            quantity=str(reconciled_snapshot.main_quantity),
+                            mark_price=str(reconciled_snapshot.mark_price),
+                            ownership_role="MAIN",
+                        )
+                    )
+                rec_h_id = getattr(
+                    reconciled_snapshot, "hedge_position_id", None
+                ) or (hedge_pos_id if action != "REMOVE_HEDGE" else None)
+                rec_h_qty = getattr(
+                    reconciled_snapshot, "hedge_quantity", Decimal(0)
+                )
+                if rec_h_id and rec_h_qty > 0:
+                    rec_h_side = getattr(reconciled_snapshot, "hedge_side", None)
+                    if not rec_h_side:
+                        main_s = reconciled_snapshot.main_side or binding.get(
+                            "main_side"
+                        )
+                        rec_h_side = "SHORT" if main_s == "LONG" else "LONG"
+                    rec_h_mark = (
+                        getattr(reconciled_snapshot, "hedge_mark_price", None)
+                        or reconciled_snapshot.mark_price
+                    )
+                    rec_legs.append(
+                        PositionLeg(
+                            position_id=rec_h_id,
+                            symbol=symbol,
+                            side=rec_h_side,
+                            quantity=str(rec_h_qty),
+                            mark_price=str(rec_h_mark),
+                            ownership_role="HEDGE",
+                        )
+                    )
+            if action == "HEDGE":
+                h_legs = [leg for leg in rec_legs if leg.ownership_role == "HEDGE"]
+                if len(h_legs) == 1:
+                    rec_target_h_id = h_legs[0].position_id
+                elif getattr(reconciled_snapshot, "hedge_position_id", None):
+                    rec_target_h_id = getattr(
+                        reconciled_snapshot, "hedge_position_id", None
+                    )
+                else:
+                    # First HEDGE: the binding carries no hedge id yet, so the
+                    # reader cannot see the new leg. Resolve it through hedge
+                    # executor lineage instead of inventing it; None stays on
+                    # the fail-closed ambiguous path below.
+                    rec_target_h_id = None
+                    resolved = await self._resolve_first_hedge_leg(
+                        symbol=symbol,
+                        binding=binding,
+                        main_position_id=main_pos_id,
+                        main_side=fresh_state.main_side,
+                        hedge_executor_id=hedge_executor_id,
+                    )
+                    if resolved is not None:
+                        rec_legs = list(rec_legs) + [
+                            PositionLeg(
+                                position_id=resolved["position_id"],
+                                symbol=symbol,
+                                side=resolved["side"],
+                                quantity=resolved["quantity"],
+                                mark_price=resolved["mark_price"],
+                                ownership_role="HEDGE",
+                            )
+                        ]
+                        rec_target_h_id = resolved["position_id"]
+            elif action == "REMOVE_HEDGE":
+                rec_target_h_id = None
+            else:
+                rec_target_h_id = hedge_pos_id
+
+            reconciled_state: HedgeState | None = build_hedge_state(
+                rec_legs,
+                main_position_id=main_pos_id,
+                hedge_position_id=rec_target_h_id,
+                as_of_ms=reconciled_snapshot.as_of_ms,
+            )
+        except Exception:
+            reconciled_state = None
+        return reconciled_snapshot, reconciled_state
+
+    async def _read_fresh_hedge(
+        self,
+        *,
+        symbol: str,
+        binding: dict[str, Any],
+        persisted_main_id: str | None,
+        persisted_hedge_id: str | None,
+        plan_main_position_id: str | None,
+        hedge_pos_id: str | None,
+        action: str,
+    ) -> tuple[Any, Any, Any, Any, Any, Any, list, HedgeState | None, str | None]:
+        """One fresh pre-write read; unresolved structure returns a reason.
+
+        Deterministic rejections (stale snapshot, margin, mode, identity)
+        raise immediately and are never retried; only an unresolvable
+        structure comes back for a bounded re-read.
+        """
+        state = await self.reader.read(
+            account_name=self.account_name,
+            connector_name=self.connector_name,
+            symbol=symbol,
+        )
+        now = int(time.time() * 1000)
+        if (
+            state.as_of_ms > now
+            or now - state.as_of_ms > self.policy.max_snapshot_age_ms
+        ):
+            raise GMRejected("account snapshot is stale")
+        equity = _decimal(state.equity, "equity")
+        margin = _decimal(state.available_margin, "available_margin", positive=False)
+        mark = _decimal(state.mark_price, "mark_price")
+        gross = _decimal(state.gross_exposure, "gross_exposure", positive=False)
+
+        hedge_mode = getattr(state, "position_mode", None)
+        if not hedge_mode and hasattr(self.execution, "get_position_mode"):
+            try:
+                hedge_mode = await self.execution.get_position_mode()
+            except Exception as exc:
+                raise GMRejected(
+                    f"cannot confirm HEDGE position mode: {exc}"
+                ) from exc
+        if hedge_mode != "HEDGE":
+            raise GMRejected(
+                "account/connector is not confirmed in HEDGE position mode"
+            )
+
+        main_pos_id = (
+            persisted_main_id or plan_main_position_id or state.main_position_id
+        )
+        if not main_pos_id:
+            raise GMRejected("no authoritative MAIN position ID")
+
+        if state.positions is not None:
+            legs = state.positions
+        else:
+            legs = []
+            if state.main_position_id and state.main_quantity > 0:
+                legs.append(
+                    PositionLeg(
+                        position_id=state.main_position_id,
+                        symbol=symbol,
+                        side=state.main_side or binding.get("main_side"),
+                        quantity=str(state.main_quantity),
+                        mark_price=str(state.mark_price),
+                        ownership_role="MAIN",
+                    )
+                )
+            h_id = getattr(state, "hedge_position_id", None) or persisted_hedge_id
+            h_qty = getattr(state, "hedge_quantity", Decimal(0))
+            if h_id and h_qty > 0:
+                h_side = getattr(state, "hedge_side", None)
+                if not h_side:
+                    main_s = state.main_side or binding.get("main_side")
+                    h_side = "SHORT" if main_s == "LONG" else "LONG"
+                h_mark = (
+                    getattr(state, "hedge_mark_price", None) or state.mark_price
+                )
+                legs.append(
+                    PositionLeg(
+                        position_id=h_id,
+                        symbol=symbol,
+                        side=h_side,
+                        quantity=str(h_qty),
+                        mark_price=str(h_mark),
+                        ownership_role="HEDGE",
+                    )
+                )
+
+        try:
+            fresh_state = build_hedge_state(
+                legs,
+                main_position_id=main_pos_id,
+                hedge_position_id=hedge_pos_id,
+                as_of_ms=state.as_of_ms,
+            )
+        except HedgeBlocked as exc:
+            return (
+                state,
+                equity,
+                margin,
+                mark,
+                gross,
+                main_pos_id,
+                legs,
+                None,
+                f"cannot rebuild hedge state: {exc}",
+            )
+        if fresh_state.unresolved:
+            return (
+                state,
+                equity,
+                margin,
+                mark,
+                gross,
+                main_pos_id,
+                legs,
+                None,
+                f"hedge structure unresolved: {fresh_state.structure_status}",
+            )
+        return (
+            state,
+            equity,
+            margin,
+            mark,
+            gross,
+            main_pos_id,
+            legs,
+            fresh_state,
+            None,
+        )
+
     async def _execute_hedge(
         self,
         *,
@@ -831,93 +1115,42 @@ class BrooksGM:
                     raise GMRejected("plan hedge_position_id does not match binding")
                 hedge_pos_id = persisted_hedge_id or plan_hedge_position_id
 
-            state = await self.reader.read(
-                account_name=self.account_name,
-                connector_name=self.connector_name,
-                symbol=symbol,
-            )
-            now = int(time.time() * 1000)
-            if (
-                state.as_of_ms > now
-                or now - state.as_of_ms > self.policy.max_snapshot_age_ms
-            ):
-                raise GMRejected("account snapshot is stale")
-            equity = _decimal(state.equity, "equity")
-            margin = _decimal(
-                state.available_margin, "available_margin", positive=False
-            )
-            mark = _decimal(state.mark_price, "mark_price")
-            gross = _decimal(state.gross_exposure, "gross_exposure", positive=False)
-
-            hedge_mode = getattr(state, "position_mode", None)
-            if not hedge_mode and hasattr(self.execution, "get_position_mode"):
-                try:
-                    hedge_mode = await self.execution.get_position_mode()
-                except Exception as exc:
-                    raise GMRejected(
-                        f"cannot confirm HEDGE position mode: {exc}"
-                    ) from exc
-            if hedge_mode != "HEDGE":
-                raise GMRejected(
-                    "account/connector is not confirmed in HEDGE position mode"
-                )
-
-            main_pos_id = (
-                persisted_main_id or plan_main_position_id or state.main_position_id
-            )
-            if not main_pos_id:
-                raise GMRejected("no authoritative MAIN position ID")
-
-            if state.positions is not None:
-                legs = state.positions
-            else:
-                legs = []
-                if state.main_position_id and state.main_quantity > 0:
-                    legs.append(
-                        PositionLeg(
-                            position_id=state.main_position_id,
-                            symbol=symbol,
-                            side=state.main_side or binding.get("main_side"),
-                            quantity=str(state.main_quantity),
-                            mark_price=str(state.mark_price),
-                            ownership_role="MAIN",
-                        )
-                    )
-                h_id = getattr(state, "hedge_position_id", None) or persisted_hedge_id
-                h_qty = getattr(state, "hedge_quantity", Decimal(0))
-                if h_id and h_qty > 0:
-                    h_side = getattr(state, "hedge_side", None)
-                    if not h_side:
-                        main_s = state.main_side or binding.get("main_side")
-                        h_side = "SHORT" if main_s == "LONG" else "LONG"
-                    h_mark = (
-                        getattr(state, "hedge_mark_price", None) or state.mark_price
-                    )
-                    legs.append(
-                        PositionLeg(
-                            position_id=h_id,
-                            symbol=symbol,
-                            side=h_side,
-                            quantity=str(h_qty),
-                            mark_price=str(h_mark),
-                            ownership_role="HEDGE",
-                        )
-                    )
-
-            try:
-                fresh_state = build_hedge_state(
+            state = None
+            equity = margin = mark = gross = main_pos_id = None
+            legs: list[Any] = []
+            fresh_state: HedgeState | None = None
+            fail_reason = "hedge structure unresolved"
+            for _fresh_attempt in range(_HEDGE_FRESH_READS):
+                (
+                    state,
+                    equity,
+                    margin,
+                    mark,
+                    gross,
+                    main_pos_id,
                     legs,
-                    main_position_id=main_pos_id,
-                    hedge_position_id=hedge_pos_id,
-                    as_of_ms=state.as_of_ms,
+                    fresh_state,
+                    fail_reason,
+                ) = await self._read_fresh_hedge(
+                    symbol=symbol,
+                    binding=binding,
+                    persisted_main_id=persisted_main_id,
+                    persisted_hedge_id=persisted_hedge_id,
+                    plan_main_position_id=plan_main_position_id,
+                    hedge_pos_id=hedge_pos_id,
+                    action=action,
                 )
-            except HedgeBlocked as exc:
-                raise GMRejected(f"cannot rebuild hedge state: {exc}") from exc
-
-            if fresh_state.unresolved:
-                raise GMRejected(
-                    f"hedge structure unresolved: {fresh_state.structure_status}"
+                if fail_reason is None:
+                    break
+                log.info(
+                    "Brooks hedge fresh action=%s attempt=%d reason=%s",
+                    action,
+                    _fresh_attempt,
+                    fail_reason,
                 )
+                if _fresh_attempt >= _HEDGE_FRESH_READS - 1:
+                    raise GMRejected(fail_reason)
+                await asyncio.sleep(_HEDGE_FRESH_DELAY_SEC)
 
             resolved_expected = expected_state
             if resolved_expected is None:
@@ -992,7 +1225,10 @@ class BrooksGM:
                     raise GMRejected(
                         "hedge delta notional is below venue minimum notional"
                     )
-                if self.policy.leverage > state.rules.max_leverage:
+                if (
+                    state.rules.max_leverage is not None
+                    and self.policy.leverage > state.rules.max_leverage
+                ):
                     raise GMRejected("leverage exceeds venue rule")
                 margin_required = delta_notional / Decimal(self.policy.leverage)
                 if margin_required > margin:
@@ -1041,127 +1277,76 @@ class BrooksGM:
                 outcome = "unknown"
                 write_error = exc
 
-            reconciled_snapshot = None
-            reconciled_state = None
-            try:
-                reconciled_snapshot = await self.reader.read(
-                    account_name=self.account_name,
-                    connector_name=self.connector_name,
-                    symbol=symbol,
-                )
-                if reconciled_snapshot.positions is not None:
-                    rec_legs = reconciled_snapshot.positions
-                else:
-                    rec_legs = []
-                    if (
-                        reconciled_snapshot.main_position_id
-                        and reconciled_snapshot.main_quantity > 0
-                    ):
-                        rec_legs.append(
-                            PositionLeg(
-                                position_id=reconciled_snapshot.main_position_id,
-                                symbol=symbol,
-                                side=reconciled_snapshot.main_side
-                                or binding.get("main_side"),
-                                quantity=str(reconciled_snapshot.main_quantity),
-                                mark_price=str(reconciled_snapshot.mark_price),
-                                ownership_role="MAIN",
-                            )
-                        )
-                    rec_h_id = getattr(
-                        reconciled_snapshot, "hedge_position_id", None
-                    ) or (hedge_pos_id if action != "REMOVE_HEDGE" else None)
-                    rec_h_qty = getattr(
-                        reconciled_snapshot, "hedge_quantity", Decimal(0)
-                    )
-                    if rec_h_id and rec_h_qty > 0:
-                        rec_h_side = getattr(reconciled_snapshot, "hedge_side", None)
-                        if not rec_h_side:
-                            main_s = reconciled_snapshot.main_side or binding.get(
-                                "main_side"
-                            )
-                            rec_h_side = "SHORT" if main_s == "LONG" else "LONG"
-                        rec_h_mark = (
-                            getattr(reconciled_snapshot, "hedge_mark_price", None)
-                            or reconciled_snapshot.mark_price
-                        )
-                        rec_legs.append(
-                            PositionLeg(
-                                position_id=rec_h_id,
-                                symbol=symbol,
-                                side=rec_h_side,
-                                quantity=str(rec_h_qty),
-                                mark_price=str(rec_h_mark),
-                                ownership_role="HEDGE",
-                            )
-                        )
-                if action == "HEDGE":
-                    h_legs = [leg for leg in rec_legs if leg.ownership_role == "HEDGE"]
-                    if len(h_legs) == 1:
-                        rec_target_h_id = h_legs[0].position_id
-                    elif getattr(reconciled_snapshot, "hedge_position_id", None):
-                        rec_target_h_id = getattr(
-                            reconciled_snapshot, "hedge_position_id", None
-                        )
-                    else:
-                        # First HEDGE: the binding carries no hedge id yet, so the
-                        # reader cannot see the new leg. Resolve it through hedge
-                        # executor lineage instead of inventing it; None stays on
-                        # the fail-closed ambiguous path below.
-                        rec_target_h_id = None
-                        resolved = await self._resolve_first_hedge_leg(
-                            symbol=symbol,
-                            binding=binding,
-                            main_position_id=main_pos_id,
-                            main_side=fresh_state.main_side,
-                            hedge_executor_id=executor_id,
-                        )
-                        if resolved is not None:
-                            rec_legs = list(rec_legs) + [
-                                PositionLeg(
-                                    position_id=resolved["position_id"],
-                                    symbol=symbol,
-                                    side=resolved["side"],
-                                    quantity=resolved["quantity"],
-                                    mark_price=resolved["mark_price"],
-                                    ownership_role="HEDGE",
-                                )
-                            ]
-                            rec_target_h_id = resolved["position_id"]
-                elif action == "REMOVE_HEDGE":
-                    rec_target_h_id = None
-                else:
-                    rec_target_h_id = hedge_pos_id
-
-                reconciled_state = build_hedge_state(
-                    rec_legs,
-                    main_position_id=main_pos_id,
-                    hedge_position_id=rec_target_h_id,
-                    as_of_ms=reconciled_snapshot.as_of_ms,
-                )
-            except Exception:
-                reconciled_state = None
-
-            if (
-                reconciled_snapshot is not None
-                and getattr(reconciled_snapshot, "filled_quantity", None) is not None
-            ):
-                filled_qty_str = str(reconciled_snapshot.filled_quantity)
-            elif outcome == "succeeded" and reconciled_state is not None:
-                diff = abs(
-                    Decimal(reconciled_state.hedge_size)
-                    - Decimal(fresh_state.hedge_size)
-                )
-                filled_qty_str = format(diff, "f")
-            else:
-                filled_qty_str = "0"
-
+            reconciled_snapshot, reconciled_state = await self._read_hedge_state(
+                symbol=symbol,
+                binding=binding,
+                main_pos_id=main_pos_id,
+                hedge_pos_id=hedge_pos_id,
+                action=action,
+                fresh_state=fresh_state,
+                hedge_executor_id=executor_id,
+            )
+            filled_qty_str = _hedge_filled_quantity(
+                reconciled_snapshot, reconciled_state, fresh_state, outcome
+            )
             assessment = assess_hedge_result(
                 command,
                 outcome=outcome,
                 filled_quantity=filled_qty_str,
                 reconciled_state=reconciled_state,
             )
+            log.info(
+                "Brooks hedge assess action=%s attempt=%d outcome=%s requested=%s "
+                "filled=%s fresh=%s rec=%s status=%s reason=%s",
+                action,
+                0,
+                outcome,
+                command.quantity,
+                filled_qty_str,
+                getattr(fresh_state, "hedge_size", "?"),
+                getattr(reconciled_state, "hedge_size", None),
+                assessment.status,
+                assessment.reason,
+            )
+            corroborations = 0
+            while assessment.status == "ambiguous" and (
+                corroborations < _HEDGE_RECORROBORATE_READS
+            ):
+                corroborations += 1
+                await asyncio.sleep(_HEDGE_RECORROBORATE_DELAY_SEC)
+                reconciled_snapshot, reconciled_state = (
+                    await self._read_hedge_state(
+                        symbol=symbol,
+                        binding=binding,
+                        main_pos_id=main_pos_id,
+                        hedge_pos_id=hedge_pos_id,
+                        action=action,
+                        fresh_state=fresh_state,
+                        hedge_executor_id=executor_id,
+                    )
+                )
+                filled_qty_str = _hedge_filled_quantity(
+                    reconciled_snapshot, reconciled_state, fresh_state, outcome
+                )
+                assessment = assess_hedge_result(
+                    command,
+                    outcome=outcome,
+                    filled_quantity=filled_qty_str,
+                    reconciled_state=reconciled_state,
+                )
+                log.info(
+                    "Brooks hedge assess action=%s attempt=%d outcome=%s requested=%s "
+                    "filled=%s fresh=%s rec=%s status=%s reason=%s",
+                    action,
+                    corroborations,
+                    outcome,
+                    command.quantity,
+                    filled_qty_str,
+                    getattr(fresh_state, "hedge_size", "?"),
+                    getattr(reconciled_state, "hedge_size", None),
+                    assessment.status,
+                    assessment.reason,
+                )
 
             if assessment.status == "confirmed":
                 record.update(
@@ -1178,7 +1363,12 @@ class BrooksGM:
                         binding["hedge_position_id"] = (
                             reconciled_state.hedge_position_id
                         )
-                    if executor_id:
+                    # The bound executor stays the leg's creator: later writers
+                    # rotate through management records, so the persisted pair
+                    # keeps resolving. Overwriting it here wedged every later
+                    # step on id-less venues (tag pointed at the creator leg
+                    # while the id pointed at the latest writer).
+                    if action == "HEDGE" and executor_id:
                         binding["hedge_executor_id"] = executor_id
                     binding["hedge_size"] = reconciled_state.hedge_size
                 elif action == "REMOVE_HEDGE":

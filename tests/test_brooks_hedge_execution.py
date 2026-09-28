@@ -490,7 +490,8 @@ def test_full_hedge_lifecycle_execution(tmp_path):
 # =========================================================================
 
 
-def test_adversarial_duplicate_main_rejected_no_write(tmp_path):
+def test_adversarial_duplicate_main_rejected_no_write(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_FRESH_DELAY_SEC", 0)
     seed_trade_binding(tmp_path, correlation_id="c1", main_position_id="main-1")
     now = int(time.time() * 1000)
     m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
@@ -517,7 +518,8 @@ def test_adversarial_duplicate_main_rejected_no_write(tmp_path):
     assert not (tmp_path / "trades/c1/management/d1.json").exists()
 
 
-def test_adversarial_duplicate_hedge_rejected_no_write(tmp_path):
+def test_adversarial_duplicate_hedge_rejected_no_write(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_FRESH_DELAY_SEC", 0)
     seed_trade_binding(
         tmp_path,
         correlation_id="c1",
@@ -553,7 +555,8 @@ def test_adversarial_duplicate_hedge_rejected_no_write(tmp_path):
     assert not (tmp_path / "trades/c1/management/d1.json").exists()
 
 
-def test_adversarial_orphan_hedge_rejected_no_write(tmp_path):
+def test_adversarial_orphan_hedge_rejected_no_write(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_FRESH_DELAY_SEC", 0)
     seed_trade_binding(tmp_path, correlation_id="c1", main_position_id="main-1")
     now = int(time.time() * 1000)
     h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.3", "100", "HEDGE")
@@ -580,7 +583,8 @@ def test_adversarial_orphan_hedge_rejected_no_write(tmp_path):
     assert not (tmp_path / "trades/c1/management/d1.json").exists()
 
 
-def test_adversarial_unknown_role_rejected_no_write(tmp_path):
+def test_adversarial_unknown_role_rejected_no_write(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_FRESH_DELAY_SEC", 0)
     seed_trade_binding(tmp_path, correlation_id="c1", main_position_id="main-1")
     now = int(time.time() * 1000)
     m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
@@ -607,7 +611,8 @@ def test_adversarial_unknown_role_rejected_no_write(tmp_path):
     assert not (tmp_path / "trades/c1/management/d1.json").exists()
 
 
-def test_adversarial_same_side_legs_rejected_no_write(tmp_path):
+def test_adversarial_same_side_legs_rejected_no_write(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_FRESH_DELAY_SEC", 0)
     seed_trade_binding(
         tmp_path,
         correlation_id="c1",
@@ -885,7 +890,8 @@ def test_adversarial_partial_fill_fails_closed_into_reconciliation_required(tmp_
         )
 
 
-def test_adversarial_ambiguous_execution_fails_closed(tmp_path):
+def test_adversarial_ambiguous_execution_fails_closed(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_RECORROBORATE_DELAY_SEC", 0)
     seed_trade_binding(tmp_path, correlation_id="c1", main_position_id="main-1")
     now = int(time.time() * 1000)
     m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
@@ -929,6 +935,220 @@ def test_adversarial_ambiguous_execution_fails_closed(tmp_path):
                 expected_state=exp,
             )
         )
+
+
+def test_increase_exact_delta_confirms_without_corroboration(tmp_path):
+    seed_trade_binding(
+        tmp_path, correlation_id="c1", main_position_id="main-1",
+        hedge_position_id="hedge-1", status="reconciled",
+    )
+    now = int(time.time() * 1000)
+    m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
+    h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.3", "100", "HEDGE")
+    h2 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.5", "100", "HEDGE")
+    exp = build_hedge_state(
+        [m1, h1], main_position_id="main-1", hedge_position_id="hedge-1",
+        as_of_ms=now - 50,
+    )
+    snap_pre = make_snapshot(at=now - 10, positions=[m1, h1], hedge_position_id="hedge-1")
+    snap_rec = make_snapshot(at=now, positions=[m1, h2], hedge_position_id="hedge-1")
+    reader = FakeHedgeReader([snap_pre, snap_rec])
+    port = FakeHedgePort()
+    gate, _ = setup_gm(tmp_path, reader, port=port)
+
+    res = asyncio.run(
+        gate.execute_hedge(
+            correlation_id="c1", decision_id="d1", action="INCREASE_HEDGE",
+            target_hedge_ratio="0.5", expected_state=exp,
+        )
+    )
+    assert res["status"] == "submitted"
+    assert res["assessment"] == "confirmed"
+    assert res["filled_quantity"] == "0.2"
+    assert reader.calls == 2  # fresh + one reconciling read; no retry needed
+    binding = json.loads((tmp_path / "trades/c1/binding.json").read_text(encoding="utf-8"))
+    assert binding["status"] == "reconciled"
+
+
+def test_transient_phantom_read_corroborated_to_confirmed(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_RECORROBORATE_DELAY_SEC", 0)
+    seed_trade_binding(
+        tmp_path, correlation_id="c1", main_position_id="main-1",
+        hedge_position_id="hedge-1", status="reconciled",
+    )
+    now = int(time.time() * 1000)
+    m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
+    h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.3", "100", "HEDGE")
+    h_phantom = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.7", "100", "HEDGE")
+    h2 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.5", "100", "HEDGE")
+    exp = build_hedge_state(
+        [m1, h1], main_position_id="main-1", hedge_position_id="hedge-1",
+        as_of_ms=now - 50,
+    )
+    snap_pre = make_snapshot(at=now - 30, positions=[m1, h1], hedge_position_id="hedge-1")
+    snap_phantom = make_snapshot(at=now - 20, positions=[m1, h_phantom], hedge_position_id="hedge-1")
+    snap_clean = make_snapshot(at=now - 10, positions=[m1, h2], hedge_position_id="hedge-1")
+    reader = FakeHedgeReader([snap_pre, snap_phantom, snap_clean])
+    port = FakeHedgePort()
+    gate, _ = setup_gm(tmp_path, reader, port=port)
+
+    res = asyncio.run(
+        gate.execute_hedge(
+            correlation_id="c1", decision_id="d1", action="INCREASE_HEDGE",
+            target_hedge_ratio="0.5", expected_state=exp,
+        )
+    )
+    assert res["status"] == "submitted"
+    assert res["assessment"] == "confirmed"
+    assert res["filled_quantity"] == "0.2"
+    assert reader.calls == 3  # fresh + transient + corroborating read
+    binding = json.loads((tmp_path / "trades/c1/binding.json").read_text(encoding="utf-8"))
+    assert binding["status"] == "reconciled"
+    assert Decimal(binding["hedge_size"]) == D("0.5")
+
+
+def test_persistent_misread_wedges_and_blocks_later_writes(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_RECORROBORATE_DELAY_SEC", 0)
+    seed_trade_binding(
+        tmp_path, correlation_id="c1", main_position_id="main-1",
+        hedge_position_id="hedge-1", status="reconciled",
+    )
+    now = int(time.time() * 1000)
+    m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
+    h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.3", "100", "HEDGE")
+    h_phantom = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.7", "100", "HEDGE")
+    exp = build_hedge_state(
+        [m1, h1], main_position_id="main-1", hedge_position_id="hedge-1",
+        as_of_ms=now - 50,
+    )
+    snaps = [make_snapshot(at=now - 30, positions=[m1, h1], hedge_position_id="hedge-1")]
+    snaps += [
+        make_snapshot(at=now - 20 + 10 * i, positions=[m1, h_phantom], hedge_position_id="hedge-1")
+        for i in range(3)
+    ]
+    reader = FakeHedgeReader(snaps)
+    port = FakeHedgePort()
+    gate, _ = setup_gm(tmp_path, reader, port=port)
+
+    with pytest.raises(GMRejected, match="reconciliation"):
+        asyncio.run(
+            gate.execute_hedge(
+                correlation_id="c1", decision_id="d1", action="INCREASE_HEDGE",
+                target_hedge_ratio="0.5", expected_state=exp,
+            )
+        )
+    assert reader.calls == 8  # fresh + initial + 6 bounded corroborating reads
+    record = json.loads((tmp_path / "trades/c1/management/d1.json").read_text(encoding="utf-8"))
+    assert record["status"] == "reconciliation_required"
+    assert record["assessment_status"] == "ambiguous"
+    binding = json.loads((tmp_path / "trades/c1/binding.json").read_text(encoding="utf-8"))
+    assert binding["status"] == "reconciliation_required"
+    with pytest.raises(GMRejected, match="reconcile"):
+        asyncio.run(
+            gate.execute_hedge(
+                correlation_id="c1", decision_id="d2", action="INCREASE_HEDGE",
+                target_hedge_ratio="0.5", expected_state=exp,
+            )
+        )
+
+
+def test_fresh_split_rows_resolve_on_reread_then_confirm(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_FRESH_DELAY_SEC", 0)
+    seed_trade_binding(
+        tmp_path, correlation_id="c1", main_position_id="main-1",
+        hedge_position_id="hedge-1", status="reconciled",
+    )
+    now = int(time.time() * 1000)
+    m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
+    h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.3", "100", "HEDGE")
+    h2 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.5", "100", "HEDGE")
+    exp = build_hedge_state(
+        [m1, h1], main_position_id="main-1", hedge_position_id="hedge-1",
+        as_of_ms=now - 50,
+    )
+    snap_split = make_snapshot(at=now - 5, positions=[m1], hedge_position_id="hedge-1")
+    snap_ok = make_snapshot(at=now - 3, positions=[m1, h1], hedge_position_id="hedge-1")
+    snap_rec = make_snapshot(at=now - 1, positions=[m1, h2], hedge_position_id="hedge-1")
+    reader = FakeHedgeReader([snap_split, snap_ok, snap_rec])
+    port = FakeHedgePort()
+    gate, _ = setup_gm(tmp_path, reader, port=port)
+
+    res = asyncio.run(
+        gate.execute_hedge(
+            correlation_id="c1", decision_id="d1", action="INCREASE_HEDGE",
+            target_hedge_ratio="0.5", expected_state=exp,
+        )
+    )
+    assert res["status"] == "submitted"
+    assert res["assessment"] == "confirmed"
+    assert reader.calls == 3  # split read, converged read, reconciling read
+    assert [call for call, _ in port.calls] == ["execute_hedge"]
+
+
+def test_fresh_persistently_unresolved_wedges_without_write(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_FRESH_DELAY_SEC", 0)
+    seed_trade_binding(
+        tmp_path, correlation_id="c1", main_position_id="main-1",
+        hedge_position_id="hedge-1", status="reconciled",
+    )
+    now = int(time.time() * 1000)
+    m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
+    h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.3", "100", "HEDGE")
+    exp = build_hedge_state(
+        [m1, h1], main_position_id="main-1", hedge_position_id="hedge-1",
+        as_of_ms=now - 50,
+    )
+    snap_split = make_snapshot(at=now - 5, positions=[m1], hedge_position_id="hedge-1")
+    reader = FakeHedgeReader([snap_split])
+    port = FakeHedgePort()
+    gate, _ = setup_gm(tmp_path, reader, port=port)
+
+    with pytest.raises(GMRejected, match="hedge structure unresolved"):
+        asyncio.run(
+            gate.execute_hedge(
+                correlation_id="c1", decision_id="d1", action="INCREASE_HEDGE",
+                target_hedge_ratio="0.5", expected_state=exp,
+            )
+        )
+    assert reader.calls == 6  # bounded fresh re-reads, then fail closed
+    assert port.calls == []
+    assert not (tmp_path / "trades/c1/management/d1.json").exists()
+
+
+def test_increase_keeps_creator_hedge_executor_id(tmp_path, monkeypatch):
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_FRESH_DELAY_SEC", 0)
+    monkeypatch.setattr("condor.brooks.gm._HEDGE_RECORROBORATE_DELAY_SEC", 0)
+    seed_trade_binding(
+        tmp_path, correlation_id="c1", main_position_id="main-1",
+        hedge_position_id="hedge-1", status="reconciled",
+    )
+    now = int(time.time() * 1000)
+    m1 = PositionLeg("main-1", "BTC-USDT", "LONG", "1.0", "100", "MAIN")
+    h1 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.3", "100", "HEDGE")
+    h2 = PositionLeg("hedge-1", "BTC-USDT", "SHORT", "0.5", "100", "HEDGE")
+    exp = build_hedge_state(
+        [m1, h1], main_position_id="main-1", hedge_position_id="hedge-1",
+        as_of_ms=now - 50,
+    )
+    snap_pre = make_snapshot(at=now - 10, positions=[m1, h1], hedge_position_id="hedge-1")
+    snap_rec = make_snapshot(at=now, positions=[m1, h2], hedge_position_id="hedge-1")
+    reader = FakeHedgeReader([snap_pre, snap_rec])
+    port = FakeHedgePort()
+    port.next_executor_id = "exec-h2"
+    gate, _ = setup_gm(tmp_path, reader, port=port)
+
+    res = asyncio.run(
+        gate.execute_hedge(
+            correlation_id="c1", decision_id="d1", action="INCREASE_HEDGE",
+            target_hedge_ratio="0.5", expected_state=exp,
+        )
+    )
+    assert res["status"] == "submitted"
+    assert res["executor_id"] == "exec-h2"
+    binding = json.loads((tmp_path / "trades/c1/binding.json").read_text(encoding="utf-8"))
+    assert binding["hedge_position_id"] == "hedge-1"
+    assert binding["hedge_executor_id"] == "exec-hedge-1"
+    assert Decimal(binding["hedge_size"]) == D("0.5")
 
 
 def test_adversarial_order_failure_leaves_venue_unchanged(tmp_path):

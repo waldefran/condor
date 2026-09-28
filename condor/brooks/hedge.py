@@ -218,13 +218,14 @@ def build_hedge_state(
         status = "inconsistent_ownership"
     ratio = hedge_notional / main_notional if main_notional else Decimal(0)
     direction = Decimal(1) if main and main.side == "LONG" else Decimal(-1)
+    # Structure-only: marks move every read on a live venue and must not trip
+    # staleness by themselves; quantity/side/id/role changes still do.
     fingerprint_data = sorted(
         (
             p.position_id,
             p.symbol,
             p.side,
             str(p.quantity),
-            str(p.mark_price),
             str(p.ownership_role),
         )
         for p in positions
