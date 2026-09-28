@@ -428,6 +428,7 @@ class ManagementDecisionV2(Contract):
     market_analysis_request: MarketAnalysisRequestV1 | None
     conditions_that_change_action: list[NonEmpty] = Field(min_length=1)
     reduce_fraction: DecimalText | None = None
+    shadow_mode: StrictBool = False
 
     @field_validator("reduce_fraction")
     @classmethod

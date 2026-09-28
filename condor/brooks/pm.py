@@ -275,6 +275,7 @@ def _small_context(context: Mapping[str, Any]) -> dict[str, Any]:
         "hedge_state",
         "margin_health",
         "market_analysis",
+        "shadow_mode",
     )
     compact = {key: source[key] for key in allowed if key in source}
     for key, limit in (
@@ -424,6 +425,23 @@ class PositionManager:
             raise ValueError("PM decision references an unbound position")
         await _resolve(self.save_decision(correlation_id, decision))
         callback = getattr(self.publish, "publish", self.publish)
+        orig_intent = context.get("original_trade_intent")
+        is_shadow = bool(
+            context.get("shadow_mode")
+            or envelope.get("shadow_mode")
+            or (isinstance(envelope.get("payload"), Mapping) and envelope["payload"].get("shadow_mode"))
+            or (isinstance(orig_intent, Mapping) and orig_intent.get("shadow_mode"))
+            or (hasattr(orig_intent, "shadow_mode") and getattr(orig_intent, "shadow_mode"))
+            or getattr(decision, "shadow_mode", False)
+        )
+        if is_shadow and hasattr(decision, "model_copy"):
+            decision = decision.model_copy(update={"shadow_mode": True})
+        payload = (
+            decision.model_dump(mode="json")
+            if hasattr(decision, "model_dump")
+            else dict(decision)
+        )
+        payload["shadow_mode"] = is_shadow
         event_data = {
             "schema": "condor.brooks.event.v1",
             "event_id": str(uuid4()),
@@ -432,7 +450,8 @@ class PositionManager:
             "symbol": context["symbol"],
             "correlation_id": correlation_id,
             "causation_id": envelope.get("event_id"),
-            "payload": decision.model_dump(mode="json"),
+            "shadow_mode": is_shadow,
+            "payload": payload,
         }
         if hasattr(self.publish, "publish"):
             from condor.brooks.events import BrooksEvent, EventType

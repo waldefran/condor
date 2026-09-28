@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import json
 import logging
 import time
 from collections.abc import Awaitable, Callable, Iterable, Mapping
@@ -294,7 +295,33 @@ class GMConsumer:
             )
 
         if event_type == EventType.MANAGEMENT_INTENT_CREATED.value:
-            if bool(payload.get("shadow_mode", False)):
+            is_shadow = bool(
+                payload.get("shadow_mode", False)
+                or envelope.get("shadow_mode", False)
+            )
+            if not is_shadow and isinstance(correlation_id, str) and correlation_id:
+                try:
+                    trade_dir = None
+                    if self.store is not None and hasattr(self.store, "_trade_dir"):
+                        trade_dir = self.store._trade_dir(correlation_id)
+                    elif self.gm_factory is not None:
+                        gm = self._gm_for(symbol)
+                        if hasattr(gm, "_trade_dir"):
+                            trade_dir = gm._trade_dir(correlation_id)
+                    if trade_dir is not None:
+                        for name in ("binding.json", "original_trade_intent.json"):
+                            path = trade_dir / name
+                            if path.exists():
+                                doc = json.loads(path.read_text(encoding="utf-8"))
+                                if isinstance(doc, dict) and bool(
+                                    doc.get("shadow_mode", False)
+                                    or (isinstance(doc.get("intent"), dict) and doc["intent"].get("shadow_mode", False))
+                                ):
+                                    is_shadow = True
+                                    break
+                except Exception:
+                    pass
+            if is_shadow:
                 return None
             action = str(payload.get("action") or "")
             if action in _NO_WRITE_ACTIONS:
@@ -497,6 +524,7 @@ class BrooksSupervisor:
         gm_factory: Callable[[str], Any] | None = None,
         watcher_snapshots: Callable[[], Any] | None = None,
         market_analysis_runner: Any | None = None,
+        tools: Sequence[Any] | None = None,
         now_fn: Callable[[], int] | None = None,
         sleep_fn: Callable[[float], Awaitable[None]] | None = None,
     ):
@@ -524,6 +552,7 @@ class BrooksSupervisor:
         self._gm_factory = gm_factory
         self._watcher_snapshots = watcher_snapshots
         self._market_analysis_runner = market_analysis_runner
+        self._tools = list(tools) if tools is not None else None
         self._now_fn = now_fn
         self._sleep_fn = sleep_fn
         self._clock: MarketClock | None = None
@@ -534,6 +563,11 @@ class BrooksSupervisor:
         self._gm: GMConsumer | None = None
 
     # -- injection (attach before start; handler/factory swaps also apply live)
+    def attach_tools(self, tools: Sequence[Any] | None) -> None:
+        self._tools = list(tools) if tools is not None else None
+        if self._gm is not None:
+            self._gm.tools = self._tools
+
     def attach_market_analysis_runner(self, runner: Any) -> None:
         self._market_analysis_runner = runner
         if self._gm is not None:
@@ -653,6 +687,7 @@ class BrooksSupervisor:
             market_analysis_runner=self._market_analysis_runner,
             agent_key=self._agent_key,
             candle_source=self._candle_source,
+            tools=self._tools,
             store=self.store,
             user_id=self._user_id,
             now_fn=self._now_fn,
@@ -743,26 +778,29 @@ class BrooksSupervisor:
 
     async def _default_pm_list_active(self, symbol: Any) -> list[str]:
         assert self.store is not None
-        # ONE root: the GM persists bindings at <strategy_home>/trades
-        # (wire_supervisor passes strategy_home as the GM state_root), while
-        # self.store.root is <strategy_home>/brooks_state. Scanning the store
-        # root here left every global PM wake (PM_TIMER) with zero bindings.
-        trades = self.strategy_home / "trades"
-        if not trades.exists():
-            return []
+        # ONE root: check both strategy_home / "trades" and self.store.root / "trades"
+        # without duplicates.
         active: list[str] = []
-        for binding_path in sorted(trades.glob("*/binding.json")):
-            try:
-                import json
+        seen: set[str] = set()
+        for root_dir in (self.strategy_home / "trades", self.store.root / "trades"):
+            if not root_dir.exists():
+                continue
+            for binding_path in sorted(root_dir.glob("*/binding.json")):
+                cid = binding_path.parent.name
+                if cid in seen:
+                    continue
+                try:
+                    import json
 
-                binding = json.loads(binding_path.read_text(encoding="utf-8"))
-            except (OSError, ValueError):
-                continue
-            if not isinstance(binding, dict):
-                continue
-            if symbol not in (None, "", "*") and binding.get("symbol") != symbol:
-                continue
-            active.append(binding_path.parent.name)
+                    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+                except (OSError, ValueError):
+                    continue
+                if not isinstance(binding, dict):
+                    continue
+                if symbol not in (None, "", "*") and binding.get("symbol") != symbol:
+                    continue
+                seen.add(cid)
+                active.append(cid)
         return active
 
     async def run(self) -> None:

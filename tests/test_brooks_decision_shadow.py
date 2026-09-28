@@ -229,3 +229,156 @@ async def test_gm_consumer_and_brooks_gm_shadow_management_zero_writes(tmp_path)
     )
     assert res_direct["status"] == "no_write"
     assert res_direct["shadow_mode"] is True
+
+
+@pytest.mark.asyncio
+async def test_pm_preserves_shadow_mode_and_gm_blocks_writes(tmp_path):
+    """Full PM -> GM flow: shadow mode on trade context propagates to decision and blocks writes."""
+    from condor.brooks.pm import PositionManager
+    from condor.brooks.contracts import ManagementDecisionV2
+
+    exploding_port = ExplodingExecutionPort()
+    real_gm = make_gm(tmp_path, port=exploding_port)
+    published_events = []
+    consumer = GMConsumer(
+        gm_factory=lambda symbol: real_gm,
+        publish=published_events.append,
+    )
+
+    t0 = 1_000_000
+    mock_decision = {
+        "schema": "brooks.management-decision.v2",
+        "role": "POSITION_MANAGER",
+        "decision_time_ms": t0,
+        "action": "CLOSE",
+        "position_ids": ["pos-1"],
+        "reason": "risk threshold exceeded",
+        "evidence": {
+            "observations": ["trend reversal"],
+            "evidence_for": ["bearish pinbar"],
+            "evidence_against": ["volume"],
+        },
+        "risk": {
+            "exposure_before": ["100%"],
+            "exposure_after": ["0%"],
+            "protection_status": "adequate",
+            "costs_considered": ["fees"],
+            "uncertainty": "low",
+        },
+        "execution": {
+            "orders": [],
+            "cancel_order_ids": [],
+            "replace_orders": [],
+        },
+        "hedge_plan": None,
+        "market_analysis_request": None,
+        "conditions_that_change_action": ["breakout"],
+    }
+
+    class FakeRunner:
+        async def run(self, *args, **kwargs):
+            return ManagementDecisionV2.model_validate(mock_decision)
+
+    context_data = {
+        "correlation_id": "corr-pm-shadow",
+        "symbol": "BTC-USDT",
+        "decision_time_ms": t0,
+        "shadow_mode": True,
+        "position": {
+            "position_id": "pos-1",
+            "symbol": "BTC-USDT",
+            "quantity": 1.0,
+            "side": "LONG",
+        },
+        "positions": [
+            {
+                "position_id": "pos-1",
+                "symbol": "BTC-USDT",
+                "quantity": 1.0,
+                "side": "LONG",
+            }
+        ],
+        "original_trade_intent": {
+            "schema": "brooks.trade-intent.v2",
+            "shadow_mode": True,
+        },
+    }
+
+    pm_events = []
+    pm = PositionManager(
+        runner=FakeRunner(),
+        load_context=lambda cid: context_data,
+        save_decision=lambda cid, dec: None,
+        publish=pm_events.append,
+        candle_source=None,
+        record_market_read=lambda cid, rec: None,
+        agent_key="claude-code",
+    )
+
+    # Wake PM with a shadow position context
+    wake_event = {
+        "type": "PM_TIMER",
+        "correlation_id": "corr-pm-shadow",
+        "symbol": "BTC-USDT",
+        "decision_time_ms": t0,
+        "shadow_mode": True,
+    }
+
+    pm_decision = await pm.handle_event(wake_event)
+    assert pm_decision is not None
+    assert pm_decision.shadow_mode is True
+    assert len(pm_events) == 1
+    emitted_event = pm_events[0]
+    assert emitted_event["payload"]["shadow_mode"] is True
+
+    # Route PM's emitted event directly into GMConsumer
+    gm_result = await consumer.handle(emitted_event)
+    assert gm_result is None
+    # ExplodingExecutionPort would raise AssertionError if any write was attempted
+
+
+@pytest.mark.asyncio
+async def test_gm_consumer_and_brooks_gm_block_writes_from_durable_shadow_files(tmp_path):
+    """When event payload omits shadow_mode, durable trade files gate management execution."""
+    exploding_port = ExplodingExecutionPort()
+    real_gm = make_gm(tmp_path, port=exploding_port)
+    published = []
+    consumer = GMConsumer(
+        gm_factory=lambda symbol: real_gm,
+        publish=published.append,
+    )
+
+    trade_dir = tmp_path / "trades" / "corr-durable-shadow"
+    trade_dir.mkdir(parents=True, exist_ok=True)
+    (trade_dir / "binding.json").write_text(
+        '{"symbol": "BTC-USDT", "correlation_id": "corr-durable-shadow", "shadow_mode": true}'
+    )
+    (trade_dir / "original_trade_intent.json").write_text(
+        '{"symbol": "BTC-USDT", "shadow_mode": true}'
+    )
+
+    # Event payload does NOT mention shadow_mode
+    event_without_shadow_flag = BrooksEvent(
+        type=EventType.MANAGEMENT_INTENT_CREATED,
+        symbol="BTC-USDT",
+        correlation_id="corr-durable-shadow",
+        payload={
+            "action": "CLOSE",
+            "decision_id": "d-close-1",
+        },
+    )
+
+    # 1. GMConsumer gates via durable check
+    result = await consumer.handle(event_without_shadow_flag)
+    assert result is None
+    assert len(published) == 0
+
+    # 2. Direct BrooksGM.execute_management gates via durable check
+    gm_result = await real_gm.execute_management(
+        correlation_id="corr-durable-shadow",
+        decision_id="d-close-direct",
+        action="CLOSE",
+    )
+    assert gm_result["status"] == "no_write"
+    assert gm_result["shadow_mode"] is True
+

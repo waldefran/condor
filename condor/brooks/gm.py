@@ -591,6 +591,22 @@ class BrooksGM:
                     if plan_hedge_position_id is None:
                         plan_hedge_position_id = getattr(hp, "hedge_position_id", None)
 
+        if not shadow_mode and correlation_id:
+            try:
+                trade_dir = self._trade_dir(correlation_id)
+                for name in ("binding.json", "original_trade_intent.json"):
+                    path = trade_dir / name
+                    if path.exists():
+                        doc = json.loads(path.read_text(encoding="utf-8"))
+                        if isinstance(doc, dict) and bool(
+                            doc.get("shadow_mode", False)
+                            or (isinstance(doc.get("intent"), dict) and doc["intent"].get("shadow_mode", False))
+                        ):
+                            shadow_mode = True
+                            break
+            except Exception:
+                pass
+
         if shadow_mode:
             return {
                 "action": action or "HOLD",
