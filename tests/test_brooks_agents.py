@@ -348,3 +348,154 @@ async def test_htf_analyst_independent_d1_persistence(monkeypatch):
     assert await consumer.handle(event) == context
     assert store.saved[0][0] == "htf"
     assert bus.published[0].type == EventType.MARKET_CONTEXT_UPDATED
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "leaking_key",
+    [
+        "position_id",
+        "positionId",
+        "position_ids",
+        "positionIds",
+        "unrealized_pnl",
+        "unrealizedPnl",
+        "realized_pnl",
+        "realizedPnl",
+        "available_margin",
+        "availableMargin",
+        "available_balance",
+        "availableBalance",
+        "entry_price",
+        "entryPrice",
+        "entry_prices",
+        "entryPrices",
+        "open_orders",
+        "openOrders",
+        "recent_fills",
+        "recentFills",
+        "trade_history",
+        "tradeHistory",
+        "management_history",
+        "managementHistory",
+    ],
+)
+async def test_role_runner_rejects_compound_and_camel_case_private_keys(leaking_key):
+    # Shallow prompt key
+    with pytest.raises(ValueError, match="private"):
+        await agent_runner.run_role(
+            "TRADER",
+            agent_key="claude-code",
+            prompt={leaking_key: "leaked_value"},
+            output_model=_Output,
+            market_tools={},
+        )
+
+    # Deeply nested prompt key inside dicts and lists
+    with pytest.raises(ValueError, match="private"):
+        await agent_runner.run_role(
+            "HTF_ANALYST",
+            agent_key="claude-code",
+            prompt={
+                "market": {
+                    "level1": [
+                        {"clean": 1},
+                        {"nested": {leaking_key: 123}},
+                    ]
+                }
+            },
+            output_model=_Output,
+            market_tools={},
+        )
+
+
+@pytest.mark.asyncio
+async def test_role_runner_permits_legitimate_public_market_fields(monkeypatch):
+    client = _Client([json.dumps({"decision": "NO_TRADE"})])
+    monkeypatch.setattr(agent_runner, "build_llm_client", lambda *a, **k: client)
+    prompt = {
+        "schema": "brooks.trader-market-input.v1",
+        "role": "TRADER",
+        "symbol": "BTC-USDT",
+        "decision_time_ms": 1700000000000,
+        "timeframes": {
+            "H1": {
+                "bars": [
+                    {
+                        "open": "100",
+                        "high": "105",
+                        "low": "95",
+                        "close": "102",
+                        "volume": "1000",
+                        "close_time_ms": 1700000000000,
+                        "trades": 50,
+                    }
+                ]
+            }
+        },
+        "fields": ["ordered_ohlc", "bar_by_bar", "decision_time"],
+        "higher_timeframe_context": {
+            "market_regime": "broad_channel",
+            "always_in_direction": "LONG",
+            "observations": ["bar breakout"],
+            "uncertainty": "low",
+        },
+    }
+    result = await agent_runner.run_role(
+        "TRADER",
+        agent_key="claude-code",
+        prompt=prompt,
+        output_model=_Output,
+        market_tools={},
+    )
+    assert result.decision == "NO_TRADE"
+
+
+@pytest.mark.asyncio
+async def test_role_runner_handles_tool_exception_without_crash(monkeypatch):
+    client = _Client(
+        [
+            json.dumps({"tool": "get_closed_candles", "arguments": {"limit": 5}}),
+            json.dumps({"decision": "NO_TRADE"}),
+        ]
+    )
+    monkeypatch.setattr(agent_runner, "build_llm_client", lambda *a, **k: client)
+
+    def exploding_tool(limit: int):
+        raise RuntimeError("simulated candle database timeout")
+
+    result = await agent_runner.run_role(
+        "TRADER",
+        agent_key="claude-code",
+        prompt={"symbol": "BTC-USDT"},
+        output_model=_Output,
+        market_tools={"get_closed_candles": exploding_tool},
+    )
+    assert result.decision == "NO_TRADE"
+    assert len(client.prompts) == 2
+    assert "Tool execution failed: RuntimeError: simulated candle database timeout" in client.prompts[1]
+
+
+@pytest.mark.asyncio
+async def test_role_runner_propagates_role_run_error_from_tool(monkeypatch):
+    client = _Client(
+        [
+            json.dumps({"tool": "get_closed_candles", "arguments": {"symbol": "ETH-USDT"}}),
+        ]
+    )
+    monkeypatch.setattr(agent_runner, "build_llm_client", lambda *a, **k: client)
+
+    tools = agent_runner.bind_symbol_tools(
+        "BTC-USDT",
+        {"get_closed_candles": lambda symbol: symbol},
+    )
+
+    with pytest.raises(agent_runner.RoleRunError, match="symbol mismatch"):
+        await agent_runner.run_role(
+            "TRADER",
+            agent_key="claude-code",
+            prompt={"symbol": "BTC-USDT"},
+            output_model=_Output,
+            market_tools=tools,
+        )
+

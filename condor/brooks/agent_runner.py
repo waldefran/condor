@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import inspect
 import json
+import re
 import tempfile
 from collections.abc import Callable, Mapping
 from pathlib import Path
@@ -64,6 +65,72 @@ _SKILL_ROOT = (
 
 class RoleRunError(RuntimeError):
     """Model output or a tool request violated the Brooks role contract."""
+
+
+def _normalize_key(key: Any) -> tuple[str, list[str]]:
+    raw = str(key)
+    s1 = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", raw)
+    s2 = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
+    snake = re.sub(r"[_\-.\s]+", "_", s2)
+    tokens = [t for t in snake.split("_") if t]
+    return snake, tokens
+
+
+_FORBIDDEN_TOKENS: frozenset[str] = frozenset(
+    {
+        "account",
+        "balance",
+        "equity",
+        "margin",
+        "position",
+        "positions",
+        "pnl",
+        "order",
+        "orders",
+        "fill",
+        "fills",
+        "executor",
+        "executors",
+        "leverage",
+        "hedge",
+        "hedges",
+    }
+)
+_FORBIDDEN_PHRASES: frozenset[str] = frozenset(
+    {
+        "trade_history",
+        "management_history",
+        "entry_price",
+        "entry_prices",
+        "available_margin",
+        "available_balance",
+        "unrealized_pnl",
+        "realized_pnl",
+        "position_id",
+        "position_ids",
+        "position_side",
+        "position_size",
+        "position_state",
+        "open_orders",
+        "open_positions",
+    }
+)
+
+
+def _is_forbidden_key(key: Any) -> bool:
+    snake, tokens = _normalize_key(key)
+    if snake in _FORBIDDEN_PHRASES:
+        return True
+    if any(t in _FORBIDDEN_TOKENS for t in tokens):
+        return True
+    if {"trade", "history"}.issubset(tokens):
+        return True
+    if {"management", "history"}.issubset(tokens):
+        return True
+    if {"entry", "price"}.issubset(tokens) or {"entry", "prices"}.issubset(tokens):
+        return True
+    return False
+
 
 
 def bind_symbol_tools(
@@ -140,33 +207,16 @@ async def run_role(
     if unknown:
         raise ValueError(f"tools forbidden for {role}: {sorted(unknown)}")
     if role in ("TRADER", "HTF_ANALYST"):
-        forbidden = {
-            "account",
-            "balance",
-            "equity",
-            "margin",
-            "position",
-            "positions",
-            "pnl",
-            "orders",
-            "fills",
-            "executor",
-            "executors",
-            "leverage",
-            "hedge",
-            "trade_history",
-            "management_history",
-        }
 
         def check_public(value: Any) -> None:
             if isinstance(value, Mapping):
-                if forbidden.intersection(str(key).lower() for key in value):
-                    raise ValueError(
-                        f"{role} prompt contains private account or position fields"
-                    )
-                for child in value.values():
+                for key, child in value.items():
+                    if _is_forbidden_key(key):
+                        raise ValueError(
+                            f"{role} prompt contains private account or position fields: {key}"
+                        )
                     check_public(child)
-            elif isinstance(value, (list, tuple)):
+            elif isinstance(value, (list, tuple, set)):
                 for child in value:
                     check_public(child)
 
@@ -230,11 +280,19 @@ async def run_role(
                         raise RoleRunError(f"tool unavailable for {role}: {name}")
                     if not isinstance(arguments, dict):
                         raise RoleRunError("tool arguments must be a JSON object")
-                    result = market_tools[name](**arguments)
-                    if inspect.isawaitable(result):
-                        result = await result
+                    try:
+                        result = market_tools[name](**arguments)
+                        if inspect.isawaitable(result):
+                            result = await result
+                        payload = json.dumps(result, default=str)
+                    except RoleRunError:
+                        raise
+                    except Exception as exc:
+                        payload = json.dumps(
+                            {"error": f"Tool execution failed: {type(exc).__name__}: {exc}"}
+                        )
                     turn = (
-                        f"Read tool {name} result: {json.dumps(result, default=str)}\n"
+                        f"Read tool {name} result: {payload}\n"
                         "Continue. Request another allowed read tool or return final JSON."
                     )
             finally:
