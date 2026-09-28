@@ -72,6 +72,75 @@ async def test_role_runner_uses_read_tools_and_validates_output(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_role_runner_inlines_prompt_for_stateless_bridge(monkeypatch):
+    class _StatelessClient(_Client):
+        accepts_system_prompt = False
+        keeps_history = False
+
+    client = _StatelessClient(
+        [
+            json.dumps({"tool": "get_closed_candles", "arguments": {"limit": 1}}),
+            json.dumps({"decision": "NO_TRADE"}),
+        ]
+    )
+    config = {}
+
+    def make_client(*args, **kwargs):
+        config.update(kwargs)
+        return client
+
+    monkeypatch.setattr(agent_runner, "build_llm_client", make_client)
+    result = await agent_runner.run_role(
+        "TRADER",
+        agent_key="opencode-go:deepseek-v4.1-flash",
+        prompt={"symbol": "BTC-USDT"},
+        output_model=_Output,
+        market_tools={"get_closed_candles": lambda limit: [{"close": "100"}] * limit},
+    )
+
+    assert result.decision == "NO_TRADE"
+    # The CLI bridge has no system channel: the role skills arrive inlined.
+    assert client.prompts[0].startswith("You are the independent Brooks TRADER role.")
+    assert "brooks-trade-entry" in client.prompts[0]
+    assert "Allowed read tools:" in client.prompts[0]
+    # It also keeps no history: each turn resends the full transcript.
+    assert client.prompts[1].startswith(client.prompts[0])
+    assert '"tool": "get_closed_candles"' in client.prompts[1]
+    assert "Read tool get_closed_candles result" in client.prompts[1]
+    assert "brooks-trade-entry" in config["system_prompt"]
+
+
+@pytest.mark.asyncio
+async def test_role_runner_keeps_session_transcript_for_history_clients(monkeypatch):
+    client = _Client(
+        [
+            json.dumps({"tool": "get_closed_candles", "arguments": {"limit": 1}}),
+            json.dumps({"decision": "NO_TRADE"}),
+        ]
+    )
+    monkeypatch.setattr(agent_runner, "build_llm_client", lambda *a, **k: client)
+    await agent_runner.run_role(
+        "TRADER",
+        agent_key="claude-acp:sonnet",
+        prompt={"symbol": "BTC-USDT"},
+        output_model=_Output,
+        market_tools={"get_closed_candles": lambda limit: [{"close": "100"}] * limit},
+    )
+
+    assert client.prompts[0].startswith("Allowed read tools:")
+    assert "brooks-trade-entry" not in client.prompts[0]
+    assert client.prompts[1].startswith("Read tool get_closed_candles result")
+
+
+def test_opencode_cli_client_declares_missing_system_and_history_channels():
+    from condor.acp.opencode_cli_client import OpenCodeCLIClient
+
+    client = OpenCodeCLIClient(model="opencode-go/deepseek-v4.1-flash")
+    assert client.accepts_system_prompt is False
+    assert client.keeps_history is False
+
+
+@pytest.mark.asyncio
 async def test_role_runner_rejects_private_context_and_write_tools():
     with pytest.raises(ValueError, match="private"):
         await agent_runner.run_role(

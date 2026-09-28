@@ -88,7 +88,15 @@ class OpenCodeCLIClient:
     Exposes the surface the existing surfaces rely on: ``start()``,
     ``prompt(text) -> str``, ``stop()``, a settable ``working_dir``, and a
     ``model`` attribute holding the full CLI model id (``provider/model``).
+
+    The CLI has no system-instruction channel and each prompt is a fresh
+    subprocess, so ``build_llm_client`` callers must inline any system prompt
+    and resend the transcript for multi-turn loops. The capability flags below
+    let them detect that instead of silently losing the instructions.
     """
+
+    accepts_system_prompt = False
+    keeps_history = False
 
     def __init__(
         self,

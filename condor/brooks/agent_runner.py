@@ -250,6 +250,12 @@ async def run_role(
         f"Final output schema: {json.dumps(output_model.model_json_schema(), default=str)}\n"
         f"Input: {json.dumps(dict(prompt), default=str)}"
     )
+    # The opencode CLI bridge has no system channel and one process per prompt:
+    # inline the role instructions and resend the transcript each tool turn so
+    # the model receives the same context a session-based backend keeps.
+    keeps_history = bool(getattr(client, "keeps_history", True))
+    if not getattr(client, "accepts_system_prompt", True):
+        first_prompt = f"{instructions}\n\n{first_prompt}"
     # ACP bridges also discover .mcp.json from cwd. An empty mcpServers list is
     # insufficient while cwd is the Condor repository, whose file registers
     # Hummingbot and Condor servers. A fresh empty cwd removes that surface.
@@ -291,10 +297,19 @@ async def run_role(
                         payload = json.dumps(
                             {"error": f"Tool execution failed: {type(exc).__name__}: {exc}"}
                         )
-                    turn = (
+                    reply = (
                         f"Read tool {name} result: {payload}\n"
                         "Continue. Request another allowed read tool or return final JSON."
                     )
+                    if keeps_history:
+                        turn = reply
+                    else:
+                        turn = (
+                            f"{turn}\n"
+                            f"Assistant tool request: "
+                            f"{json.dumps(response, default=str)}\n"
+                            f"{reply}"
+                        )
             finally:
                 await client.stop()
     raise AssertionError("unreachable")
