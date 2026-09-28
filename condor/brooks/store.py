@@ -43,7 +43,8 @@ class BrooksStore:
     """One strategy's Brooks state; each completed append is fsynced."""
 
     def __init__(self, strategy_home: Path):
-        self.root = Path(strategy_home) / "brooks_state"
+        self.strategy_home = Path(strategy_home)
+        self.root = self.strategy_home / "brooks_state"
         self.root.mkdir(parents=True, exist_ok=True)
         for name in ("trader", "htf", "trades"):
             (self.root / name).mkdir(exist_ok=True)
@@ -128,6 +129,9 @@ class BrooksStore:
     def _trade_dir(self, correlation_id: str) -> Path:
         if not re.fullmatch(r"[A-Za-z0-9_-]+", correlation_id):
             raise ValueError("invalid correlation_id")
+        gm_trades = self.strategy_home / "trades" / correlation_id
+        if gm_trades.exists() or (self.strategy_home / "trades").exists():
+            return gm_trades
         return self.root / "trades" / correlation_id
 
     def write_trade_document(
@@ -135,9 +139,11 @@ class BrooksStore:
     ) -> None:
         if name not in _TRADE_DOCUMENTS:
             raise ValueError("unsupported trade document")
+        target_dir = self._trade_dir(correlation_id)
+        target_dir.mkdir(parents=True, exist_ok=True)
         with self._lock:
             atomic_write_json(
-                self._trade_dir(correlation_id) / name, dict(value), allow_nan=False
+                target_dir / name, dict(value), allow_nan=False
             )
 
     def read_trade_document(
@@ -145,8 +151,13 @@ class BrooksStore:
     ) -> dict[str, Any] | None:
         if name not in _TRADE_DOCUMENTS:
             raise ValueError("unsupported trade document")
-        path = self._trade_dir(correlation_id) / name
-        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        if not re.fullmatch(r"[A-Za-z0-9_-]+", correlation_id):
+            raise ValueError("invalid correlation_id")
+        for parent in (self.strategy_home / "trades", self.root / "trades"):
+            path = parent / correlation_id / name
+            if path.exists():
+                return json.loads(path.read_text(encoding="utf-8"))
+        return None
 
     def append_trade_history(
         self, correlation_id: str, name: str, value: Mapping[str, Any]

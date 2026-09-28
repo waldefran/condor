@@ -168,3 +168,51 @@ def test_trade_store_rejects_path_traversal(tmp_path):
         store.write_trade_document("../outside", "binding.json", {})
     with pytest.raises(ValueError, match="unsupported"):
         store.append_trade_history("trade-1", "other.jsonl", {})
+
+
+@pytest.mark.asyncio
+async def test_store_and_gm_unified_root_reads_trade_documents(tmp_path):
+    # Simulate GM persisting to <strategy_home>/trades/<correlation_id>
+    gm_trade_dir = tmp_path / "trades" / "trade-unified-1"
+    gm_trade_dir.mkdir(parents=True, exist_ok=True)
+    (gm_trade_dir / "binding.json").write_text(
+        json.dumps({"symbol": "BTC-USDT", "main_position_id": "pos-main-1"})
+    )
+    (gm_trade_dir / "original_trade_intent.json").write_text(
+        json.dumps({"decision": "ENTER_LONG", "symbol": "BTC-USDT"})
+    )
+    (gm_trade_dir / "hedge_state.json").write_text(
+        json.dumps({"unresolved": False, "hedge_ratio": "0.0"})
+    )
+
+    store = BrooksStore(tmp_path)
+    # 1. BrooksStore reads GM-written trade documents directly
+    assert store.read_trade_document("trade-unified-1", "binding.json") == {
+        "symbol": "BTC-USDT",
+        "main_position_id": "pos-main-1",
+    }
+    assert store.read_trade_document("trade-unified-1", "hedge_state.json") == {
+        "unresolved": False,
+        "hedge_ratio": "0.0",
+    }
+    assert store.read_trade_document("trade-unified-1", "original_trade_intent.json") == {
+        "decision": "ENTER_LONG",
+        "symbol": "BTC-USDT",
+    }
+
+    # 2. Writing trade documents and history goes to unified GM directory
+    store.write_trade_document(
+        "trade-unified-1", "latest_management_intent.json", {"action": "HOLD"}
+    )
+    store.append_trade_history(
+        "trade-unified-1", "management_history.jsonl", {"action": "HOLD"}
+    )
+    assert (gm_trade_dir / "latest_management_intent.json").exists()
+    assert (gm_trade_dir / "management_history.jsonl").exists()
+
+    # 3. Global PM wake path in supervisor finds the active binding
+    supervisor = BrooksSupervisor(tmp_path, BrooksConfig.from_engine_config({}))
+    supervisor.store = store
+    active = await supervisor._default_pm_list_active("BTC-USDT")
+    assert "trade-unified-1" in active
+

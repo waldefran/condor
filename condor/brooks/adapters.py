@@ -1774,11 +1774,14 @@ async def _pm_snapshot(
     original_intent = TradeIntentV2.model_validate(original_raw).model_dump(mode="json")
     if original_intent["symbol"] != symbol:
         return None
-    # Supervisor store documents (brooks_state). Management history must be a
+    # Supervisor store documents (GM trades or brooks_state). Management history must be a
     # JSONL list of mappings; latest ambient intents degrade to None.
-    history_rows = BrooksStore.read_jsonl(
-        root / "brooks_state" / "trades" / correlation_id / "management_history.jsonl"
-    )
+    history_path = root / "trades" / correlation_id / "management_history.jsonl"
+    if not history_path.exists():
+        history_path = (
+            root / "brooks_state" / "trades" / correlation_id / "management_history.jsonl"
+        )
+    history_rows = BrooksStore.read_jsonl(history_path)
     if any(not isinstance(row, dict) for row in history_rows):
         return None
     latest_trader = _pm_latest_intent(root, "trader", symbol)
