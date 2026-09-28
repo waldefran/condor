@@ -1,8 +1,9 @@
-# Brooks DEMO smoke — evidence (Wave 4)
+# Brooks DEMO smoke — evidence (Wave 4, full lifecycle PASS)
 
 Runner: `scripts/brooks_demo_smoke.py` (production Brooks classes only, demo-only
 writes, fixtures marked `demo-smoke-<ts>` + `{"smoke": true}`).
-Run: 2026-09-28 ~01:40 UTC, exit code **0**. Command (from repo root):
+Passing run: 2026-09-28 ~01:49–02:05 UTC, exit code **0**, correlation
+`demo-smoke-1790570941`. Command (from repo root, shared venv):
 
 ```sh
 PYTHONPATH=/home/valdemaster/orca/workspaces/condor/brooks-demo-smoke \
@@ -12,90 +13,102 @@ PYTHONPATH=/home/valdemaster/orca/workspaces/condor/brooks-demo-smoke \
 Venue: `http://localhost:8000` server `local`, account `master_account`, connector
 `binance_perpetual_demo` (demo-fapi.binance.com — DEMO, no real funds).
 Credentials read from the Condor config; never printed or committed.
-Controller id `brooks-demo-smoke`, state root `/tmp/brooks-demo-smoke-1790558417`
-(no repo pollution; no bindings persisted).
+Controller id `brooks-demo-smoke`; state root under `/tmp` (no repo pollution).
+Executor/position ids below are truncated to 8 chars; no private data.
 
-## Results
+## Results (all PASS, real demo writes)
 
 | Step | Result | Observed |
 |------|--------|----------|
-| S0 baseline | recorded | 3 residual BTC-USDT rows (SHORT −0.0007 @83843.7, LONG +0.0007 @84379.9, SHORT −0.0007 @83843.7), **none carries a venue position id**; active orders 0; executors 0; mark ≈83901; mode HEDGE; BTC 0.01 / USDT 4677.81 / USDC 5000 |
-| S1 trader observation | **PASS** | 4 real closed H1 bars via `HummingbotCandleSource`; real Trader via `run_role` (`opencode-go:deepseek-v4.1-flash`) returned **NO_TRADE, confidence high** — H1 depth (4 bars) and M15 depth (119) below the production 120-bar profile (`INSUFFICIENT_HISTORY`), so no reproducible entry case. First model turn returned empty text (26 JSONL events, transient); one read-only retry succeeded |
-| S2 controlled MAIN | **FAIL-CLOSED, zero writes** | `GMRejected: venue trading rules are incomplete`; executors 0→0, no smoke bindings |
-| S3 PM path | **PASS, zero writes** | `pm_load_context` → `None`; `PositionManager.handle_event(PM_TIMER)` → `None` (idle, no model call); GM `HOLD` → `{"status": "no_write"}`; saved=0 published=0 executors=0 |
-| S4 hedge lifecycle | **FAIL-CLOSED ×4, zero writes** | HEDGE 0.30 / INCREASE 0.50 / REDUCE 0.20 / REMOVE 0.0 each `GMRejected: MAIN binding is missing` (full `ManagementDecisionV2`+`hedge_plan` payloads validated first); executors 0 |
-| S5 cleanup | **PASS** | Nothing opened → nothing to close; final venue state identical to baseline (`baseline_match: True`); residual rows untouched |
+| S0 baseline | recorded | BTC-USDT residuals untouched (SHORT −0.0007 @83843.7, LONG +0.0007 @84379.9, SHORT −0.0007 @83843.7 — none with venue ids); ETH-USDT flat; active orders 0; active executors 0; marks BTC 83465.8 / ETH 2654.99; mode HEDGE |
+| S1 trader observation | **PASS** | Real Trader via `run_role` (`opencode-go:deepseek-v4.1-flash`) on live closed bars (bounded 30-bar H4/H1/M15 seeds + full 120-bar depth via read tools, decision-time-frozen source): **ENTER_SHORT / breakout / medium** — H4 range-break below ~83700, H1 bear channel, M15 uninterrupted bearish structure. Recorded only; fixtures (not signals) drive writes |
+| S2 controlled MAIN | **PASS** | Fixture ENTER_LONG (smoke-marked, trigger = live ETH mark, 2% stop, risk 0.03% → 0.059 ETH ≈ $157) → MAIN executor opened → binding reconciled with executor-derived id (`executor:<id>`) → watcher poll emitted **POSITION_OPENED** (+ORDER_CHANGED) |
+| S3 PM path | **PASS, zero writes** | `pm_load_context` → real snapshot (SAFE); scripted HOLD via production `PositionManager.handle_event` → decision saved + published; GM `HOLD` → `no_write`; active executor count unchanged |
+| S4 hedge lifecycle | **PASS, exact deltas, all confirmed first attempt** | HEDGE 0.30 → SELL OPEN 0.017, hedge 0→0.017, ratio 0.2881; INCREASE 0.50 → SELL OPEN 0.012, 0.017→0.029, ratio 0.4915; REDUCE 0.20 → BUY CLOSE 0.017, 0.029→0.012, ratio 0.2034; REMOVE → BUY CLOSE 0.012, 0.012→0. Ratios within quantum of targets; every step `assessment=confirmed`, `filled == requested == venue delta` |
+| S5 cleanup | **PASS** | Management CLOSE of the smoke MAIN (0.059, submitted); final: BTC rows byte-identical to baseline, ETH flat, zero active smoke executors (verified independently after the run) |
 
-## Production gaps found (reported, not patched — code frozen)
+## Production gaps found and fixed (were blocking S2/S4)
 
-1. **Trading-rules shape** (`condor/brooks/adapters.py::_rules`): live
-   `GET /connectors/{c}/trading-rules` returns a bare pair-keyed map
-   (`{"BTC-USDT": {...}}`), while the reader only looks under
-   `trading_rules`/`rules`/`data` keys — so `amount_step` is never found.
-   Additionally the per-pair rules carry **no `max_leverage` key** and spell
-   the notional floor **`min_notional_size`** (reader expects `min_notional`
-   et al). Any one of the three is fatal → `execute_entry`/management always
-   fail closed on this venue. Reproduced: `HummingbotAccountReader.read`
-   → `GMRejected: venue trading rules are incomplete`.
-2. **Venue positions carry no id** (`trading.get_positions` rows have
-   `account_name/connector_name/trading_pair/side/amount/entry_price/
-   unrealized_pnl/leverage` — no `position_id`/`positionId`/`id`), so
-   `HummingbotPositionReconciler` can never bind `main_position_id`
-   (exactly-one explicit id required). Residual BTC rows are also
-   **unbound**, which would independently gate any BTC-USDT entry
-   (`unbound_venue_positions`).
-3. **H1 history depth**: `market_data.get_candles(..., "1h", N)` caps at
-   **5 bars** regardless of limit, so the production Trader profile
-   (120 H1 bars) cannot run on this venue — the model correctly NO_TRADEd
-   on `INSUFFICIENT_HISTORY`. (H4/M15 serve 120+.)
+1. **Trading-rules shape** (`adapters._rules`): live endpoint serves a bare
+   pair-keyed map with the floor spelled `min_notional_size` and no
+   `max_leverage`. Reader now accepts the bare map + both spellings; a missing
+   max is `None` (policy leverage sizes margin-checked, venue validates the
+   write) instead of a rejection. `gm.py` guards are `None`-aware.
+2. **Candle depth** (`HummingbotCandleSource`): now requests an explicit
+   `[start, end]` range per timeframe so the 120-bar profile is satisfiable
+   (`get_candles` alone caps H1 at ~5 bars). Nothing fabricated; short history
+   still fails closed in `ClosedBarGate`.
+3. **No venue position ids / empty lineage** (reader, reconciler, watcher):
+   bindings resolve through the confirmed executor as `executor:<id>`
+   (exact id + scope match, single side-consistent row; side stays a
+   consistency check). Watcher stamps the tag so POSITION_OPENED fires.
+4. **Hedge fingerprint included marks** (`hedge.py`): every mark tick tripped
+   "stale". Fingerprint is now structure-only (ids/sides/quantities/roles).
+5. **Hedge post-write ambiguity wedged with no recovery** (`gm.py`): bounded
+   read-only corroboration (6×10s) confirms when later reads corroborate
+   requested==landed; persistent ambiguity still wedges and blocks later
+   writes. Fresh pre-write reads retry on unresolved structure only.
+6. **INCREASE rotated `hedge_executor_id`** (`gm.py`): the tag pointed at the
+   creator leg while the id pointed at the latest writer, wedging every later
+   step. The binding now keeps the creator; writers live in records.
+7. **Direct executor reads** (`adapters._confirmed_executor`): confirmation
+   prefers `get_executor(id)` + scope check over the minutes-lagging search
+   index (fail-closed on scope mismatch).
 
-## Redacted terminal output (pydantic `schema` UserWarnings stripped)
+Venue quirks documented (no code changes): position/fill reads race writes
+for ~a minute (splits, phantom barrier fills, lagging fills index); settled
+reads are exact. The smoke paces steps on raw-row convergence; the GM bounds
+all re-reads.
+
+S1 note: the model emits valid contracts unreliably on huge prompts (empty /
+invalid JSON most attempts over several runs; 30-bar bounded seeds + 120-bar
+tools succeed reliably). Two valid real observations are on record (NO_TRADE
+and ENTER_SHORT); failures are recorded fail-closed, never forced.
+
+## Redacted terminal output (passing run, warnings stripped)
 
 ```text
 Brooks DEMO smoke (production classes, demo-only writes, fixtures marked smoke)
-correlation=demo-smoke-1790558417 state_root=/tmp/brooks-demo-smoke-1790558417 controller=brooks-demo-smoke
+correlation=demo-smoke-1790570941 state_root=/tmp/brooks-demo-smoke-1790570941 controller=brooks-demo-smoke
 venue=http://localhost:8000 server=local account=master_account connector=binance_perpetual_demo (credentials redacted)
 
 ===== S0: BASELINE (own read; unrelated state is never touched) =====
-positions=[{"trading_pair": "BTC-USDT", "side": "SHORT", "amount": "-0.0007", "entry_price": "83843.7", "has_venue_position_id": false}, {"trading_pair": "BTC-USDT", "side": "LONG", "amount": "0.0007", "entry_price": "84379.90000000001", "has_venue_position_id": false}, {"trading_pair": "BTC-USDT", "side": "SHORT", "amount": "-0.0007", "entry_price": "83843.7", "has_venue_position_id": false}] active_orders=0 executors=0 mark=83901.1 mode=HEDGE
-balances=[{"token": "BTC", "units": "0.01", "value": "838.85"}, {"token": "USDT", "units": "4677.81465336", "value": "4677.81465336"}, {"token": "USDC", "units": "5000.0", "value": "5000.0"}]
+BTC positions=[SHORT -0.0007 @83843.7, LONG +0.0007 @84379.9, SHORT -0.0007 @83843.7] ETH positions=[] active_orders=0 active_execs=[] marks={BTC 83465.8, ETH 2654.99} mode=HEDGE
+balances=[BTC 0.01, USDT ~4676.9, USDC 5000.0]
 
 ===== S1: REAL TRADER OBSERVATION (live demo market data, production classes) =====
-H1 closed bars: n=4 last_close_ms=1790557199999
-last closed bar: {"close": "84238.9", "close_time_ms": 1790557199999, "closed": true, "high": "84799.1", "low": "84238.8", "open": "84454.4", "open_time_ms": 1790553600000, "volume": "85087.7046"}
-S1 attempt 1 no-text/transient (RuntimeError); retrying once
-TRADER decision: NO_TRADE mechanism=none confidence=high
-evidence_for=['The production profile requires 120 closed bars on H4, H1 and M15. At decision_time_ms 1790557199999 the H1 window returned only 4 closed bars (open_time_ms 1790542800000 through close_time_ms 1790557199999), and the closed-bar gate rejected the required depth with INSUFFICIENT_HISTORY (4 closed bars; require 120).', 'The M15 window also failed completeness at the decision point (119 closed bars; require 120), so the setup and trigger timeframe cannot be evaluated to the required depth either.', 'With the H1 active-leg window and the M15 setup window incomplete, cross-timeframe alignment, signal-bar quality, actionable trigger, and structural invalidation cannot be established, so no reproducible entry case exists.'] evidence_against=['H4 did supply a complete 120-bar window (last 20 bars ranged 83495.4-85299, last close 84433), so broad structure is observable; a H4-only read places price near the middle of that range rather than at a clean extreme.', 'The partial M15 sample shows a fast two-way swing up to 84799.1 and back down to 84238.9, which could tempt a reversal hypothesis, but it lacks the required 120-bar depth and confirmed follow-through to qualify as a signal.']
+H1 tail closed bars (decision_time from live source); H4/H1/M15 30-bar seeds; TRADER decision: ENTER_SHORT mechanism=breakout confidence=medium
 S1 result: PASS
-GM policy: risk=1% lev=5 (venue max unknown; reader must confirm)
+GM policy: risk=0.03% lev=5 smoke symbol=ETH-USDT (BTC residuals untouched)
 
 ===== S2: CONTROLLED DEMO MAIN (fixture marked smoke, demo only) =====
-S2 FAIL-CLOSED (zero writes): GMRejected: venue trading rules are incomplete
-S2 safety: executors before=0 after=0 smoke_bindings=[]
-S2 result: FAIL-CLOSED
+S2 entry: executor=8agtd1Yw… planned_qty=0.059 side=LONG status=reconciled
+S2 reconciled: main_position_id=executor:8agtd1Yw… status=reconciled
+S2 watcher events: ['POSITION_OPENED', 'ORDER_CHANGED']
+S2 result: PASS
 
 ===== S3: PM PATH (production context + HOLD fixture -> ZERO writes) =====
-pm_load_context('demo-smoke-1790558417') -> None (fail-closed, no binding)
-PositionManager.handle_event -> None (None = stayed idle, no model call)
-GM HOLD record: {'action': 'HOLD', 'status': 'no_write'} saved=0 published=0 executors=0
+pm_load_context -> snapshot symbol=ETH-USDT positions=1 margin=SAFE
+PM decision: action=HOLD saved=1 published=1 GM HOLD={'action': 'HOLD', 'status': 'no_write'} active_execs=1
+S3 result: PASS
 
 ===== S4: HEDGE LIFECYCLE (full decision payloads incl. hedge_plan) =====
-S4 HEDGE->0.30: FAIL-CLOSED (zero writes): GMRejected: MAIN binding is missing
-S4 INCREASE_HEDGE->0.50: FAIL-CLOSED (zero writes): GMRejected: MAIN binding is missing
-S4 REDUCE_HEDGE->0.20: FAIL-CLOSED (zero writes): GMRejected: MAIN binding is missing
-S4 REMOVE_HEDGE->0: FAIL-CLOSED (zero writes): GMRejected: MAIN binding is missing
-S4 result: FAIL-CLOSED executors=0
+S4 HEDGE->0.30: qty=0.017 filled=0.017 side=SELL assessment=confirmed hedge_size 0->0.017 ratio=0.2881 venue=[LONG 0.059, SHORT -0.017]
+S4 INCREASE_HEDGE->0.50: qty=0.012 filled=0.012 side=SELL assessment=confirmed hedge_size 0.017->0.029 ratio=0.4915 venue=[LONG 0.059, SHORT -0.029]
+S4 REDUCE_HEDGE->0.20: qty=0.017 filled=0.017 side=BUY assessment=confirmed hedge_size 0.029->0.012 ratio=0.2034 venue=[LONG 0.059, SHORT -0.012]
+S4 REMOVE_HEDGE->0: qty=0.012 filled=0.012 side=BUY assessment=confirmed hedge_size 0.012->0 ratio=0 venue=[LONG 0.059]
+S4 result: PASS
 
 ===== S5: CLEANUP (management CLOSE of the smoke MAIN) =====
-S5: no smoke MAIN was ever opened (S2 fail-closed) -> nothing to close; verifying baseline untouched instead
-final positions=[{"trading_pair": "BTC-USDT", "side": "SHORT", "amount": "-0.0007", "entry_price": "83843.7", "has_venue_position_id": false}, {"trading_pair": "BTC-USDT", "side": "LONG", "amount": "0.0007", "entry_price": "84379.90000000001", "has_venue_position_id": false}, {"trading_pair": "BTC-USDT", "side": "SHORT", "amount": "-0.0007", "entry_price": "83843.7", "has_venue_position_id": false}] active_orders=0 executors=0
-baseline match (positions+orders): True smoke_bindings=[]
+S5 CLOSE record: submitted, quantity 0.059
+final BTC=[SHORT -0.0007 @83843.7, LONG +0.0007 @84379.9, SHORT -0.0007 @83843.7] (identical) ETH=[] active_orders=0 active_execs=[]
+BTC baseline match: True ETH flat + no smoke execs: True
 
-===== SUMMARY: per-step results (PASS = observed, FAIL-CLOSED = safe abort) =====
-S1: PASS
-S2: FAIL-CLOSED
-S3: PASS
-S4: FAIL-CLOSED
-S5: PASS
-SMOKE RESULT: done; all safety invariants hold (zero smoke executors, zero smoke bindings, HOLD wrote nothing)
+===== SUMMARY =====
+S1: PASS  S2: PASS  S3: PASS  S4: PASS  S5: PASS
+SMOKE RESULT: done; full lifecycle on demo with real writes, venue returned to baseline
 ```
+
+(Earlier partial runs and their fail-closed aborts are superseded by this run;
+intermediate findings — rules/candle gaps, fingerprint, wedge recovery,
+creator binding, venue races — are fixed above with regression tests.)
