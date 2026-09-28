@@ -743,7 +743,11 @@ class BrooksSupervisor:
 
     async def _default_pm_list_active(self, symbol: Any) -> list[str]:
         assert self.store is not None
-        trades = self.store.root / "trades"
+        # ONE root: the GM persists bindings at <strategy_home>/trades
+        # (wire_supervisor passes strategy_home as the GM state_root), while
+        # self.store.root is <strategy_home>/brooks_state. Scanning the store
+        # root here left every global PM wake (PM_TIMER) with zero bindings.
+        trades = self.strategy_home / "trades"
         if not trades.exists():
             return []
         active: list[str] = []
