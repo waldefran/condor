@@ -293,7 +293,15 @@ def read_bindings(
             or binding.get("controller_id") != controller_id
         ):
             continue
-        if binding.get("status") not in ("submitting", "submitted", "reconciled"):
+        # ``reconciliation_required`` stays visible: recovery must rebuild
+        # MAIN/HEDGE ownership from this binding, and new entries for the same
+        # symbol fail closed on the resolved structure until it clears.
+        if binding.get("status") not in (
+            "submitting",
+            "submitted",
+            "reconciled",
+            "reconciliation_required",
+        ):
             continue
         bindings.append(binding)
     return bindings

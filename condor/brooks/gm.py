@@ -24,6 +24,7 @@ from .hedge import (
     PositionLeg,
     assess_hedge_result,
     build_hedge_state,
+    classify_hedge_recovery,
     compile_hedge_action,
 )
 
@@ -45,6 +46,11 @@ _HEDGE_FRESH_DELAY_SEC = 10.0
 #: are exact, so a short window would wedge on noise.
 _HEDGE_RECORROBORATE_READS = 6
 _HEDGE_RECORROBORATE_DELAY_SEC = 10.0
+#: Read-only recovery of a wedged hedge (reconciliation_required): bounded
+#: fresh reads. A terminal classification is applied only when two independent
+#: reads agree on it, so a lagging "no change" read cannot fail the trade.
+_HEDGE_RECOVERY_READS = 6
+_HEDGE_RECOVERY_DELAY_SEC = 10.0
 
 
 def _hedge_filled_quantity(
@@ -548,6 +554,294 @@ class BrooksGM:
         finally:
             self._unlock(lock, fd)
 
+    @staticmethod
+    def _failed_hedge_is_unconfirmed(
+        binding: dict[str, Any], record: dict[str, Any]
+    ) -> bool:
+        """A first HEDGE with no executor receipt cannot prove an absent leg."""
+        return (
+            record.get("action") == "HEDGE"
+            and not binding.get("hedge_position_id")
+            and not record.get("hedge_position_id")
+            and not record.get("executor_id")
+        )
+
+    @staticmethod
+    def _pending_hedge_records(
+        trade_dir: Path, decision_id: str | None
+    ) -> list[tuple[Path, dict[str, Any]]]:
+        mgmt_dir = trade_dir / "management"
+        pending: list[tuple[Path, dict[str, Any]]] = []
+        if not mgmt_dir.exists():
+            return pending
+        for path in sorted(mgmt_dir.glob("*.json")):
+            try:
+                record = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            if not isinstance(record, dict):
+                continue
+            if record.get("status") != "reconciliation_required":
+                continue
+            if decision_id is not None and record.get("decision_id") != decision_id:
+                continue
+            pending.append((path, record))
+        return pending
+
+    async def reconcile_hedge(
+        self, correlation_id: str, *, decision_id: str | None = None
+    ) -> dict[str, Any]:
+        """Read-only recovery of a hedge write wedged at reconciliation_required.
+
+        Fresh venue reads rebuild MAIN/HEDGE ownership from the persisted
+        binding, the pending management record is re-evaluated against the
+        delta it recorded, and only a classification agreed by two independent
+        reads updates the record, hedge state and binding. The original order
+        is never retried, an ack is never treated as a fill, and an outcome
+        that stays ambiguous leaves the trade blocked.
+        """
+        trade_dir = self._trade_dir(correlation_id)
+        binding_path = trade_dir / "binding.json"
+        if not binding_path.exists():
+            raise GMRejected("MAIN binding is missing")
+        binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        symbol = binding.get("symbol")
+        if not isinstance(symbol, str) or not symbol:
+            raise GMRejected("MAIN binding has no symbol")
+        lock, fd = await self._locked(symbol)
+        try:
+            binding = json.loads(binding_path.read_text(encoding="utf-8"))
+            if (
+                binding.get("account_name") != self.account_name
+                or binding.get("connector_name") != self.connector_name
+                or binding.get("controller_id") != self.execution.controller_id
+            ):
+                raise GMRejected(
+                    "MAIN binding belongs to a different account or controller"
+                )
+            pending = self._pending_hedge_records(trade_dir, decision_id)
+            if not pending:
+                if decision_id is not None:
+                    raise GMRejected(
+                        "no reconciliation_required decision matches decision_id"
+                    )
+                if binding.get("status") == "reconciliation_required":
+                    raise GMRejected(
+                        "reconciliation is required but no pending decision exists"
+                    )
+                return {
+                    "correlation_id": correlation_id,
+                    "decision_id": None,
+                    "status": "not_required",
+                    "reason": "no pending hedge reconciliation",
+                }
+            if len(pending) > 1:
+                raise GMRejected(
+                    "multiple pending hedge decisions; specify decision_id"
+                )
+            record_path, record = pending[0]
+            if record.get("action") not in (
+                "HEDGE",
+                "INCREASE_HEDGE",
+                "REDUCE_HEDGE",
+                "REMOVE_HEDGE",
+            ):
+                raise GMRejected("pending decision is not a hedge action")
+            if not (binding.get("main_position_id") or record.get("main_position_id")):
+                raise GMRejected(
+                    "pending hedge decision lacks an authoritative MAIN position id"
+                )
+
+            candidate: tuple[str, str, int] | None = None
+            last_reason = "no fresh venue read"
+            for attempt in range(_HEDGE_RECOVERY_READS):
+                snapshot, state = await self._read_recovery_state(
+                    symbol=symbol, binding=binding, record=record
+                )
+                result: HedgeResult | None = None
+                if snapshot is None:
+                    candidate = None
+                    last_reason = "venue read failed"
+                elif state is None:
+                    candidate = None
+                    last_reason = "hedge ownership could not be rebuilt"
+                elif state.unresolved:
+                    candidate = None
+                    last_reason = (
+                        f"hedge structure unresolved: {state.structure_status}"
+                    )
+                else:
+                    try:
+                        result = classify_hedge_recovery(
+                            position_action=record.get("position_action"),
+                            expected_hedge_size=record.get("expected_hedge_size"),
+                            requested_quantity=record.get("quantity"),
+                            observed_hedge_size=state.hedge_size,
+                            unresolved=False,
+                        )
+                    except HedgeBlocked as exc:
+                        raise GMRejected(
+                            f"pending hedge decision is not reconcilable: {exc}"
+                        ) from exc
+                    if result.status == "ambiguous":
+                        candidate = None
+                        last_reason = result.reason
+                    elif result.status == "failed" and self._failed_hedge_is_unconfirmed(
+                        binding, record
+                    ):
+                        # A first HEDGE with no executor receipt has no lineage
+                        # that could prove the leg absent: keep failing closed.
+                        candidate = None
+                        last_reason = (
+                            "no executor lineage to confirm the absent hedge"
+                        )
+                    elif (
+                        candidate is not None
+                        and candidate[0] == result.status
+                        and candidate[1] == state.hedge_size
+                        and snapshot.as_of_ms > candidate[2]
+                    ):
+                        log.info(
+                            "Brooks hedge recovery resolved action=%s status=%s "
+                            "observed=%s reason=%s",
+                            record.get("action"),
+                            result.status,
+                            state.hedge_size,
+                            result.reason,
+                        )
+                        return self._apply_hedge_recovery(
+                            correlation_id=correlation_id,
+                            trade_dir=trade_dir,
+                            binding_path=binding_path,
+                            binding=binding,
+                            record_path=record_path,
+                            record=record,
+                            state=state,
+                            result=result,
+                        )
+                    else:
+                        candidate = (
+                            result.status,
+                            state.hedge_size,
+                            snapshot.as_of_ms,
+                        )
+                        last_reason = result.reason
+                log.info(
+                    "Brooks hedge recovery action=%s attempt=%d status=%s "
+                    "observed=%s reason=%s",
+                    record.get("action"),
+                    attempt,
+                    result.status if result else None,
+                    getattr(state, "hedge_size", None),
+                    last_reason,
+                )
+                if attempt < _HEDGE_RECOVERY_READS - 1:
+                    await asyncio.sleep(_HEDGE_RECOVERY_DELAY_SEC)
+            return {
+                "correlation_id": correlation_id,
+                "decision_id": record.get("decision_id"),
+                "status": "ambiguous",
+                "reason": last_reason,
+            }
+        finally:
+            self._unlock(lock, fd)
+
+    def _update_recovered_binding(
+        self,
+        binding: dict[str, Any],
+        binding_path: Path,
+        record: dict[str, Any],
+        state: HedgeState,
+        result: HedgeResult,
+    ) -> None:
+        action = record.get("action")
+        if action == "REMOVE_HEDGE" and result.status == "confirmed":
+            binding["hedge_position_id"] = None
+            binding["hedge_executor_id"] = None
+            binding["hedge_size"] = "0"
+        else:
+            if state.hedge_position_id:
+                binding["hedge_position_id"] = state.hedge_position_id
+            if action == "HEDGE" and record.get("executor_id"):
+                binding["hedge_executor_id"] = record["executor_id"]
+            binding["hedge_size"] = state.hedge_size
+        if not binding.get("main_position_id") and state.main_position_id:
+            binding["main_position_id"] = state.main_position_id
+        binding["status"] = (
+            "reconciled" if binding.get("main_position_id") else "submitted"
+        )
+        self._replace(binding_path, binding)
+
+    def _apply_hedge_recovery(
+        self,
+        *,
+        correlation_id: str,
+        trade_dir: Path,
+        binding_path: Path,
+        binding: dict[str, Any],
+        record_path: Path,
+        record: dict[str, Any],
+        state: HedgeState,
+        result: HedgeResult,
+    ) -> dict[str, Any]:
+        now = int(time.time() * 1000)
+        requested = _decimal(record.get("quantity"), "record.quantity", positive=True)
+        expected = _decimal(
+            record.get("expected_hedge_size"),
+            "record.expected_hedge_size",
+            positive=False,
+        )
+        if record.get("position_action") == "OPEN":
+            pre = expected - requested
+        else:
+            pre = expected + requested
+        observed = _decimal(state.hedge_size, "hedge_size", positive=False)
+        filled = format(abs(observed - pre), "f")
+        if result.status in ("confirmed", "partial"):
+            record.update(
+                status="submitted" if result.status == "confirmed" else "partial",
+                assessment=result.status,
+                filled_quantity=filled,
+                reconciled_at_ms=now,
+            )
+            self._replace(record_path, record)
+            self._replace(trade_dir / "hedge_state.json", asdict(state))
+            self._update_recovered_binding(binding, binding_path, record, state, result)
+            if result.status == "confirmed":
+                self._append_execution(
+                    trade_dir / "executions.jsonl",
+                    {
+                        "decision_id": record.get("decision_id"),
+                        "action": record.get("action"),
+                        "status": "confirmed",
+                        "executor_id": record.get("executor_id"),
+                        "quantity": record.get("quantity"),
+                        "filled_quantity": filled,
+                        "target_hedge_ratio": record.get("target_hedge_ratio"),
+                        "timestamp_ms": now,
+                        "recovered": True,
+                    },
+                )
+        else:
+            record.update(
+                status="failed",
+                reason=result.reason,
+                reconciled_at_ms=now,
+            )
+            self._replace(record_path, record)
+            binding["status"] = (
+                "reconciled" if binding.get("main_position_id") else "submitted"
+            )
+            self._replace(binding_path, binding)
+        return {
+            "correlation_id": correlation_id,
+            "decision_id": record.get("decision_id"),
+            "status": result.status,
+            "reason": result.reason,
+            "binding_status": binding.get("status"),
+            "record": record,
+        }
+
     async def execute_management(
         self,
         *,
@@ -905,6 +1199,133 @@ class BrooksGM:
         except Exception:
             reconciled_state = None
         return reconciled_snapshot, reconciled_state
+
+    async def _read_recovery_state(
+        self, *, symbol: str, binding: dict[str, Any], record: dict[str, Any]
+    ) -> tuple[Any, HedgeState | None]:
+        """One fresh, ownership-aware read for a pending hedge write.
+
+        MAIN ownership comes from the persisted binding; HEDGE ownership from
+        the bound leg or, for a first HEDGE, executor lineage. The observed
+        state is returned as-is for classification; unresolved ownership,
+        pending orders, or venue rows that no bound leg accounts for return
+        ``(snapshot, None)`` so the caller stays blocked instead of inferring.
+        """
+        snapshot = None
+        try:
+            snapshot = await self.reader.read(
+                account_name=self.account_name,
+                connector_name=self.connector_name,
+                symbol=symbol,
+            )
+            if snapshot.positions is not None:
+                legs = list(snapshot.positions)
+            else:
+                legs = []
+                if snapshot.main_position_id and snapshot.main_quantity > 0:
+                    legs.append(
+                        PositionLeg(
+                            position_id=snapshot.main_position_id,
+                            symbol=symbol,
+                            side=snapshot.main_side or binding.get("main_side"),
+                            quantity=str(snapshot.main_quantity),
+                            mark_price=str(snapshot.mark_price),
+                            ownership_role="MAIN",
+                        )
+                    )
+                h_id = getattr(snapshot, "hedge_position_id", None)
+                h_qty = getattr(snapshot, "hedge_quantity", Decimal(0))
+                if h_id and h_qty > 0:
+                    h_side = getattr(snapshot, "hedge_side", None)
+                    if not h_side:
+                        main_s = snapshot.main_side or binding.get("main_side")
+                        h_side = "SHORT" if main_s == "LONG" else "LONG"
+                    h_mark = (
+                        getattr(snapshot, "hedge_mark_price", None)
+                        or snapshot.mark_price
+                    )
+                    legs.append(
+                        PositionLeg(
+                            position_id=h_id,
+                            symbol=symbol,
+                            side=h_side,
+                            quantity=str(h_qty),
+                            mark_price=str(h_mark),
+                            ownership_role="HEDGE",
+                        )
+                    )
+            persisted_hedge_id = binding.get("hedge_position_id") or record.get(
+                "hedge_position_id"
+            )
+            hedge_ids = [
+                leg.position_id for leg in legs if leg.ownership_role == "HEDGE"
+            ]
+            target_hedge_id = (
+                persisted_hedge_id if persisted_hedge_id in hedge_ids else None
+            )
+            if (
+                target_hedge_id is None
+                and not hedge_ids
+                and record.get("action") == "HEDGE"
+            ):
+                main_position_id = binding.get("main_position_id") or record.get(
+                    "main_position_id"
+                )
+                main_leg = next(
+                    (leg for leg in legs if leg.ownership_role == "MAIN"), None
+                )
+                resolved = await self._resolve_first_hedge_leg(
+                    symbol=symbol,
+                    binding=binding,
+                    main_position_id=main_position_id,
+                    main_side=(main_leg.side if main_leg else binding.get("main_side")),
+                    hedge_executor_id=record.get("executor_id"),
+                )
+                if resolved is not None:
+                    legs.append(
+                        PositionLeg(
+                            position_id=resolved["position_id"],
+                            symbol=symbol,
+                            side=resolved["side"],
+                            quantity=resolved["quantity"],
+                            mark_price=resolved["mark_price"],
+                            ownership_role="HEDGE",
+                        )
+                    )
+                    target_hedge_id = resolved["position_id"]
+            elif (
+                target_hedge_id is None
+                and persisted_hedge_id is None
+                and len(hedge_ids) == 1
+            ):
+                target_hedge_id = hedge_ids[0]
+            if snapshot.pending_orders:
+                return snapshot, None
+            open_positions = snapshot.open_positions
+            if (
+                isinstance(open_positions, bool)
+                or not isinstance(open_positions, int)
+                or open_positions < 0
+                or open_positions > len(legs)
+            ):
+                return snapshot, None
+            main_executor = getattr(snapshot, "main_executor_id", None)
+            if (
+                main_executor
+                and binding.get("main_executor_id")
+                and main_executor != binding.get("main_executor_id")
+            ):
+                return snapshot, None
+            state = build_hedge_state(
+                legs,
+                main_position_id=binding.get("main_position_id")
+                or record.get("main_position_id"),
+                hedge_position_id=target_hedge_id,
+                as_of_ms=snapshot.as_of_ms,
+            )
+        except Exception:
+            return snapshot, None
+        return snapshot, state
 
     async def _read_fresh_hedge(
         self,
@@ -1272,6 +1693,13 @@ class BrooksGM:
                 "position_action": command.position_action,
                 "status": "submitting",
                 "created_at_ms": int(time.time() * 1000),
+                # Recovery inputs: a later reconciliation re-evaluates this
+                # decision from fresh venue state without ever retrying it.
+                "expected_hedge_size": command.expected_hedge_size,
+                "state_fingerprint": command.state_fingerprint,
+                "state_as_of_ms": command.state_as_of_ms,
+                "main_position_id": command.main_position_id,
+                "hedge_position_id": command.hedge_position_id,
             }
             self._write_new(record_path, record)
 

@@ -373,6 +373,51 @@ def _state_symbol(state: HedgeState) -> str:
     return symbol
 
 
+def classify_hedge_recovery(
+    *,
+    position_action: Literal["OPEN", "CLOSE"],
+    expected_hedge_size: str,
+    requested_quantity: str,
+    observed_hedge_size: str,
+    unresolved: bool,
+) -> HedgeResult:
+    """Classify a pending hedge write from fresh venue state alone.
+
+    The recorded ack (or its absence) never proves a fill: only an observed
+    size equal to the expected post-write size is ``confirmed``; the pre-write
+    size observed again is ``failed`` (the venue shows no change); a size
+    strictly between the two is ``partial`` and needs a new decision for the
+    remaining delta. Unresolved ownership or an out-of-band size stays
+    ``ambiguous`` and fail-closed.
+    """
+    if unresolved:
+        return HedgeResult("ambiguous", "post-write ownership is unresolved")
+    requested = _decimal(requested_quantity, "requested_quantity", positive=True)
+    expected = _decimal(expected_hedge_size, "expected_hedge_size")
+    observed = _decimal(observed_hedge_size, "observed_hedge_size")
+    if position_action == "OPEN":
+        pre = expected - requested
+    elif position_action == "CLOSE":
+        pre = expected + requested
+    else:
+        return HedgeResult("ambiguous", "unsupported hedge position action")
+    if pre < 0:
+        return HedgeResult("ambiguous", "recorded expected size is inconsistent")
+    if observed == expected:
+        return HedgeResult("confirmed", "venue confirms the expected hedge delta")
+    if observed == pre:
+        return HedgeResult("failed", "venue state unchanged; no fill observed")
+    if position_action == "OPEN" and pre < observed < expected:
+        return HedgeResult(
+            "partial", "partial fill observed; reauthorize the remaining delta"
+        )
+    if position_action == "CLOSE" and expected < observed < pre:
+        return HedgeResult(
+            "partial", "partial reduction observed; reauthorize the remaining delta"
+        )
+    return HedgeResult("ambiguous", "observed hedge size is outside the recorded delta")
+
+
 def assess_hedge_result(
     command: HedgeCommand,
     *,

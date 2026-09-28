@@ -10,6 +10,7 @@ from condor.brooks.hedge import (
     PositionLeg,
     assess_hedge_result,
     build_hedge_state,
+    classify_hedge_recovery,
     compile_hedge_action,
 )
 
@@ -225,6 +226,39 @@ def test_partial_failure_ambiguous_and_full_fill_require_reconciliation():
         ).status
         == "confirmed"
     )
+
+
+def test_recovery_classifier_uses_expected_delta_not_ack():
+    def classify(action, expected, requested, observed, unresolved=False):
+        return classify_hedge_recovery(
+            position_action=action,
+            expected_hedge_size=expected,
+            requested_quantity=requested,
+            observed_hedge_size=observed,
+            unresolved=unresolved,
+        ).status
+
+    # OPEN: pre 0.3 -> expected 0.5
+    assert classify("OPEN", "0.5", "0.2", "0.5") == "confirmed"
+    assert classify("OPEN", "0.5", "0.2", "0.4") == "partial"
+    assert classify("OPEN", "0.5", "0.2", "0.3") == "failed"
+    assert classify("OPEN", "0.5", "0.2", "0.6") == "ambiguous"
+    assert classify("OPEN", "0.5", "0.2", "0.2") == "ambiguous"
+    # First HEDGE: no pre-existing leg.
+    assert classify("OPEN", "0.3", "0.3", "0.3") == "confirmed"
+    assert classify("OPEN", "0.3", "0.3", "0.1") == "partial"
+    assert classify("OPEN", "0.3", "0.3", "0") == "failed"
+    # CLOSE: pre 0.5 -> expected 0.3
+    assert classify("CLOSE", "0.3", "0.2", "0.3") == "confirmed"
+    assert classify("CLOSE", "0.3", "0.2", "0.4") == "partial"
+    assert classify("CLOSE", "0.3", "0.2", "0.5") == "failed"
+    assert classify("CLOSE", "0.3", "0.2", "0.2") == "ambiguous"
+    # REMOVE: pre 0.3 -> expected 0
+    assert classify("CLOSE", "0", "0.3", "0") == "confirmed"
+    assert classify("CLOSE", "0", "0.3", "0.1") == "partial"
+    assert classify("CLOSE", "0", "0.3", "0.3") == "failed"
+    # Unresolved ownership always stays ambiguous.
+    assert classify("OPEN", "0.5", "0.2", "0.5", unresolved=True) == "ambiguous"
 
 
 def test_restart_rebuilds_explicit_open_main_and_hedge():
