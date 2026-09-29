@@ -169,7 +169,7 @@ def test_saved_defaults_merge_under_the_call(monkeypatch):
     assert config["entry_price"] == 60000, "the saved default must fill the gap"
 
 
-def test_the_controller_tag_never_travels_inside_the_config(monkeypatch):
+def test_the_explicit_controller_tag_replaces_stale_default_inside_config(monkeypatch):
     """The explicit tag is what the risk gate attributed the position to."""
     client = _RecordingClient()
     monkeypatch.setattr(
@@ -191,7 +191,7 @@ def test_the_controller_tag_never_travels_inside_the_config(monkeypatch):
     )
 
     assert client.calls[0]["controller_id"] == "acme.scalper_1"
-    assert "controller_id" not in client.calls[0]["config"]
+    assert client.calls[0]["config"]["controller_id"] == "acme.scalper_1"
 
 
 # ---------------------------------------------------------------------------

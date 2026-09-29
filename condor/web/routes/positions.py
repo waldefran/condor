@@ -122,11 +122,20 @@ async def get_consolidated_positions(
             return positions
         except Exception as e:
             logger.warning("Failed to fetch bot positions from '%s': %s", name, e)
+    async def fetch_cex_positions():
+        try:
+            result = await get_server_data_service().get_or_fetch(
+                name, ServerDataType.POSITIONS
+            )
+            return result or []
+        except Exception as e:
+            logger.warning("Failed to fetch CEX positions from '%s': %s", name, e)
             return []
 
-    exec_raw, bot_raw = await asyncio.gather(
+    exec_raw, bot_raw, cex_raw = await asyncio.gather(
         fetch_executor_positions(),
         fetch_bot_positions(),
+        fetch_cex_positions(),
     )
 
     executor_positions = [
@@ -138,6 +147,23 @@ async def get_consolidated_positions(
     bot_positions = [
         _normalize_position(pos, "bot", source_name) for pos, source_name in bot_raw
     ]
+
+    cex_positions = [
+        _normalize_position(pos, "cex", "Exchange")
+        for pos in cex_raw
+        if isinstance(pos, dict) and float(pos.get("amount") or 0) != 0
+    ]
+
+    # Include CEX positions that aren't already tracked as executor holds
+    existing_keys = {
+        (p["connector_name"], p["trading_pair"], p["position_side"])
+        for p in executor_positions
+    }
+    for pos in cex_positions:
+        key = (pos["connector_name"], pos["trading_pair"], pos["position_side"])
+        if key not in existing_keys:
+            executor_positions.append(pos)
+            existing_keys.add(key)
 
     # Enrich positions missing current_price (the positions_summary endpoint doesn't provide it)
     all_positions = executor_positions + bot_positions

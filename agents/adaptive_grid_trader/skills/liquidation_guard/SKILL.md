@@ -45,14 +45,16 @@ When in doubt, use the higher tier — it's conservative.
 
 ### Step 3 — The Check
 
-- **LONG grid**: `liq_price` must be **below** `limit_price`
-  - PASS if `liq_price < limit_price`
-  - FAIL if `liq_price ≥ limit_price`
-- **SHORT grid**: `liq_price` must be **above** `limit_price`
-  - PASS if `liq_price > limit_price`
-  - FAIL if `liq_price ≤ limit_price`
+- **High-leverage / 100% max loss mode**: If the strategy envelope explicitly specifies `max_loss_pct: 100%` or `max_leverage: 100x`, liquidation is accepted by the user as the terminal loss boundary. In this case, `limit_price` is aligned with or sits at the liquidation boundary, and the check **PASSES** (`liq_guard: PASS (authorized 100x / 100% loss)`). Do NOT force leverage reduction or HOLD.
+- **Standard mode (max_loss_pct < 100%)**:
+  - **LONG grid**: `liq_price` must be **below** `limit_price`
+    - PASS if `liq_price < limit_price`
+    - FAIL if `liq_price ≥ limit_price`
+  - **SHORT grid**: `liq_price` must be **above** `limit_price`
+    - PASS if `liq_price > limit_price`
+    - FAIL if `liq_price ≤ limit_price`
 
-### Step 4 — If FAIL, try remediation (in order)
+### Step 4 — If FAIL, try remediation (in order, standard mode only)
 
 1. Reduce leverage by 1 step → recompute from Step 2
 2. If leverage is already at minimum useful level → narrow the range (fewer levels, wider spacing) → recompute from Step 1

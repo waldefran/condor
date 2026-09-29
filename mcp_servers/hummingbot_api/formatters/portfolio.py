@@ -42,8 +42,8 @@ def format_portfolio_as_table(portfolio_data: dict[str, Any]) -> str:
         return "No portfolio data found."
 
     # Header
-    header = "token    | connector         | total        | available    | value_usd"
-    separator = format_table_separator(100)
+    header = "token    | connector              | total        | available    | value_usd"
+    separator = format_table_separator(105)
 
     # Flatten nested structure: account -> connector -> balances
     rows = []
@@ -57,7 +57,7 @@ def format_portfolio_as_table(portfolio_data: dict[str, Any]) -> str:
 
             for balance in balances:
                 token = str(get_field(balance, "token", default="N/A"))[:8]
-                connector = connector_name[:17]
+                connector = connector_name[:24]
                 total = format_number(
                     get_field(balance, "units", default=None), decimals=4, compact=True
                 )
@@ -70,7 +70,7 @@ def format_portfolio_as_table(portfolio_data: dict[str, Any]) -> str:
                     get_field(balance, "value", default=None), decimals=2, compact=True
                 )
 
-                row = f"{token:8} | {connector:17} | {total:12} | {available:12} | {value_usd}"
+                row = f"{token:8} | {connector:22} | {total:12} | {available:12} | {value_usd}"
                 rows.append(row)
 
     if not rows:

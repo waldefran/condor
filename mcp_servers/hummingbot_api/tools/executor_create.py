@@ -258,9 +258,8 @@ async def create_executor(
     merged_config = executor_preferences.merge_with_defaults(executor_type, config)
     merged_config["type"] = executor_type
     # A saved default may carry a controller_id; the explicit tool parameter is the
-    # one the risk gate attributed the position to, so it wins and never travels
-    # inside the config.
-    merged_config.pop("controller_id", None)
+    # one the risk gate attributed the position to, so it wins and travels inside the config.
+    merged_config["controller_id"] = tag
 
     logger.info(
         "create_%s: controller_id=%r, account=%s, pair=%s",

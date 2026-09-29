@@ -93,6 +93,9 @@ def format_positions_as_table(positions: list[dict[str, Any]]) -> str:
     if not positions:
         return "No positions found."
 
+    def format_connector(item: dict) -> str:
+        return str(get_field(item, "connector_name", "connector", default="N/A"))[:24]
+
     def format_pair(item: dict) -> str:
         return str(get_field(item, "trading_pair", default="N/A"))[:12]
 
@@ -123,13 +126,14 @@ def format_positions_as_table(positions: list[dict[str, Any]]) -> str:
         return str(get_field(item, "leverage", default="N/A"))
 
     # Build header
-    header = "pair          | side  | amount   | entry_price | current_price | unrealized_pnl | leverage"
-    separator = "-" * 120
+    header = "connector              | pair          | side  | amount   | entry_price | current_price | unrealized_pnl | leverage"
+    separator = "-" * 140
 
     # Format rows
     rows = []
     for position in positions:
         row = (
+            f"{format_connector(position):22} | "
             f"{format_pair(position):13} | "
             f"{format_side(position):5} | "
             f"{format_amount(position):8} | "
