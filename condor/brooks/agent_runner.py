@@ -346,7 +346,9 @@ async def run_role(
                 try:
                     await client.start()
                     turn = first_prompt
-                    for call_count in range(max_tool_calls + 1):
+                    tool_calls = 0
+                    coverage_repair_used = False
+                    while True:
                         response = _json_object(await client.prompt(turn))
                         if "tool" not in response:
                             try:
@@ -356,6 +358,35 @@ async def run_role(
                                     "Brooks role output failed schema validation"
                                 ) from exc
                             decision = getattr(output, "decision", None)
+                            used = getattr(output, "context_timeframes_used", None)
+                            if role == "TRADER" and used is not None:
+                                required = {"H1", "M15"}
+                                if decision in {"ENTER_LONG", "ENTER_SHORT"}:
+                                    required.add("H4")
+                                missing = sorted(required - set(used))
+                                if missing:
+                                    if coverage_repair_used:
+                                        raise RoleRunError(
+                                            "Trader output lacks required timeframe coverage: "
+                                            + ", ".join(missing)
+                                        )
+                                    coverage_repair_used = True
+                                    reply = (
+                                        "Your final JSON omitted required values in "
+                                        "context_timeframes_used: "
+                                        + ", ".join(missing)
+                                        + ". The frozen H1 and M15 windows were supplied. "
+                                        "Return one corrected TradeIntentV2 JSON object using "
+                                        "only the same frozen evidence. Preserve the decision "
+                                        "and OHLC claims unless the evidence requires correction."
+                                    )
+                                    turn = (
+                                        reply
+                                        if keeps_history
+                                        else f"{turn}\nAssistant final JSON: "
+                                        f"{json.dumps(response, default=str)}\n{reply}"
+                                    )
+                                    continue
                             if (
                                 role == "TRADER"
                                 and decision in {"ENTER_LONG", "ENTER_SHORT"}
@@ -369,8 +400,9 @@ async def run_role(
                                     "when H4 context is stale or missing"
                                 )
                             return output
-                        if call_count == max_tool_calls:
+                        if tool_calls >= max_tool_calls:
                             raise RoleRunError("Brooks role exceeded read tool budget")
+                        tool_calls += 1
                         if set(response) != {"tool", "arguments"}:
                             raise RoleRunError(
                                 "tool request must contain only tool and arguments"

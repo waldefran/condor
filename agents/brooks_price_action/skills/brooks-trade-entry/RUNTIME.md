@@ -85,3 +85,8 @@ specific `setup.no_trade_reason`. An entry requires both trigger and
 invalidation. Every cited trigger and invalidation must
 match an exact OHLC field in the frozen closed-bar packet or a successful
 same-run raw-bar read.
+
+For every decision, including `NO_TRADE`, put both `H1` and `M15` in
+`context_timeframes_used`: H1 is the active leg and M15 is the setup and
+trigger timeframe inspected in the supplied packet. For an entry also include
+`H4`, after using its context or reading its closed bars as required above.

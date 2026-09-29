@@ -20,6 +20,12 @@ class _Output(BaseModel):
     decision: str
 
 
+class _TraderCoverageOutput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    decision: str
+    context_timeframes_used: list[str]
+
+
 class _Client:
     def __init__(self, responses, *, accepts_system_prompt=True, keeps_history=True):
         self.responses = iter(responses)
@@ -141,6 +147,41 @@ async def test_trader_exposes_only_four_read_tools(monkeypatch):
             output_model=_Output,
             market_tools={"get_market_context": lambda: None},
         )
+
+
+@pytest.mark.asyncio
+async def test_trader_repairs_missing_timeframe_coverage_once_with_frozen_input(monkeypatch):
+    client = _Client(
+        [
+            json.dumps({"decision": "NO_TRADE", "context_timeframes_used": ["H1"]}),
+            json.dumps({"decision": "NO_TRADE", "context_timeframes_used": ["H1", "M15"]}),
+        ]
+    )
+    monkeypatch.setattr(agent_runner, "build_llm_client", lambda *args, **kwargs: client)
+    packet = {"symbol": "ETH-USDT", "decision_time_ms": 100, "raw": {"H1": [1], "M15": [2]}}
+    result = await agent_runner.run_role(
+        "TRADER",
+        packet,
+        _TraderCoverageOutput,
+        {},
+        agent_key="test-backend",
+        max_tool_calls=0,
+    )
+    assert result.context_timeframes_used == ["H1", "M15"]
+    assert len(client.prompts) == 2
+    assert "\"decision_time_ms\": 100" in client.prompts[0]
+    assert "M15" in client.prompts[1]
+
+    bad_client = _Client(
+        [json.dumps({"decision": "NO_TRADE", "context_timeframes_used": ["H1"]})] * 2
+    )
+    monkeypatch.setattr(agent_runner, "build_llm_client", lambda *args, **kwargs: bad_client)
+    with pytest.raises(agent_runner.RoleRunError, match="timeframe coverage"):
+        await agent_runner.run_role(
+            "TRADER", packet, _TraderCoverageOutput, {},
+            agent_key="test-backend", max_tool_calls=0,
+        )
+    assert len(bad_client.prompts) == 2
 
 
 @pytest.mark.asyncio
