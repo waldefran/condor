@@ -59,4 +59,8 @@ resource.
 
 Return exactly one JSON object matching the supplied `MarketContextV2` schema
 and no prose wrapper. This is a structural description only. Do not add fields
-or wording that recommends an entry or expresses a side preference.
+or wording that recommends an entry or expresses a side preference. In
+`structures`, `upper_boundary` and `lower_boundary` must be exact canonical
+decimal price strings from closed OHLC (for example `2633.4`), or `null` when
+no exact boundary exists. Never put `~`, a price range, or explanatory text in
+those numeric fields; put approximations in `description` instead.
