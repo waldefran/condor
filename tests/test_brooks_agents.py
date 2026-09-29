@@ -68,7 +68,7 @@ async def test_role_runner_uses_read_tools_and_validates_output(monkeypatch):
     assert (await config["permission_callback"]({}, []))["outcome"][
         "outcome"
     ] == "cancelled"
-    assert "brooks-trade-entry" in config["system_prompt"]
+    assert "Brooks Trade Entry Runtime" in config["system_prompt"]
 
 
 @pytest.mark.asyncio
@@ -101,13 +101,13 @@ async def test_role_runner_inlines_prompt_for_stateless_bridge(monkeypatch):
     assert result.decision == "NO_TRADE"
     # The CLI bridge has no system channel: the role skills arrive inlined.
     assert client.prompts[0].startswith("You are the independent Brooks TRADER role.")
-    assert "brooks-trade-entry" in client.prompts[0]
+    assert "Brooks Trade Entry Runtime" in client.prompts[0]
     assert "Allowed read tools:" in client.prompts[0]
     # It also keeps no history: each turn resends the full transcript.
     assert client.prompts[1].startswith(client.prompts[0])
     assert '"tool": "get_closed_candles"' in client.prompts[1]
     assert "Read tool get_closed_candles result" in client.prompts[1]
-    assert "brooks-trade-entry" in config["system_prompt"]
+    assert "Brooks Trade Entry Runtime" in config["system_prompt"]
 
 
 @pytest.mark.asyncio
@@ -128,7 +128,7 @@ async def test_role_runner_keeps_session_transcript_for_history_clients(monkeypa
     )
 
     assert client.prompts[0].startswith("Allowed read tools:")
-    assert "brooks-trade-entry" not in client.prompts[0]
+    assert "Brooks Trade Entry Runtime" not in client.prompts[0]
     assert client.prompts[1].startswith("Read tool get_closed_candles result")
 
 
@@ -312,7 +312,9 @@ async def test_trader_runs_with_open_position_and_publishes_after_save(monkeypat
     assert await consumer.handle(event) == intent
     assert store.open_position
     assert seen["symbol"] == "BTC-USDT" and "account" not in seen
-    assert len(seen["timeframes"]["H1"]["bars"]) == 120
+    assert len(seen["raw"]["H1"]) == 120
+    assert len(seen["raw"]["M15"]) == 120
+    assert seen["macro_contexts"]["H4"]["freshness"] == "missing"
     assert store.saved[0][0] == "trader"
     assert bus.published[0].type == EventType.TRADER_INTENT_CREATED
     assert bus.published[0].payload["shadow_mode"] is True
@@ -567,4 +569,3 @@ async def test_role_runner_propagates_role_run_error_from_tool(monkeypatch):
             output_model=_Output,
             market_tools=tools,
         )
-

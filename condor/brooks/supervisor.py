@@ -1,14 +1,14 @@
-"""Independent Brooks lifecycle: seven tasks over the bus and store.
+"""Independent Brooks lifecycle over the bus and store.
 
 NEVER a ``PM -> Trader -> GM`` single-tick pipeline. :meth:`BrooksSupervisor.start`
-registers seven independent asyncio tasks via :meth:`add_child`, each with its
+registers independent asyncio tasks via :meth:`add_child`, each with its
 own cadence or event subscription:
 
-- MarketClock (``condor/brooks/clock.py``): H1/D1 closed-bar publishes.
+- MarketClock (``condor/brooks/clock.py``): H1/H4/D1 closed-bar publishes.
 - TraderConsumer (``trader.py``): H1_BAR_CLOSED -> TradeIntentV2 ->
   TRADER_INTENT_CREATED.
-- HTFConsumer (``htf_analyst.py``): D1_BAR_CLOSED -> MarketContextV1 ->
-  MARKET_CONTEXT_UPDATED.
+- ContextAnalystConsumer (``htf_analyst.py``): D1/H4 closed bars -> typed
+  MarketContextV2 documents -> MARKET_CONTEXT_UPDATED.
 - PMTimer: periodic PM_TIMER from ``BrooksConfig.pm``.
 - PositionWatcher (``position_watcher.py``): transition events at the
   ``position_watcher`` cadence.
@@ -72,7 +72,9 @@ log = logging.getLogger(__name__)
 _CHILD_NAMES = (
     "brooks-market-clock",
     "brooks-trader",
-    "brooks-htf",
+    "brooks-d1-context",
+    "brooks-h4-context",
+    "brooks-context-bootstrap",
     "brooks-pm-timer",
     "brooks-watcher",
     "brooks-pm",
@@ -541,6 +543,7 @@ class BrooksSupervisor:
         self._candle_source = candle_source
         self._agent_key = agent_key
         self._user_id = user_id
+        self._shadow_mode = config.shadow_mode
         self._trader_handler = trader_handler
         self._htf_handler = htf_handler
         self._pm_handler = pm_handler
@@ -558,6 +561,7 @@ class BrooksSupervisor:
         self._clock: MarketClock | None = None
         self._trader: Any | None = None
         self._htf: Any | None = None
+        self._h4: Any | None = None
         self._watcher: PositionWatcher | None = None
         self._pm: PositionManager | None = None
         self._gm: GMConsumer | None = None
@@ -582,6 +586,13 @@ class BrooksSupervisor:
     def attach_agent_key(self, agent_key: str, user_id: int | None = None) -> None:
         self._agent_key = agent_key
         self._user_id = user_id
+
+    def attach_user_id(self, user_id: int | None) -> None:
+        self._user_id = user_id
+
+    def attach_shadow_mode(self, shadow_mode: bool) -> None:
+        """Live vs decision-only for the Trader consumer; attach before start."""
+        self._shadow_mode = bool(shadow_mode)
 
     def attach_trader_handler(
         self, handler: Callable[[BrooksEvent], Awaitable[Any]]
@@ -650,13 +661,15 @@ class BrooksSupervisor:
         self._build_children()
         self._started = True
         for name, coro in (
-            ("brooks-market-clock", self._clock_loop()),
             ("brooks-trader", self._trader_loop()),
-            ("brooks-htf", self._htf_loop()),
+            ("brooks-d1-context", self._htf_loop()),
+            ("brooks-h4-context", self._h4_loop()),
             ("brooks-pm-timer", self._pm_timer_loop()),
             ("brooks-watcher", self._watcher_loop()),
             ("brooks-pm", self._pm_loop()),
             ("brooks-gm", self._gm_loop()),
+            ("brooks-market-clock", self._clock_loop()),
+            ("brooks-context-bootstrap", self._bootstrap_contexts()),
         ):
             self.add_child(asyncio.create_task(coro, name=name))
 
@@ -666,6 +679,7 @@ class BrooksSupervisor:
             "symbols": list(self._symbols),
             "trader": self.config.trader,
             "htf": self.config.htf,
+            "h4": self.config.h4,
             "source": self._candle_source,
             "publish": self.events,
         }
@@ -676,6 +690,7 @@ class BrooksSupervisor:
         self._clock = MarketClock(**clock_kwargs)
         self._trader = self._build_trader()
         self._htf = self._build_htf()
+        self._h4 = self._build_h4()
         self._watcher = PositionWatcher(
             self._watcher_snapshots or (lambda: []),
             self.events,
@@ -694,9 +709,10 @@ class BrooksSupervisor:
         )
 
     def _build_trader(self) -> Any | None:
+        key = self.config.trader_agent_key or self._agent_key
         if (
             self._trader_handler is not None
-            or self._agent_key is None
+            or key is None
             or self._candle_source is None
         ):
             return None
@@ -704,29 +720,57 @@ class BrooksSupervisor:
 
         assert self.store is not None and self.events is not None
         return TraderConsumer(
-            agent_key=self._agent_key,
+            agent_key=key,
             source=self._candle_source,
             store=self.store,
             events=self.events,
             user_id=self._user_id,
+            shadow_mode=self._shadow_mode,
+            timeout_sec=self.config.trader_timeout_sec,
+            max_role_attempts=self.config.max_role_attempts,
+            retry_backoff_sec=self.config.retry_backoff_sec,
         )
 
     def _build_htf(self) -> Any | None:
+        key = self.config.d1_agent_key or self._agent_key
         if (
             self._htf_handler is not None
-            or self._agent_key is None
+            or key is None
             or self._candle_source is None
         ):
             return None
-        from .htf_analyst import HTFAnalystConsumer
+        from .htf_analyst import ContextAnalystConsumer
 
         assert self.store is not None and self.events is not None
-        return HTFAnalystConsumer(
-            agent_key=self._agent_key,
+        return ContextAnalystConsumer(
+            agent_key=key,
             source=self._candle_source,
             store=self.store,
             events=self.events,
+            timeframe="1d",
             user_id=self._user_id,
+            timeout_sec=self.config.context_timeout_sec,
+            max_role_attempts=self.config.max_role_attempts,
+            retry_backoff_sec=self.config.retry_backoff_sec,
+        )
+
+    def _build_h4(self) -> Any | None:
+        key = self.config.h4_agent_key or self._agent_key
+        if key is None or self._candle_source is None:
+            return None
+        from .htf_analyst import ContextAnalystConsumer
+
+        assert self.store is not None and self.events is not None
+        return ContextAnalystConsumer(
+            agent_key=key,
+            source=self._candle_source,
+            store=self.store,
+            events=self.events,
+            timeframe="4h",
+            user_id=self._user_id,
+            timeout_sec=self.config.context_timeout_sec,
+            max_role_attempts=self.config.max_role_attempts,
+            retry_backoff_sec=self.config.retry_backoff_sec,
         )
 
     def _build_pm(self) -> PositionManager | None:
@@ -880,6 +924,61 @@ class BrooksSupervisor:
             return None
 
         await self._consume_loop({EventType.D1_BAR_CLOSED}, handle, "HTF Analyst")
+
+    async def _h4_loop(self) -> None:
+        if self._h4 is None:
+            await self._stop.wait()
+            return
+        await self._consume_loop(
+            {EventType.H4_BAR_CLOSED}, self._h4.handle, "H4 Context Analyst"
+        )
+
+    async def _bootstrap_contexts(self) -> None:
+        """Fill missing/stale macro contexts from the latest closed bars."""
+        if self._candle_source is None or self.store is None:
+            return
+        from .clock import latest_due_close, timeframe_ms
+
+        now_ms = self._now_fn() if self._now_fn else time.time_ns() // 1_000_000
+
+        async def fill(
+            timeframe: str, consumer: Any, event_type: EventType, symbol: str
+        ) -> None:
+            closed_at = latest_due_close(now_ms, timeframe_ms(timeframe), 0)
+            if self._stop.is_set():
+                return
+            try:
+                label = "D1" if timeframe == "1d" else "H4"
+                latest = self.store.read_market_context(label, symbol=symbol)
+                if latest and latest.get("decision_time_ms") == closed_at and latest.get("window_bars") == 120:
+                    return
+                await consumer.handle(
+                    BrooksEvent(
+                        type=event_type,
+                        symbol=symbol,
+                        correlation_id=f"{symbol}-{timeframe}-{closed_at}-bootstrap",
+                        payload={
+                            "decision_time_ms": closed_at,
+                            "close_time_ms": closed_at,
+                            "timeframe": timeframe,
+                            "bootstrap": True,
+                        },
+                    )
+                )
+            except Exception:
+                log.exception("Brooks %s context bootstrap failed for %s", timeframe, symbol)
+
+        tasks = [
+            fill(timeframe, consumer, event_type, symbol)
+            for timeframe, consumer, event_type in (
+                ("1d", self._htf, EventType.D1_BAR_CLOSED),
+                ("4h", self._h4, EventType.H4_BAR_CLOSED),
+            )
+            if consumer is not None
+            for symbol in self._symbols
+        ]
+        if tasks:
+            await asyncio.gather(*tasks)
 
     async def _pm_timer_loop(self) -> None:
         assert self.events is not None

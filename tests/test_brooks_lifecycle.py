@@ -118,7 +118,7 @@ def trader_intent_decision(decision_time_ms, m15):
     }
 
 
-def test_supervisor_starts_seven_independent_tasks(tmp_path):
+def test_supervisor_starts_independent_tasks(tmp_path):
     async def exercise():
         sup = BrooksSupervisor(tmp_path, BrooksConfig())
         await sup.start()
@@ -128,7 +128,9 @@ def test_supervisor_starts_seven_independent_tasks(tmp_path):
             assert names == {
                 "brooks-market-clock",
                 "brooks-trader",
-                "brooks-htf",
+                "brooks-d1-context",
+                "brooks-h4-context",
+                "brooks-context-bootstrap",
                 "brooks-pm-timer",
                 "brooks-watcher",
                 "brooks-pm",
@@ -231,8 +233,65 @@ def test_clock_run_publishes_without_drift(tmp_path):
     asyncio.run(exercise())
 
 
+def test_clock_hourly_cadence_survives_the_daily_schedule(tmp_path):
+    decision = h1_decision()
+    start_ms = decision + 2_000 - 30_000
+    now = [start_ms]
+    seen = []
+    sleeps = []
+    offsets = {"1h": 2_000, "1d": 3_000}
+
+    async def fake_sleep(delay_sec):
+        sleeps.append(delay_sec)
+        now[0] += max(int(delay_sec * 1000), 1)
+        await asyncio.sleep(0)
+
+    class DynamicSource:
+        async def fetch_candles(self, symbol, timeframe, limit):
+            interval = {"1h": H1, "1d": D1}[timeframe]
+            due = latest_due_close(now[0], interval, offsets[timeframe])
+            return closed_bars(interval, due, max(limit, 2))
+
+    async def exercise():
+        clock = MarketClock(
+            symbols=[SYMBOL],
+            source=DynamicSource(),
+            publish=seen.append,
+            now_fn=lambda: now[0],
+            sleep_fn=fake_sleep,
+        )
+        stop = asyncio.Event()
+        resumed = asyncio.Event()
+        resumed.set()
+        task = asyncio.create_task(clock.run(stop, resumed.wait))
+        try:
+
+            async def _wait_four():
+                while (
+                    len([e for e in seen if e.type == EventType.H1_BAR_CLOSED]) < 4
+                ):
+                    await asyncio.sleep(0.01)
+
+            await asyncio.wait_for(_wait_four(), timeout=15)
+        finally:
+            stop.set()
+            await asyncio.wait_for(task, timeout=15)
+        closes = [
+            e.payload["close_time_ms"]
+            for e in seen
+            if e.type == EventType.H1_BAR_CLOSED
+        ][:4]
+        assert all(after - before == H1 for before, after in zip(closes, closes[1:]))
+        assert any(e.type == EventType.D1_BAR_CLOSED for e in seen)
+        # The daily sibling must never put the hourly schedule to sleep past
+        # its next close (regression: it kept only the daily delay).
+        assert max(sleeps) <= (H1 + 3_000) / 1000
+
+    asyncio.run(exercise())
+
+
 def test_trader_and_htf_publish_through_supervisor(tmp_path, monkeypatch):
-    from condor.brooks.contracts import MarketContextV1, TradeIntentV2
+    from condor.brooks.contracts import MarketContextV2, TradeIntentV2
 
     decision = h1_decision()
     m15 = closed_bars(900_000, decision, 120)
@@ -248,23 +307,40 @@ def test_trader_and_htf_publish_through_supervisor(tmp_path, monkeypatch):
         assert role == "TRADER"
         return intent
 
-    async def fake_htf_run(role, prompt, output_model, market_tools, **kwargs):
-        assert role == "HTF_ANALYST"
-        return MarketContextV1.model_validate(
+    async def fake_context_run(role, prompt, output_model, market_tools, **kwargs):
+        assert role == "CONTEXT_ANALYST"
+        label = "D1" if prompt["timeframe"] == "1d" else "H4"
+        return MarketContextV2.model_validate(
             {
-                "schema": "brooks.market-context.v1",
-                "role": "HTF_ANALYST",
+                "schema": "brooks.market-context.v2",
+                "role": "CONTEXT_ANALYST",
                 "symbol": SYMBOL,
                 "decision_time_ms": decision,
-                "timeframe": "D1",
+                "timeframe": label,
+                "window_bars": 120,
+                "primary_regime": "bull-trend",
+                "phase": "channel",
+                "breakout_mode": False,
+                "directional_pressure": "bull",
+                "always_in": "long",
+                "always_in_relevance": "medium",
                 "observations": ["trend"],
+                "structures": [],
+                "evidence_for": ["higher closes"],
                 "evidence_against": ["range"],
-                "uncertainty": ["overlap"],
+                "transition_conditions": ["two-sided overlap"],
+                "missing_information": [],
+                "confidence": "medium",
             }
         )
 
     monkeypatch.setattr("condor.brooks.trader.run_role", fake_trader_run)
-    monkeypatch.setattr("condor.brooks.htf_analyst.run_role", fake_htf_run)
+    async def fake_role(role, prompt, output_model, market_tools, **kwargs):
+        if role == "TRADER":
+            return await fake_trader_run(role, prompt, output_model, market_tools, **kwargs)
+        return await fake_context_run(role, prompt, output_model, market_tools, **kwargs)
+
+    monkeypatch.setattr("condor.brooks.agent_runner.run_role", fake_role)
 
     async def exercise():
         sup = BrooksSupervisor(
@@ -276,11 +352,19 @@ def test_trader_and_htf_publish_through_supervisor(tmp_path, monkeypatch):
             await asyncio.sleep(0.3)
             inbox = sup.events.subscribe()
             await sup.events.publish(
+                BrooksEvent(type=EventType.H4_BAR_CLOSED, symbol=SYMBOL,
+                            payload={"decision_time_ms": decision}, correlation_id="run-h4")
+            )
+            h4_event = await collect_until(
+                inbox, lambda e: e.type == EventType.MARKET_CONTEXT_UPDATED
+                and e.payload.get("timeframe") == "H4")
+            await sup.events.publish(
                 BrooksEvent(type=EventType.D1_BAR_CLOSED, symbol=SYMBOL,
                             payload={"decision_time_ms": decision}, correlation_id="run-d1")
             )
             context_event = await collect_until(
-                inbox, lambda e: e.type == EventType.MARKET_CONTEXT_UPDATED)
+                inbox, lambda e: e.type == EventType.MARKET_CONTEXT_UPDATED
+                and e.payload.get("timeframe") == "D1")
             await sup.events.publish(
                 BrooksEvent(type=EventType.H1_BAR_CLOSED, symbol=SYMBOL,
                             payload={"decision_time_ms": decision}, correlation_id="run-h1")
@@ -288,14 +372,96 @@ def test_trader_and_htf_publish_through_supervisor(tmp_path, monkeypatch):
             intent_event = await collect_until(
                 inbox, lambda e: e.type == EventType.TRADER_INTENT_CREATED)
             assert context_event.payload["market_context"]["decision_time_ms"] == decision
+            assert h4_event.payload["market_context"]["decision_time_ms"] == decision
             assert intent_event.payload["intent"]["decision"] == "ENTER_LONG"
-            assert sup.store.read_latest("htf")["decision_time_ms"] == decision
+            assert sup.store.read_market_context("D1")["decision_time_ms"] == decision
+            assert sup.store.read_market_context("H4")["decision_time_ms"] == decision
             assert sup.store.read_latest("trader")["decision"] == "ENTER_LONG"
             assert any(e.type == EventType.D1_BAR_CLOSED for e in sup.store.read_events())
         finally:
             await sup.stop()
 
     asyncio.run(exercise())
+
+
+class _NoopSource:
+    async def fetch_candles(self, symbol, timeframe, limit):
+        return []
+
+
+def test_shadow_mode_switch_defaults_to_shadow_and_wires_the_trader(tmp_path):
+    assert BrooksConfig().shadow_mode is True
+    assert (
+        BrooksConfig.from_engine_config({"brooks": {"shadow_mode": False}}).shadow_mode
+        is False
+    )
+
+    async def exercise():
+        live = BrooksSupervisor(
+            tmp_path / "live",
+            BrooksConfig(),
+            candle_source=_NoopSource(),
+            agent_key="test-key",
+        )
+        live.attach_shadow_mode(False)
+        await live.start()
+        try:
+            assert live._trader is not None
+            assert live._trader.shadow_mode is False
+        finally:
+            await live.stop()
+
+        shadow = BrooksSupervisor(
+            tmp_path / "shadow",
+            BrooksConfig(),
+            candle_source=_NoopSource(),
+            agent_key="test-key",
+        )
+        await shadow.start()
+        try:
+            assert shadow._trader is not None
+            assert shadow._trader.shadow_mode is True
+        finally:
+            await shadow.stop()
+
+    asyncio.run(exercise())
+
+
+def test_wire_supervisor_applies_configured_shadow_mode(tmp_path):
+    from types import SimpleNamespace
+
+    from condor.brooks.adapters import wire_supervisor
+
+    async def exercise(shadow_mode):
+        strategy_home = tmp_path / f"wired-{shadow_mode}"
+        supervisor = BrooksSupervisor(strategy_home, BrooksConfig())
+        engine_config = {
+            "brooks": {
+                "symbols": [SYMBOL],
+                "account_name": "acct",
+                "connector_name": "binance_perpetual_demo",
+                "controller_id": "ctrl",
+                "shadow_mode": shadow_mode,
+            }
+        }
+
+        async def get_client():
+            return SimpleNamespace()
+
+        result = await wire_supervisor(
+            supervisor,
+            engine_config,
+            strategy_home=strategy_home,
+            agent_key="test-key",
+            user_id=None,
+            agent_id="ctrl",
+            get_client=get_client,
+        )
+        assert result.ok
+        return supervisor
+
+    assert asyncio.run(exercise(False))._shadow_mode is False
+    assert asyncio.run(exercise(True))._shadow_mode is True
 
 
 def test_pm_wake_gating_holds_without_active_position(tmp_path):

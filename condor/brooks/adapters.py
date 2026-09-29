@@ -1926,16 +1926,42 @@ def _pm_latest_intent(root: Path, role: str, symbol: str) -> dict[str, Any] | No
 
 def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
     """Latest ambient MarketContext for this symbol; ``None`` when not usable."""
-    from condor.brooks.contracts import MarketContextV1
+    from condor.brooks.contracts import MarketContextV1, MarketContextV2
+    from condor.brooks.store import BrooksStore
 
     raw = _pm_read_json(root / "brooks_state" / "htf" / "latest.json")
-    if not isinstance(raw, dict):
-        return None
+    legacy = None
     try:
-        context = MarketContextV1.model_validate(raw).model_dump(mode="json")
+        if isinstance(raw, dict):
+            legacy = MarketContextV1.model_validate(raw).model_dump(mode="json")
     except Exception:
-        return None
-    return context if context.get("symbol") == symbol else None
+        pass
+    if legacy is not None and legacy.get("symbol") != symbol:
+        legacy = None
+
+    # PM still accepts the V1 shape. Bridge the newer D1 structural record at
+    # this read boundary so PM does not silently lose its macro input when the
+    # production analyst starts writing context/d1 instead of htf/latest.
+    try:
+        raw_v2 = BrooksStore(root).read_market_context("D1", symbol=symbol)
+        v2 = MarketContextV2.model_validate(raw_v2) if raw_v2 else None
+    except Exception:
+        v2 = None
+    if v2 is None or v2.window_bars != 120:
+        return legacy
+    if legacy is not None and legacy["decision_time_ms"] > v2.decision_time_ms:
+        return legacy
+    bridged = {
+        "schema": "brooks.market-context.v1",
+        "role": "HTF_ANALYST",
+        "symbol": symbol,
+        "decision_time_ms": v2.decision_time_ms,
+        "timeframe": "D1",
+        "observations": v2.observations or ["V2 context recorded no observations."],
+        "evidence_against": v2.evidence_against or ["V2 context recorded no opposing evidence."],
+        "uncertainty": v2.missing_information or ["V2 D1 context adapted for the V1 PM input."],
+    }
+    return MarketContextV1.model_validate(bridged).model_dump(mode="json")
 
 
 def _pm_sanitize_executor(row: Mapping[str, Any]) -> dict[str, Any] | None:
@@ -2075,13 +2101,20 @@ async def wire_supervisor(
     candle_source = HummingbotCandleSource(client, connector)
     supervisor.attach_symbols(symbols)
     supervisor.attach_candle_source(candle_source)
+    if hasattr(supervisor, "attach_shadow_mode"):
+        supervisor.attach_shadow_mode(brooks_config.shadow_mode)
     effective_key = (agent_key or "").strip() or (
         brooks_config.agent_key.strip() if brooks_config.agent_key else ""
     )
     if effective_key:
         supervisor.attach_agent_key(effective_key, user_id)
     else:
-        log.warning("brooks_agents has no agent_key; Trader/HTF/PM roles stay idle.")
+        if hasattr(supervisor, "attach_user_id"):
+            supervisor.attach_user_id(user_id)
+        log.warning(
+            "brooks_agents has no global agent_key; roles need their own "
+            "trader_agent_key, h4_agent_key or d1_agent_key (PM stays idle)."
+        )
     supervisor.attach_watcher_snapshots(
         build_watcher_provider(
             client,

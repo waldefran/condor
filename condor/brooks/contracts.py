@@ -174,6 +174,110 @@ class MarketContextV1(Contract):
         return self
 
 
+class ContextStructure(Contract):
+    """A bounded, descriptive market structure reported by a context analyst."""
+
+    kind: Literal[
+        "range", "channel", "breakout", "mtr-like", "climax", "two-sided", "swing", "other"
+    ]
+    description: NonEmpty
+    start_time_ms: Timestamp | None = Field(default=None, ge=0)
+    end_time_ms: Timestamp | None = Field(default=None, ge=0)
+    upper_boundary: DecimalText | None = None
+    lower_boundary: DecimalText | None = None
+
+    @field_validator("description")
+    @classmethod
+    def description_nonempty(cls, value: str) -> str:
+        return _nonempty(value)
+
+    @field_validator("upper_boundary", "lower_boundary")
+    @classmethod
+    def valid_boundary(cls, value: str | None) -> str | None:
+        if value is not None:
+            if _decimal(value) <= 0:
+                raise ValueError("structure boundaries must be positive prices")
+        return value
+
+    @model_validator(mode="after")
+    def ordered_bounds(self) -> ContextStructure:
+        if (
+            self.start_time_ms is not None
+            and self.end_time_ms is not None
+            and self.end_time_ms < self.start_time_ms
+        ):
+            raise ValueError("structure end precedes its start")
+        if (
+            self.upper_boundary is not None
+            and self.lower_boundary is not None
+            and _decimal(self.upper_boundary) < _decimal(self.lower_boundary)
+        ):
+            raise ValueError("structure upper boundary is below lower boundary")
+        return self
+
+
+class MarketContextV2(Contract):
+    """Market-only structural description for a single D1 or H4 window.
+
+    Deliberately has no recommendation, side, target, stop, quantity, or
+    probability field. ``window_bars == 0`` is reserved for a conservative
+    legacy V1 read where the original window size was not recorded.
+    """
+
+    schema: Literal["brooks.market-context.v2"]
+    role: Literal["CONTEXT_ANALYST"]
+    symbol: NonEmpty
+    timeframe: Literal["D1", "H4"]
+    decision_time_ms: Timestamp = Field(ge=0)
+    window_bars: StrictInt = Field(ge=0, le=120)
+    primary_regime: Literal["bull-trend", "bear-trend", "trading-range", "transition-unclear"]
+    phase: Literal["breakout-spike", "channel", "range", "transition", "unclear"]
+    breakout_mode: StrictBool | Literal["unclear"]
+    directional_pressure: Literal["bull", "bear", "balanced", "unclear"]
+    always_in: Literal["long", "short", "unclear"]
+    always_in_relevance: Literal["high", "medium", "low"]
+    observations: list[NonEmpty] = Field(min_length=1)
+    structures: list[ContextStructure]
+    evidence_for: list[NonEmpty] = Field(min_length=1)
+    evidence_against: list[NonEmpty] = Field(min_length=1)
+    transition_conditions: list[NonEmpty] = Field(min_length=1)
+    missing_information: list[NonEmpty]
+    confidence: Literal["high", "medium", "low"]
+
+    @field_validator("symbol")
+    @classmethod
+    def valid_symbol(cls, value: str) -> str:
+        return _nonempty(value)
+
+    @field_validator(
+        "observations",
+        "evidence_for",
+        "evidence_against",
+        "transition_conditions",
+        "missing_information",
+    )
+    @classmethod
+    def valid_text_lists(cls, values: list[str]) -> list[str]:
+        for value in values:
+            _nonempty(value)
+        return values
+
+    @model_validator(mode="after")
+    def public_market_only(self) -> MarketContextV2:
+        _check_public(self.model_dump())
+        if self.window_bars not in (0, 120):
+            raise ValueError("context analyst window must contain exactly 120 bars")
+        if self.window_bars == 0 and not self.missing_information:
+            raise ValueError("unknown legacy window size must be disclosed")
+        if any(
+            timestamp is not None and timestamp > self.decision_time_ms
+            for structure in self.structures
+            for timestamp in (structure.start_time_ms, structure.end_time_ms)
+        ):
+            raise ValueError("context structure cannot extend beyond decision_time_ms")
+        return self
+
+
 class MarketAnalysisRequestV1(Contract):
     schema: Literal["brooks.market-analysis-request.v1"]
     request_id: NonEmpty

@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 
 class MarketWakeConfig(BaseModel):
-    timeframe: Literal["1h", "1d"]
+    timeframe: Literal["1h", "4h", "1d"]
     wake_offset_sec: int = Field(ge=0, lt=3600)
 
 
@@ -37,6 +37,9 @@ class BrooksConfig(BaseModel):
     htf: MarketWakeConfig = Field(
         default_factory=lambda: MarketWakeConfig(timeframe="1d", wake_offset_sec=3)
     )
+    h4: MarketWakeConfig = Field(
+        default_factory=lambda: MarketWakeConfig(timeframe="4h", wake_offset_sec=3)
+    )
     pm: PeriodicWakeConfig = Field(
         default_factory=lambda: PeriodicWakeConfig(frequency_sec=60)
     )
@@ -46,6 +49,9 @@ class BrooksConfig(BaseModel):
     # -- production venue binding (all optional; empty means inert) --
     # Venue symbols the clock publishes for (e.g. ["BTC-USDT"]).
     symbols: list[str] = Field(default_factory=list)
+    # Live execution switch: the supervisor wires the Trader in shadow mode
+    # (decisions persisted, zero writes) unless a run opts in explicitly.
+    shadow_mode: bool = True
     # Hummingbot account/connector the Brooks lifecycle trades through.
     account_name: str = ""
     connector_name: str = ""
@@ -56,6 +62,13 @@ class BrooksConfig(BaseModel):
     # top-level run config (agent_key) and server resolution (server_name).
     server_name: str | None = None
     agent_key: str | None = None
+    trader_agent_key: str | None = None
+    h4_agent_key: str | None = None
+    d1_agent_key: str | None = None
+    trader_timeout_sec: float = Field(default=360, gt=0)
+    context_timeout_sec: float = Field(default=300, gt=0)
+    max_role_attempts: int = Field(default=2, ge=1, le=2)
+    retry_backoff_sec: float = Field(default=5, ge=0)
     gm: BrooksGMPolicyConfig = Field(default_factory=BrooksGMPolicyConfig)
 
     @classmethod

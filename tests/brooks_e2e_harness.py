@@ -374,9 +374,10 @@ class FakeCandles:
 
     def _bars(self, timeframe: str, limit: int) -> list[dict]:
         interval = _INTERVAL_MS[timeframe]
+        latest_closed = ((self.due_ms + 1) // interval) * interval - 1
         bars = []
         for index in range(limit):
-            opened = self.due_ms - (limit - index) * interval + 1
+            opened = latest_closed - (limit - index) * interval + 1
             bar = {
                 "open_time_ms": opened,
                 "close_time_ms": opened + interval - 1,

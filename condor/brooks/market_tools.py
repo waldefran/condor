@@ -11,7 +11,8 @@ from datetime import datetime
 from decimal import Decimal
 import json
 import re
-from typing import Any, Mapping, Protocol, Sequence
+from pathlib import Path
+from typing import Any, Callable, Mapping, Protocol, Sequence
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 
@@ -22,7 +23,99 @@ INTERVAL_MS = {"15m": 900_000, "1h": 3_600_000, "4h": 14_400_000, "1d": 86_400_0
 TIMEFRAME_ALIASES = {"M15": "15m", "H1": "1h", "H4": "4h", "D1": "1d"}
 TRADER_MAX_CANDLES = 120
 PM_MAX_CANDLES = 30
+BROOKS_REFERENCE_MAX_CHARS = 12_000
 _DECIMAL_RE = re.compile(r"-?(?:0|[1-9]\d*)(?:\.\d+)?\Z")
+
+_BROOKS_SKILL_ROOT = (
+    Path(__file__).resolve().parents[2]
+    / "agents"
+    / "brooks_price_action"
+    / "skills"
+)
+
+# Public resource IDs are stable. The model never supplies a path; every ID
+# maps to one reviewed file under the packaged Brooks skills directory.
+BROOKS_REFERENCE_REGISTRY: dict[str, Path] = {
+    "market_context.context_evidence": Path(
+        "brooks-market-context/references/context-evidence.md"
+    ),
+    "market_context.source_notes": Path(
+        "brooks-market-context/references/source-notes.md"
+    ),
+    "trade_entry.entry_evidence": Path(
+        "brooks-trade-entry/references/entry-evidence.md"
+    ),
+    "trade_entry.source_notes": Path(
+        "brooks-trade-entry/references/source-notes.md"
+    ),
+    "position_management.management_evidence": Path(
+        "brooks-position-management/references/management-evidence.md"
+    ),
+}
+_BROOKS_REFERENCE_ROLE_ALLOWLIST: dict[str, frozenset[str]] = {
+    "TRADER": frozenset(
+        {
+            "market_context.context_evidence",
+            "market_context.source_notes",
+            "trade_entry.entry_evidence",
+            "trade_entry.source_notes",
+        }
+    ),
+    "CONTEXT_ANALYST": frozenset(
+        {"market_context.context_evidence", "market_context.source_notes"}
+    ),
+    # Kept during the old HTF role transition; it has the same market-only
+    # permissions as the generic context analyst.
+    "HTF_ANALYST": frozenset(
+        {"market_context.context_evidence", "market_context.source_notes"}
+    ),
+    "POSITION_MANAGER": frozenset(
+        {"position_management.management_evidence"}
+    ),
+}
+
+
+def make_brooks_reference_tool(
+    role: str, *, max_chars: int = BROOKS_REFERENCE_MAX_CHARS
+) -> Callable[[str], dict[str, Any]]:
+    """Build a read-only reference tool scoped to one Brooks role.
+
+    The callable accepts a registry key, never a path. Its hard output bound
+    remains 12,000 characters even if a caller supplies a larger value.
+    """
+    if role not in _BROOKS_REFERENCE_ROLE_ALLOWLIST:
+        raise ValueError(f"unknown Brooks role for references: {role}")
+    if (
+        isinstance(max_chars, bool)
+        or not isinstance(max_chars, int)
+        or not 1 <= max_chars <= BROOKS_REFERENCE_MAX_CHARS
+    ):
+        raise ValueError("reference max_chars must be between 1 and 12000")
+
+    def read_brooks_reference(resource: str) -> dict[str, Any]:
+        if not isinstance(resource, str) or resource not in BROOKS_REFERENCE_REGISTRY:
+            raise ValueError("unknown Brooks reference resource")
+        if resource not in _BROOKS_REFERENCE_ROLE_ALLOWLIST[role]:
+            raise PermissionError(f"reference is unavailable to {role}")
+        relative = BROOKS_REFERENCE_REGISTRY[resource]
+        if relative.is_absolute() or ".." in relative.parts:
+            # Treat a bad registry entry as an internal security failure.
+            raise PermissionError("invalid Brooks reference registry entry")
+        root = _BROOKS_SKILL_ROOT.resolve()
+        path = (root / relative).resolve(strict=True)
+        if path == root or root not in path.parents or not path.is_file():
+            raise PermissionError("Brooks reference escaped its registry root")
+        content = path.read_text(encoding="utf-8")
+        truncated = len(content) > max_chars
+        if truncated:
+            content = content[:max_chars]
+        return {
+            "resource": resource,
+            "content": content,
+            "truncated": truncated,
+        }
+
+    return read_brooks_reference
 
 
 class ClosedBarError(ValueError):

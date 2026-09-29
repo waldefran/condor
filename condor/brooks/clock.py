@@ -3,7 +3,7 @@
 The clock owns no trading, model, or venue-write surface. On every absolute
 bar close (plus the configured wake offset) it fetches a minimal closed window
 through :class:`ClosedBarGate` and publishes exactly one ``H1_BAR_CLOSED`` /
-``D1_BAR_CLOSED`` event per symbol. Forming bars, future bars, gaps, and short
+``H4_BAR_CLOSED`` / ``D1_BAR_CLOSED`` event per symbol. Forming bars, future bars, gaps, and short
 history fail closed: nothing is published and the miss is logged, never
 retried as a partial bar.
 
@@ -77,7 +77,7 @@ def _default_now_ms() -> int:
 
 @dataclass
 class MarketClock:
-    """Publish H1/D1 closed-bar events at close_time + wake offset."""
+    """Publish H1/H4/D1 closed-bar events at close_time + wake offset."""
 
     symbols: list[str] = field(default_factory=list)
     trader: MarketWakeConfig = field(
@@ -88,6 +88,9 @@ class MarketClock:
     htf: MarketWakeConfig = field(
         default_factory=lambda: MarketWakeConfig(timeframe="1d", wake_offset_sec=3)
     )
+    # Optional for direct V1 callers; BrooksSupervisor always supplies the
+    # configured H4 wake for the V2 D1/H4/Trader deployment.
+    h4: MarketWakeConfig | None = None
     source: Any | None = None
     publish: Any | None = None
     now_fn: NowFn = _default_now_ms
@@ -145,10 +148,17 @@ class MarketClock:
         return event
 
     def _schedules(self) -> list[tuple[str, int, int, EventType, MarketWakeConfig]]:
-        return [
+        schedules = [
             ("trader", timeframe_ms(self.trader.timeframe), self.trader.wake_offset_sec * 1000, EventType.H1_BAR_CLOSED, self.trader),
-            ("htf", timeframe_ms(self.htf.timeframe), self.htf.wake_offset_sec * 1000, EventType.D1_BAR_CLOSED, self.htf),
         ]
+        if self.h4 is not None:
+            schedules.append(
+                ("h4", timeframe_ms(self.h4.timeframe), self.h4.wake_offset_sec * 1000, EventType.H4_BAR_CLOSED, self.h4)
+            )
+        schedules.append(
+            ("htf", timeframe_ms(self.htf.timeframe), self.htf.wake_offset_sec * 1000, EventType.D1_BAR_CLOSED, self.htf)
+        )
+        return schedules
 
     async def run(
         self,
@@ -167,32 +177,46 @@ class MarketClock:
                 break
             now_ms = self.now_fn()
             delays: list[float] = []
-            try:
-                for key, interval_ms, offset_ms, event_type, wake in self._schedules():
+            failed = False
+            for key, interval_ms, offset_ms, event_type, wake in self._schedules():
+                # A missing/failed H4 source must not skip H1 publication or
+                # prevent the independent D1 schedule from being serviced.
+                try:
                     canonical = canonical_timeframe(wake.timeframe)
                     last = last_published.get(key)
                     if last is None:
                         due = latest_due_close(now_ms, interval_ms, offset_ms)
-                        if due >= 0 and due + offset_ms <= now_ms:
-                            for symbol in self.symbols:
-                                await self.publish_closed_bar(
-                                    symbol, canonical, due, event_type
-                                )
-                            last_published[key] = due
+                        if due < 0 or due + offset_ms > now_ms:
+                            delays.append((due + offset_ms - now_ms) / 1000)
                             continue
-                        delays.append((due + offset_ms - now_ms) / 1000)
-                    else:
+                        for symbol in self.symbols:
+                            await self.publish_closed_bar(
+                                symbol, canonical, due, event_type
+                            )
+                        last_published[key] = due
+                        last = due
+                    # Catch up every bar already due, then always schedule the
+                    # next one: a schedule that just published must contribute
+                    # its own delay, or a longer-running sibling would put the
+                    # short timeframe to sleep past its next close.
+                    while last + interval_ms + offset_ms <= now_ms:
                         nxt = last + interval_ms
-                        if nxt + offset_ms <= now_ms:
-                            for symbol in self.symbols:
-                                await self.publish_closed_bar(
-                                    symbol, canonical, nxt, event_type
-                                )
-                            last_published[key] = nxt
-                            continue
-                        delays.append((nxt + offset_ms - now_ms) / 1000)
-            except Exception:
-                log.exception("Brooks MarketClock publish failed; backing off")
+                        for symbol in self.symbols:
+                            await self.publish_closed_bar(
+                                symbol, canonical, nxt, event_type
+                            )
+                        last_published[key] = nxt
+                        last = nxt
+                    delays.append(
+                        (last + interval_ms + offset_ms - now_ms) / 1000
+                    )
+                except Exception:
+                    failed = True
+                    log.exception(
+                        "Brooks MarketClock %s publish failed; retaining other schedules",
+                        key,
+                    )
+            if failed:
                 await self._sleep(_CLOCK_BACKOFF_SEC, stop)
                 continue
             if delays:

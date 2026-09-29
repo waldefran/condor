@@ -42,7 +42,12 @@ def test_shadow_h1_close_persists_intent_with_zero_port_writes(tmp_path, monkeyp
     world = E2EWorld(tmp_path)
     due = h1_due_now()
     candles = FakeCandles(due)
-    fake_llm = script_llm(monkeypatch, [json.dumps(make_entry_intent(due))])
+    fake_llm = script_llm(monkeypatch, [
+        json.dumps({"tool": "get_closed_candles", "arguments": {
+            "symbol": SYMBOL, "timeframe": "4h", "limit": 120,
+        }}),
+        json.dumps(make_entry_intent(due)),
+    ])
     trader_q = world.bus.subscribe({EventType.TRADER_INTENT_CREATED})
 
     h1 = run(
@@ -54,7 +59,8 @@ def test_shadow_h1_close_persists_intent_with_zero_port_writes(tmp_path, monkeyp
 
     intent = run(world.trader(candles, shadow_mode=True).handle(h1))
     assert intent.decision == "ENTER_LONG"
-    assert fake_llm.started and fake_llm.stopped and len(fake_llm.prompts) == 1
+    assert fake_llm.started and fake_llm.stopped and len(fake_llm.prompts) == 2
+    assert "Read tool get_closed_candles result" in fake_llm.prompts[1]
 
     latest = world.store.read_latest("trader")
     assert latest is not None and latest["decision"] == "ENTER_LONG"
@@ -81,7 +87,12 @@ def test_main_h1_close_to_position_opened_with_null_to_reconciled_binding(
     world = E2EWorld(tmp_path)
     due = h1_due_now()
     candles = FakeCandles(due)
-    script_llm(monkeypatch, [json.dumps(make_entry_intent(due))])
+    script_llm(monkeypatch, [
+        json.dumps({"tool": "get_closed_candles", "arguments": {
+            "symbol": SYMBOL, "timeframe": "4h", "limit": 120,
+        }}),
+        json.dumps(make_entry_intent(due)),
+    ])
     trader_q = world.bus.subscribe({EventType.TRADER_INTENT_CREATED})
     gm_q = world.bus.subscribe(
         {
