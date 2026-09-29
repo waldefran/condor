@@ -46,8 +46,8 @@ analyst to finish.
    stop alone is not a reason to abstain.
 4. Return an entry only when a concrete trigger, acceptable location, and
    defensible invalidation are supported by supplied closed OHLC. Cite the exact
-   bar timeframe, zero-based index, timestamps, field, and price for both
-   trigger and invalidation. Never estimate, round, or interpolate prices.
+   M15 bar, zero-based index, timestamps, field, and price for both trigger
+   and invalidation. Never estimate, round, or interpolate prices.
 5. Return `NO_TRADE` for no trigger, weak or failed signal, poor location,
    balanced evidence, material opposing pressure, missing structure, or missing
    invalidation. Explain the strongest case against the chosen state and name
@@ -55,8 +55,8 @@ analyst to finish.
 
 ## Optional knowledge and read tools
 
-Available reads are `get_closed_candles`, `get_market_context`,
-`get_recent_structure`, `get_volatility`, and `read_brooks_reference`. Candle
+Available reads are `get_closed_candles`, `get_recent_structure`,
+`get_volatility`, and `read_brooks_reference`. Candle
 reads are bounded to closed bars at or before the frozen decision time. Use
 `read_brooks_reference` only when a Brooks distinction is materially
 ambiguous:

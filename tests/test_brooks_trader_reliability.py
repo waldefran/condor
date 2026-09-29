@@ -154,6 +154,109 @@ def _entry(symbol: str, decision_time_ms: int, m15: list[dict]):
     )
 
 
+@pytest.mark.parametrize(
+    ("trigger_timeframe", "invalidation_timeframe", "accepted"),
+    [
+        ("M15", "M15", True),
+        ("H1", "M15", False),
+        ("M15", "H1", False),
+        ("H4", "M15", False),
+        ("M15", "D1", False),
+    ],
+)
+def test_entry_references_must_both_cite_closed_m15(
+    trigger_timeframe, invalidation_timeframe, accepted
+):
+    from condor.brooks.contracts import TradeIntentV2
+    from condor.brooks.trader import _validate_references
+
+    decision = 120 * 86_400_000
+    symbol = "BTC-USDT"
+    bars = {
+        label: _bars(symbol, interval, 120, decision)
+        for label, interval in (("M15", "15m"), ("H1", "1h"), ("H4", "4h"), ("D1", "1d"))
+    }
+    payload = _entry(symbol, decision, bars["M15"]).model_dump(mode="json")
+    for field, label in (("trigger", trigger_timeframe), ("invalidation", invalidation_timeframe)):
+        bar = bars[label][-1]
+        payload[field]["source"] = {
+            "timeframe": label,
+            "bar_index": 119,
+            "open_time_ms": bar["open_time_ms"],
+            "close_time_ms": bar["close_time_ms"],
+        }
+        payload[field]["price"] = bar[payload[field]["price_field"]]
+    intent = TradeIntentV2.model_validate(payload)
+    windows = {label: {"bars": window} for label, window in bars.items()}
+    if accepted:
+        _validate_references(intent, windows)
+    else:
+        with pytest.raises(ValueError, match="must cite M15"):
+            _validate_references(intent, windows)
+
+
+def test_no_trade_keeps_null_references_and_forming_m15_cannot_support_entry():
+    from condor.brooks.trader import _validate_references
+
+    decision = 120 * 86_400_000
+    symbol = "BTC-USDT"
+    bars = _bars(symbol, "15m", 120, decision)
+    _validate_references(_no_trade(symbol, decision), {"M15": {"bars": bars}})
+    bars[-1]["closed"] = False
+    with pytest.raises(ValueError, match="does not match"):
+        _validate_references(_entry(symbol, decision, bars), {"M15": {"bars": bars}})
+
+
+@pytest.mark.parametrize("source_timeframe", ["H1", "H4", "D1"])
+@pytest.mark.asyncio
+async def test_non_m15_entry_source_fails_before_intent_event(
+    source_timeframe, tmp_path, monkeypatch
+):
+    from condor.brooks import trader
+    from condor.brooks.contracts import TradeIntentV2
+
+    decision = 120 * 86_400_000
+    symbol = "BTC-USDT"
+    source = _Source()
+    source.decision_time_ms = decision
+    store = BrooksStore(tmp_path)
+    bus = EventBus(store)
+
+    async def fake_run(role, prompt, output_model, market_tools, **kwargs):
+        h4 = await market_tools["get_closed_candles"](
+            symbol=symbol, timeframe="4h", limit=120
+        )
+        assert len(h4) == 120  # stale/missing H4 verification still applies
+        if source_timeframe == "D1":
+            window = await market_tools["get_closed_candles"](
+                symbol=symbol, timeframe="1d", limit=120
+            )
+        else:
+            window = prompt["raw"]["H1"] if source_timeframe == "H1" else h4
+        payload = _entry(symbol, decision, prompt["raw"]["M15"]).model_dump(mode="json")
+        bar = window[-1]
+        payload["trigger"]["source"] = {
+            "timeframe": source_timeframe,
+            "bar_index": 119,
+            "open_time_ms": bar["open_time_ms"],
+            "close_time_ms": bar["close_time_ms"],
+        }
+        payload["trigger"]["price"] = bar["high"]
+        return TradeIntentV2.model_validate(payload)
+
+    monkeypatch.setattr(trader, "run_role", fake_run)
+    consumer = trader.TraderConsumer(
+        "ollama:qwen3", source, store, bus, retry_backoff_sec=0
+    )
+    assert await consumer.handle(_event(symbol, decision)) is None
+    cycle_id = trader.DecisionCycleStore.identity(symbol, decision)
+    assert consumer._cycle_store.get(cycle_id)["status"] == "failed"
+    assert store.read_latest("trader") is None
+    types = [event.type for event in store.read_events()]
+    assert types.count(EventType.TRADER_DECISION_FAILED) == 1
+    assert EventType.TRADER_INTENT_CREATED not in types
+
+
 class _Output(BaseModel):
     ok: bool
 

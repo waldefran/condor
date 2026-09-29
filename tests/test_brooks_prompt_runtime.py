@@ -101,6 +101,7 @@ def test_runtime_is_shorter_than_full_skills_and_context_has_no_trade_schema():
         )
     )
     assert len(trader_runtime) < len(old_trader_source)
+    assert "get_market_context" not in trader_runtime
     assert "TradeIntentV2" not in context_runtime
     assert "brooks.trade-intent.v2" not in context_runtime
     for forbidden in (
@@ -111,6 +112,35 @@ def test_runtime_is_shorter_than_full_skills_and_context_has_no_trade_schema():
         "probability_down",
     ):
         assert forbidden not in context_runtime
+
+
+@pytest.mark.asyncio
+async def test_trader_exposes_only_four_read_tools(monkeypatch):
+    client = _Client([json.dumps({"decision": "NO_TRADE"})])
+    monkeypatch.setattr(agent_runner, "build_llm_client", lambda *args, **kwargs: client)
+    await agent_runner.run_role(
+        "TRADER",
+        agent_key="test-backend",
+        prompt={"symbol": "BTC-USDT", "decision_time_ms": 100},
+        output_model=_Output,
+        market_tools={
+            "get_closed_candles": lambda: [],
+            "get_recent_structure": lambda: {},
+            "get_volatility": lambda: {},
+        },
+    )
+    assert client.prompts[0].splitlines()[0] == (
+        "Allowed read tools: get_closed_candles, get_recent_structure, "
+        "get_volatility, read_brooks_reference"
+    )
+    with pytest.raises(ValueError, match="tools forbidden"):
+        await agent_runner.run_role(
+            "TRADER",
+            agent_key="test-backend",
+            prompt={"symbol": "BTC-USDT"},
+            output_model=_Output,
+            market_tools={"get_market_context": lambda: None},
+        )
 
 
 @pytest.mark.asyncio

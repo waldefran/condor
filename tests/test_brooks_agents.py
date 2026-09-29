@@ -294,7 +294,6 @@ async def test_trader_runs_with_open_position_and_publishes_after_save(monkeypat
         assert role == "TRADER" and output_model is TradeIntentV2
         assert set(market_tools) == {
             "get_closed_candles",
-            "get_market_context",
             "get_recent_structure",
             "get_volatility",
         }

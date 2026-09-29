@@ -88,14 +88,15 @@ def _validate_references(
         raise ValueError("entry setup is not actionable")
     if intent.decision_timeframe != "M15":
         raise ValueError("production entry must cite M15 decision timeframe")
+    if intent.trigger.source.timeframe != "M15" or intent.invalidation.source.timeframe != "M15":
+        raise ValueError("production entry trigger and invalidation must cite M15 bars")
     if intent.setup.trigger_status == "pending" and intent.trigger:
         expected_direction = "above" if intent.decision == "ENTER_LONG" else "below"
         if intent.trigger.kind != "stop" or intent.trigger.direction != expected_direction:
             raise ValueError("pending trigger has invalid stop direction")
     for reference in (intent.trigger, intent.invalidation):
         assert reference is not None  # guaranteed by TradeIntentV2
-        timeframe = _timeframe_name(reference.source.timeframe)
-        raw_windows = windows.get(timeframe or "", [])
+        raw_windows = windows.get("M15", [])
         for bars in _window_lists(raw_windows):
             index = reference.source.bar_index
             if index >= len(bars):
@@ -104,6 +105,9 @@ def _validate_references(
             if (
                 bar.get("open_time_ms") == reference.source.open_time_ms
                 and bar.get("close_time_ms") == reference.source.close_time_ms
+                and bar.get("close_time_ms") == bar.get("open_time_ms", -1) + _INTERVAL_MS["M15"] - 1
+                and bar.get("close_time_ms", intent.decision_time_ms + 1) <= intent.decision_time_ms
+                and bar.get("closed") is not False
                 and bar.get(reference.price_field) == reference.price
             ):
                 break
@@ -677,7 +681,6 @@ class TraderConsumer:
                 "get_closed_candles": base.get_closed_candles,
                 "get_recent_structure": base.get_recent_structure,
                 "get_volatility": base.get_volatility,
-                "get_market_context": base.get_market_context,
             },
         )
         tools: dict[str, Callable[..., Any]] = {}

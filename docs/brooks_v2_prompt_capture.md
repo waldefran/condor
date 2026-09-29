@@ -2,6 +2,23 @@
 
 Captura em 2026-09-28 com candles fechados de `binance_perpetual_demo`, `BTC-USDT`. As chamadas LLM usaram **PydanticAI** com `custom@opencode-go:deepseek-v4.1-flash` e o endpoint API OpenCode configurado localmente (`https://opencode.ai/zen/go/v1`). Nenhum CLI foi usado nesta validação. Endpoint e credencial vieram do `.env` local; a credencial não aparece neste artefato.
 
+## Verificação final da superfície Trader (2026-09-29)
+
+Esta seção registra a revisão posterior à captura literal abaixo. Com candles
+fechados de `binance_perpetual_demo` e respostas de papel determinísticas em
+shadow, D1 e H4 foram persistidos, o Trader recebeu 120 H1 e 120 M15 e emitiu
+um `TradeIntentV2 NO_TRADE` válido (`TRADER_INTENT_CREATED=1`, zero writes de
+execução). A primeira linha efetiva do novo prompt foi:
+
+```text
+Allowed read tools: get_closed_candles, get_recent_structure, get_volatility, read_brooks_reference
+```
+
+O system prompt atual tem 4.929 caracteres e a primeira mensagem, 45.597.
+`get_market_context` não aparece no runtime nem no allowlist do Trader. As
+seções SYSTEM e FIRST USER MESSAGE abaixo preservam a captura histórica via
+API de 2026-09-28; não são uma nova chamada ao modelo após esta revisão.
+
 ## Resultado observado
 
 - **D1 e H4 via API:** os dois ContextAnalystConsumers produziram `MarketContextV2` válidos sobre 120 candles fechados cada. Foram persistidos separadamente e emitiram `MARKET_CONTEXT_UPDATED=2`.

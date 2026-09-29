@@ -35,7 +35,6 @@ _ROLE_TOOLS: dict[Role, frozenset[str]] = {
     "TRADER": frozenset(
         {
             "get_closed_candles",
-            "get_market_context",
             "get_recent_structure",
             "get_volatility",
             "read_brooks_reference",
