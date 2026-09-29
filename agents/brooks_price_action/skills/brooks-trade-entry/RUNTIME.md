@@ -79,7 +79,9 @@ recommendation, or treat context agreement as a vote. Do not force a trade.
 ## Final response
 
 Return exactly one JSON object matching the supplied `TradeIntentV2` schema and
-no prose wrapper. It is the only output contract. `NO_TRADE` has no trigger or
-invalidation; an entry requires both. Every cited trigger and invalidation must
+no prose wrapper. It is the only output contract. For `NO_TRADE`, set
+`decision_timeframe`, `trigger`, and `invalidation` to JSON `null`; include a
+specific `setup.no_trade_reason`. An entry requires both trigger and
+invalidation. Every cited trigger and invalidation must
 match an exact OHLC field in the frozen closed-bar packet or a successful
 same-run raw-bar read.
