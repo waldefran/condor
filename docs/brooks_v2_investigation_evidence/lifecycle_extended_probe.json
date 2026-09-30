@@ -1,0 +1,139 @@
+{
+  "idless_closed": {
+    "confirmed_executor_identity": true,
+    "execution_open_calls": 0,
+    "executor_observation": "CLOSED",
+    "gm_entry": {
+      "rejected": "position ownership or structure is unresolved"
+    },
+    "read_bindings_count": 1,
+    "snapshot": {
+      "gross_exposure": "0",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "executor:wf-exec-1",
+      "main_quantity": "0",
+      "open_positions": 0,
+      "position_roles": [],
+      "structure_status": "main_binding_without_venue_position"
+    }
+  },
+  "idless_removed": {
+    "confirmed_executor_identity": false,
+    "execution_open_calls": 0,
+    "executor_observation": "REMOVED",
+    "gm_entry": {
+      "rejected": "position ownership or structure is unresolved"
+    },
+    "read_bindings_count": 1,
+    "snapshot": {
+      "gross_exposure": "0",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "executor:wf-exec-1",
+      "main_quantity": "0",
+      "open_positions": 0,
+      "position_roles": [],
+      "structure_status": "main_unresolved"
+    }
+  },
+  "idless_terminated": {
+    "confirmed_executor_identity": true,
+    "execution_open_calls": 0,
+    "executor_observation": "TERMINATED",
+    "gm_entry": {
+      "rejected": "position ownership or structure is unresolved"
+    },
+    "read_bindings_count": 1,
+    "snapshot": {
+      "gross_exposure": "0",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "executor:wf-exec-1",
+      "main_quantity": "0",
+      "open_positions": 0,
+      "position_roles": [],
+      "structure_status": "main_binding_without_venue_position"
+    }
+  },
+  "orphan_hedge_remove_attempt": {
+    "binding_after_attempt": {
+      "account_name": "walkforward",
+      "connector_name": "binance_perpetual_demo",
+      "controller_id": "brooks-walkforward-10d",
+      "correlation_id": "ETH-USDT-1h-1789876799999",
+      "executor_id": "wf-exec-1",
+      "hedge_executor_id": "wf-hedge-1",
+      "hedge_position_id": "wf-hedge-1",
+      "hedge_size": "0.120",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_side": "SHORT",
+      "planned_quantity": "0.478",
+      "schema": "condor.brooks.trade-binding.v1",
+      "status": "reconciled",
+      "symbol": "ETH-USDT"
+    },
+    "fake_execution_hedge_calls": 0,
+    "gm_remove_hedge": {
+      "rejected": "hedge structure unresolved: orphan_hedge"
+    },
+    "pre_action_snapshot": {
+      "gross_exposure": "310.080",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_quantity": "0",
+      "open_positions": 1,
+      "position_roles": [
+        "HEDGE"
+      ],
+      "structure_status": "main_binding_without_venue_position"
+    }
+  },
+  "pm_close_ack_then_flat": {
+    "after": {
+      "gross_exposure": "0",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_quantity": "0",
+      "open_positions": 0,
+      "position_roles": [],
+      "structure_status": "main_binding_without_venue_position"
+    },
+    "before": {
+      "gross_exposure": "1235.152",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_quantity": "0.478",
+      "open_positions": 1,
+      "position_roles": [
+        "MAIN"
+      ],
+      "structure_status": "single_main"
+    },
+    "binding_file_bytes_unchanged": true,
+    "binding_unchanged": true,
+    "close_result": {
+      "action": "CLOSE",
+      "decision_id": "pm-close-ack",
+      "executor_id": "wf-exec-1",
+      "quantity": "0.478",
+      "status": "submitted"
+    },
+    "fake_execution_close_calls": [
+      "wf-exec-1"
+    ],
+    "fake_venue_positions_after_ack": 0,
+    "persisted_binding_after": {
+      "account_name": "walkforward",
+      "connector_name": "binance_perpetual_demo",
+      "controller_id": "brooks-walkforward-10d",
+      "correlation_id": "ETH-USDT-1h-1789876799999",
+      "executor_id": "wf-exec-1",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_side": "SHORT",
+      "planned_quantity": "0.478",
+      "schema": "condor.brooks.trade-binding.v1",
+      "status": "reconciled",
+      "symbol": "ETH-USDT"
+    }
+  }
+}

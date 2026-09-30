@@ -1,0 +1,97 @@
+{
+  "after_restart_unseeded": {
+    "binding_still_readable": true,
+    "pm_context_is_none": true,
+    "watcher_events": [
+      "ORDER_CHANGED"
+    ]
+  },
+  "closed_main_seeded": {
+    "persisted_binding": {
+      "account_name": "walkforward",
+      "connector_name": "binance_perpetual_demo",
+      "controller_id": "brooks-walkforward-10d",
+      "correlation_id": "ETH-USDT-1h-1789876799999",
+      "executor_id": "wf-exec-1",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_side": "SHORT",
+      "planned_quantity": "0.478",
+      "schema": "condor.brooks.trade-binding.v1",
+      "status": "reconciled",
+      "symbol": "ETH-USDT"
+    },
+    "pm_context_is_none": true,
+    "read_bindings_count": 1,
+    "reader": {
+      "gross_exposure": "0",
+      "hedge_position_id": null,
+      "hedge_quantity": "0",
+      "main_position_id": "wf-main-1",
+      "main_quantity": "0",
+      "open_positions": 0,
+      "position_roles": [],
+      "structure_status": "main_binding_without_venue_position"
+    },
+    "watcher_events": [
+      "POSITION_CLOSED",
+      "ORDER_CHANGED"
+    ]
+  },
+  "main_closed_hedge_open": {
+    "persisted_binding": {
+      "account_name": "walkforward",
+      "connector_name": "binance_perpetual_demo",
+      "controller_id": "brooks-walkforward-10d",
+      "correlation_id": "ETH-USDT-1h-1789876799999",
+      "executor_id": "wf-exec-1",
+      "hedge_executor_id": "wf-hedge-1",
+      "hedge_position_id": "wf-hedge-1",
+      "hedge_size": "0.120",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_side": "SHORT",
+      "planned_quantity": "0.478",
+      "schema": "condor.brooks.trade-binding.v1",
+      "status": "reconciled",
+      "symbol": "ETH-USDT"
+    },
+    "pm_context_is_none": true,
+    "reader": {
+      "gross_exposure": "310.080",
+      "hedge_position_id": "wf-hedge-1",
+      "hedge_quantity": "0.120",
+      "main_position_id": "wf-main-1",
+      "main_quantity": "0",
+      "open_positions": 1,
+      "position_roles": [
+        "HEDGE"
+      ],
+      "structure_status": "main_binding_without_venue_position"
+    },
+    "watcher_events": [
+      "POSITION_CLOSED"
+    ]
+  },
+  "new_entry_after_close": {
+    "rejected": "position ownership or structure is unresolved"
+  },
+  "open_main": {
+    "reader": {
+      "gross_exposure": "1235.152",
+      "hedge_position_id": null,
+      "hedge_quantity": "0",
+      "main_position_id": "wf-main-1",
+      "main_quantity": "0.478",
+      "open_positions": 1,
+      "position_roles": [
+        "MAIN"
+      ],
+      "structure_status": "single_main"
+    },
+    "watcher_events": [
+      "POSITION_OPENED",
+      "ORDER_CHANGED"
+    ]
+  }
+}

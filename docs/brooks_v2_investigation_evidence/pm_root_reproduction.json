@@ -1,0 +1,12 @@
+{
+  "correct_strategy_home": {
+    "latest_trader_present": true,
+    "latest_context_present": true
+  },
+  "replay_brooks_state_as_root": {
+    "latest_trader_present": false,
+    "latest_context_present": false
+  },
+  "source": "read-only production helper calls; writes restricted to temporary fixture",
+  "production_wiring": "wire_supervisor passes strategy_home; replay passes store.root"
+}

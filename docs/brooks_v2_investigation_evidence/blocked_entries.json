@@ -1,0 +1,2357 @@
+[
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789916399999-21",
+    "cycle_line": 16,
+    "correlation_id": "ETH-USDT-1h-1789916399999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789916399999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": false,
+    "simulation_completed_at_ms": 1789916661076,
+    "gm_event_created_at_ms": 1789916661072,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 130,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull flag / tight-range breakout pullback in an H4 bull trend, buy stop above the signal bar",
+    "trigger": {
+      "price": "2586",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2568.16",
+      "field": "low",
+      "bar_index": 105,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789916399999-21-1-a9431f09.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "14d18232-2952-5903-94bd-62f57815edc4",
+      "trader_intent_event_created_at_ms": 1789916660861,
+      "trader_intent_event_line": 129,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "4061394a-57a6-4527-8f15-3f7637b345d8",
+      "event_line": 130,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789916661072,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789916399999; GM rejection event time 1789916661072; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 16,
+        "round_id": "clock-1h-1789916399999-21"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 129,
+        "event_id": "14d18232-2952-5903-94bd-62f57815edc4"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 130,
+        "event_id": "4061394a-57a6-4527-8f15-3f7637b345d8"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789919999999-22",
+    "cycle_line": 17,
+    "correlation_id": "ETH-USDT-1h-1789919999999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789919999999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789920233613,
+    "gm_event_created_at_ms": 1789920233605,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 133,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull flag / breakout-pullback continuation in a bull trend",
+    "trigger": {
+      "price": "2611",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2592.2",
+      "field": "low",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789919999999-22-1-87a13742.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "1cc94c34-b0ed-51b5-bac6-0f682d66cc74",
+      "trader_intent_event_created_at_ms": 1789920233444,
+      "trader_intent_event_line": 132,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "aafc5419-6f2b-4bd6-af29-56dd46044314",
+      "event_line": 133,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789920233605,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789919999999; GM rejection event time 1789920233605; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 17,
+        "round_id": "clock-1h-1789919999999-22"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 132,
+        "event_id": "1cc94c34-b0ed-51b5-bac6-0f682d66cc74"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 133,
+        "event_id": "aafc5419-6f2b-4bd6-af29-56dd46044314"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789934399999-27",
+    "cycle_line": 21,
+    "correlation_id": "ETH-USDT-1h-1789934399999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789934399999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789934984955,
+    "gm_event_created_at_ms": 1789934984951,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 144,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull flag: tight 12-bar M15 trading range holding above the confirmed H4 base breakout, entry on a stop through the flag high",
+    "trigger": {
+      "price": "2645.88",
+      "field": "high",
+      "bar_index": 108,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2622.06",
+      "field": "low",
+      "bar_index": 112,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789934399999-27-1-3b58ac6c.json",
+      "captures/clock-1h-1789934399999-27-2-c50631a1.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "27d20546-f0aa-512b-a9e3-93b94c342178",
+      "trader_intent_event_created_at_ms": 1789934984845,
+      "trader_intent_event_line": 143,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "81e01247-fe2f-4d7f-a10c-7736bdca8851",
+      "event_line": 144,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789934984951,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789934399999; GM rejection event time 1789934984951; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 21,
+        "round_id": "clock-1h-1789934399999-27"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 143,
+        "event_id": "27d20546-f0aa-512b-a9e3-93b94c342178"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 144,
+        "event_id": "81e01247-fe2f-4d7f-a10c-7736bdca8851"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789955999999-36",
+    "cycle_line": 27,
+    "correlation_id": "ETH-USDT-1h-1789955999999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789955999999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789956546421,
+    "gm_event_created_at_ms": 1789956546413,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 163,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_SHORT",
+    "side": "SHORT",
+    "setup": "failed breakout / double top at range top; sell stop below the bear signal bar",
+    "trigger": {
+      "price": "2648.28",
+      "field": "low",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2700",
+      "field": "high",
+      "bar_index": 113,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789955999999-36-1-265d8313.json",
+      "captures/clock-1h-1789955999999-36-2-4e6c936b.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "6ba22b0f-3928-5af0-a72c-b90c11f6139d",
+      "trader_intent_event_created_at_ms": 1789956546348,
+      "trader_intent_event_line": 162,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "da4725b7-247d-4dec-b875-36e5a0bd9041",
+      "event_line": 163,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789956546413,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789955999999; GM rejection event time 1789956546413; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 27,
+        "round_id": "clock-1h-1789955999999-36"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 162,
+        "event_id": "6ba22b0f-3928-5af0-a72c-b90c11f6139d"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 163,
+        "event_id": "da4725b7-247d-4dec-b875-36e5a0bd9041"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789959599999-37",
+    "cycle_line": 28,
+    "correlation_id": "ETH-USDT-1h-1789959599999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789959599999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789959887969,
+    "gm_event_created_at_ms": 1789959887964,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 166,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout_pullback",
+    "trigger": {
+      "price": "2667.62",
+      "field": "high",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2647.48",
+      "field": "low",
+      "bar_index": 116,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789959599999-37-1-3914269a.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "faea89b3-eaec-5e85-899f-21ec69ad09b4",
+      "trader_intent_event_created_at_ms": 1789959887896,
+      "trader_intent_event_line": 165,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "2e2aa0a2-6933-45c6-a69c-b4a44960918d",
+      "event_line": 166,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789959887964,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789959599999; GM rejection event time 1789959887964; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 28,
+        "round_id": "clock-1h-1789959599999-37"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 165,
+        "event_id": "faea89b3-eaec-5e85-899f-21ec69ad09b4"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 166,
+        "event_id": "2e2aa0a2-6933-45c6-a69c-b4a44960918d"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789984799999-46",
+    "cycle_line": 35,
+    "correlation_id": "ETH-USDT-1h-1789984799999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789984799999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789984949022,
+    "gm_event_created_at_ms": 1789984949018,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 185,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout_pullback long above the 2700.00 D1 range top / H4 double top, buy stop for continuation",
+    "trigger": {
+      "price": "2739.13",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2694.94",
+      "field": "low",
+      "bar_index": 116,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789984799999-46-1-219678f6.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "3627ab97-6b5b-55c1-a835-160f9c4d2a1d",
+      "trader_intent_event_created_at_ms": 1789984948943,
+      "trader_intent_event_line": 184,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "be9737c1-4507-4bd4-98bb-a50992cccb85",
+      "event_line": 185,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789984949018,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789984799999; GM rejection event time 1789984949018; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 35,
+        "round_id": "clock-1h-1789984799999-46"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 184,
+        "event_id": "3627ab97-6b5b-55c1-a835-160f9c4d2a1d"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 185,
+        "event_id": "be9737c1-4507-4bd4-98bb-a50992cccb85"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789988399999-47",
+    "cycle_line": 36,
+    "correlation_id": "ETH-USDT-1h-1789988399999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789988399999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789988615893,
+    "gm_event_created_at_ms": 1789988615885,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 188,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull flag / breakout pullback above the 2700.00 range top (entry on flag break)",
+    "trigger": {
+      "price": "2721.47",
+      "field": "high",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2709.56",
+      "field": "low",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789988399999-47-1-4b496d13.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "4dde5a09-1fee-5c57-b9df-15af9fc027d3",
+      "trader_intent_event_created_at_ms": 1789988615701,
+      "trader_intent_event_line": 187,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "e3637e6a-3e02-477e-bd21-fce3209a86cd",
+      "event_line": 188,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789988615885,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789988399999; GM rejection event time 1789988615885; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 36,
+        "round_id": "clock-1h-1789988399999-47"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 187,
+        "event_id": "4dde5a09-1fee-5c57-b9df-15af9fc027d3"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 188,
+        "event_id": "e3637e6a-3e02-477e-bd21-fce3209a86cd"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789991999999-48",
+    "cycle_line": 37,
+    "correlation_id": "ETH-USDT-1h-1789991999999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789991999999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789992162396,
+    "gm_event_created_at_ms": 1789992162392,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 191,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout_pullback",
+    "trigger": {
+      "price": "2727.03",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2702.56",
+      "field": "low",
+      "bar_index": 110,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789991999999-48-1-d52e59e8.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "c08ac8ef-cec2-5cc3-ba78-3de6893ecf26",
+      "trader_intent_event_created_at_ms": 1789992162233,
+      "trader_intent_event_line": 190,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "591f11bd-9b6d-4c12-97ff-fbec8c6826d1",
+      "event_line": 191,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789992162392,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789991999999; GM rejection event time 1789992162392; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 37,
+        "round_id": "clock-1h-1789991999999-48"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 190,
+        "event_id": "c08ac8ef-cec2-5cc3-ba78-3de6893ecf26"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 191,
+        "event_id": "591f11bd-9b6d-4c12-97ff-fbec8c6826d1"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789995599999-50",
+    "cycle_line": 38,
+    "correlation_id": "ETH-USDT-1h-1789995599999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789995599999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789995738586,
+    "gm_event_created_at_ms": 1789995738582,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 196,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout of a post-spike bull flag in a bull trend",
+    "trigger": {
+      "price": "2736.56",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2721.85",
+      "field": "low",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789995599999-50-1-3430f798.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "8796ab64-42c1-5196-aba5-a794bacda11f",
+      "trader_intent_event_created_at_ms": 1789995738490,
+      "trader_intent_event_line": 195,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "b1fd7126-41d9-49fb-974f-adc4c6851e5a",
+      "event_line": 196,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789995738582,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789995599999; GM rejection event time 1789995738582; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 38,
+        "round_id": "clock-1h-1789995599999-50"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 195,
+        "event_id": "8796ab64-42c1-5196-aba5-a794bacda11f"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 196,
+        "event_id": "b1fd7126-41d9-49fb-974f-adc4c6851e5a"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1789999199999-51",
+    "cycle_line": 39,
+    "correlation_id": "ETH-USDT-1h-1789999199999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1789999199999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1789999321619,
+    "gm_event_created_at_ms": 1789999321615,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 199,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull flag (tight range) breakout in a bull trend",
+    "trigger": {
+      "price": "2741.55",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2709.56",
+      "field": "low",
+      "bar_index": 107,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1789999199999-51-1-981d232a.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "905ab45a-12e7-5e06-b297-cbaaa66fe489",
+      "trader_intent_event_created_at_ms": 1789999321372,
+      "trader_intent_event_line": 198,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "d52cc818-3662-435b-a071-ba5b3c299cdc",
+      "event_line": 199,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1789999321615,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1789999199999; GM rejection event time 1789999321615; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 39,
+        "round_id": "clock-1h-1789999199999-51"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 198,
+        "event_id": "905ab45a-12e7-5e06-b297-cbaaa66fe489"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 199,
+        "event_id": "d52cc818-3662-435b-a071-ba5b3c299cdc"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790009999999-55",
+    "cycle_line": 42,
+    "correlation_id": "ETH-USDT-1h-1790009999999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790009999999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790010270306,
+    "gm_event_created_at_ms": 1790010270300,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 207,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull-flag breakout-pullback (continuation) above the M15 116-119 flag high",
+    "trigger": {
+      "price": "2765.34",
+      "field": "high",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2742",
+      "field": "low",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790009999999-55-1-62f117ce.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "b5e5b884-91a9-5caf-ba6a-46e0f047dc1f",
+      "trader_intent_event_created_at_ms": 1790010270191,
+      "trader_intent_event_line": 206,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "142bbbbf-39c9-47b2-b013-0cec0ccf6379",
+      "event_line": 207,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790010270300,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790009999999; GM rejection event time 1790010270300; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 42,
+        "round_id": "clock-1h-1790009999999-55"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 206,
+        "event_id": "b5e5b884-91a9-5caf-ba6a-46e0f047dc1f"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 207,
+        "event_id": "142bbbbf-39c9-47b2-b013-0cec0ccf6379"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790035199999-63",
+    "cycle_line": 49,
+    "correlation_id": "ETH-USDT-1h-1790035199999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790035199999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790035343760,
+    "gm_event_created_at_ms": 1790035343755,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 224,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull flag / breakout-pullback continuation above the M15 coil",
+    "trigger": {
+      "price": "2785.48",
+      "field": "high",
+      "bar_index": 116,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2762.93",
+      "field": "low",
+      "bar_index": 109,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790035199999-63-1-e8d33d2f.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "2d86f860-6c73-5fbb-99c2-1f7874396bb9",
+      "trader_intent_event_created_at_ms": 1790035343651,
+      "trader_intent_event_line": 223,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "bad374b0-0408-4d95-810c-6e45b62da25f",
+      "event_line": 224,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790035343755,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790035199999; GM rejection event time 1790035343755; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 49,
+        "round_id": "clock-1h-1790035199999-63"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 223,
+        "event_id": "2d86f860-6c73-5fbb-99c2-1f7874396bb9"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 224,
+        "event_id": "bad374b0-0408-4d95-810c-6e45b62da25f"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790081999999-81",
+    "cycle_line": 62,
+    "correlation_id": "ETH-USDT-1h-1790081999999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790081999999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790082484755,
+    "gm_event_created_at_ms": 1790082484750,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 261,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout_pullback continuation: H4 bull breakout above 2700 tested and held, M15 bull micro-breakout closing at the bar high",
+    "trigger": {
+      "price": "2755.14",
+      "field": "close",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2737.49",
+      "field": "low",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790081999999-81-1-648613a2.json",
+      "captures/clock-1h-1790081999999-81-2-4df38616.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "9b53dc96-e6f1-5872-8c56-25c25a7ef777",
+      "trader_intent_event_created_at_ms": 1790082484618,
+      "trader_intent_event_line": 260,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "766818e8-97c6-4dd0-806e-9047a9e941ac",
+      "event_line": 261,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790082484750,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790081999999; GM rejection event time 1790082484750; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 62,
+        "round_id": "clock-1h-1790081999999-81"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 260,
+        "event_id": "9b53dc96-e6f1-5872-8c56-25c25a7ef777"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 261,
+        "event_id": "766818e8-97c6-4dd0-806e-9047a9e941ac"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790085599999-82",
+    "cycle_line": 63,
+    "correlation_id": "ETH-USDT-1h-1790085599999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790085599999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790085801038,
+    "gm_event_created_at_ms": 1790085801035,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 264,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull-flag / tight-range breakout continuation long (stop above M15 swing high 2761.62)",
+    "trigger": {
+      "price": "2761.62",
+      "field": "high",
+      "bar_index": 116,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2739.8",
+      "field": "low",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790085599999-82-1-5deb28be.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "47bf865d-127f-58ea-bda7-92010e9bc0f8",
+      "trader_intent_event_created_at_ms": 1790085800820,
+      "trader_intent_event_line": 263,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "d78675cd-6df0-4a90-8ff3-491e52374aeb",
+      "event_line": 264,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790085801035,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790085599999; GM rejection event time 1790085801035; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 63,
+        "round_id": "clock-1h-1790085599999-82"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 263,
+        "event_id": "47bf865d-127f-58ea-bda7-92010e9bc0f8"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 264,
+        "event_id": "d78675cd-6df0-4a90-8ff3-491e52374aeb"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790089199999-83",
+    "cycle_line": 64,
+    "correlation_id": "ETH-USDT-1h-1790089199999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790089199999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790089382478,
+    "gm_event_created_at_ms": 1790089382474,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 267,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "buy_stop_above_bull_reversal_bar_at_pullback_support",
+    "trigger": {
+      "price": "2741.24",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2722.62",
+      "field": "low",
+      "bar_index": 118,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790089199999-83-1-0d5d3910.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "aa0368d7-d974-59fc-bb12-34d7af0c505c",
+      "trader_intent_event_created_at_ms": 1790089382313,
+      "trader_intent_event_line": 266,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "70d3ea17-31b6-4cf1-a07e-7405a272257a",
+      "event_line": 267,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790089382474,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790089199999; GM rejection event time 1790089382474; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 64,
+        "round_id": "clock-1h-1790089199999-83"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 266,
+        "event_id": "aa0368d7-d974-59fc-bb12-34d7af0c505c"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 267,
+        "event_id": "70d3ea17-31b6-4cf1-a07e-7405a272257a"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790139599999-102",
+    "cycle_line": 78,
+    "correlation_id": "ETH-USDT-1h-1790139599999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790139599999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790139744469,
+    "gm_event_created_at_ms": 1790139744465,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 305,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "bull-trend continuation: buy stop above the two-bar M15 pause (index 119 high), invalidation below the index-116 higher low",
+    "trigger": {
+      "price": "2783.34",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2768.21",
+      "field": "low",
+      "bar_index": 116,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790139599999-102-1-4e20be84.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "ccc16b60-1a02-52d6-af33-1a4f15a0f81c",
+      "trader_intent_event_created_at_ms": 1790139744281,
+      "trader_intent_event_line": 304,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "c424ad48-16a9-4b92-9629-80d9a4678694",
+      "event_line": 305,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790139744465,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790139599999; GM rejection event time 1790139744465; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 78,
+        "round_id": "clock-1h-1790139599999-102"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 304,
+        "event_id": "ccc16b60-1a02-52d6-af33-1a4f15a0f81c"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 305,
+        "event_id": "c424ad48-16a9-4b92-9629-80d9a4678694"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790164799999-110",
+    "cycle_line": 85,
+    "correlation_id": "ETH-USDT-1h-1790164799999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790164799999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790165003497,
+    "gm_event_created_at_ms": 1790165003493,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 322,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "Buy a bull reversal bar at the retest of the prior higher low (2716.01) inside the H4 bull-flag range, within a D1/H4 bull trend",
+    "trigger": {
+      "price": "2727.77",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2717.02",
+      "field": "low",
+      "bar_index": 118,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790164799999-110-1-c0454437.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "344dad56-a712-58e1-89a3-896f3b3995bc",
+      "trader_intent_event_created_at_ms": 1790165003268,
+      "trader_intent_event_line": 321,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "8264672b-d0e0-48f2-825a-386b30010913",
+      "event_line": 322,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790165003493,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790164799999; GM rejection event time 1790165003493; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 85,
+        "round_id": "clock-1h-1790164799999-110"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 321,
+        "event_id": "344dad56-a712-58e1-89a3-896f3b3995bc"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 322,
+        "event_id": "8264672b-d0e0-48f2-825a-386b30010913"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790189999999-119",
+    "cycle_line": 92,
+    "correlation_id": "ETH-USDT-1h-1790189999999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790189999999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790190251828,
+    "gm_event_created_at_ms": 1790190251824,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 341,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "reversal (M15 second-entry double bottom inside a D1 bull-trend pullback)",
+    "trigger": {
+      "price": "2672.55",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2641.37",
+      "field": "low",
+      "bar_index": 108,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790189999999-119-1-cc516b38.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "047d8f99-c19c-5142-ab0c-589b768b01b2",
+      "trader_intent_event_created_at_ms": 1790190251722,
+      "trader_intent_event_line": 340,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "ac91f5df-6aea-47cb-b325-b8a558386bc6",
+      "event_line": 341,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790190251824,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790189999999; GM rejection event time 1790190251824; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 92,
+        "round_id": "clock-1h-1790189999999-119"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 340,
+        "event_id": "047d8f99-c19c-5142-ab0c-589b768b01b2"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 341,
+        "event_id": "ac91f5df-6aea-47cb-b325-b8a558386bc6"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790204399999-124",
+    "cycle_line": 96,
+    "correlation_id": "ETH-USDT-1h-1790204399999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790204399999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790204565558,
+    "gm_event_created_at_ms": 1790204565552,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 352,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout_pullback",
+    "trigger": {
+      "price": "2691.93",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2682.1",
+      "field": "low",
+      "bar_index": 118,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790204399999-124-1-a4869da5.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "970f9f57-5b46-5682-959c-3e8cf8a81b83",
+      "trader_intent_event_created_at_ms": 1790204565411,
+      "trader_intent_event_line": 351,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "f4e3bf00-b330-40df-b7c1-b91d2a062c7f",
+      "event_line": 352,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790204565552,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790204399999; GM rejection event time 1790204565552; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 96,
+        "round_id": "clock-1h-1790204399999-124"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 351,
+        "event_id": "970f9f57-5b46-5682-959c-3e8cf8a81b83"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 352,
+        "event_id": "f4e3bf00-b330-40df-b7c1-b91d2a062c7f"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790261999999-145",
+    "cycle_line": 112,
+    "correlation_id": "ETH-USDT-1h-1790261999999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790261999999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790262227525,
+    "gm_event_created_at_ms": 1790262227521,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 396,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_SHORT",
+    "side": "SHORT",
+    "setup": "M15/H1 two-bar bear reversal at a lower high below the H4 broken 2716.01 support (breakout-pullback short)",
+    "trigger": {
+      "price": "2659.74",
+      "field": "close",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2680.65",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790261999999-145-1-62889502.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "3a638629-f2a5-553c-8dfd-f5d0ab087907",
+      "trader_intent_event_created_at_ms": 1790262227347,
+      "trader_intent_event_line": 395,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "1683ea96-0479-4db2-b93b-0a2a5b3014dc",
+      "event_line": 396,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790262227521,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790261999999; GM rejection event time 1790262227521; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 112,
+        "round_id": "clock-1h-1790261999999-145"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 395,
+        "event_id": "3a638629-f2a5-553c-8dfd-f5d0ab087907"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 396,
+        "event_id": "1683ea96-0479-4db2-b93b-0a2a5b3014dc"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790330399999-170",
+    "cycle_line": 131,
+    "correlation_id": "ETH-USDT-1h-1790330399999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790330399999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790330497048,
+    "gm_event_created_at_ms": 1790330497043,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 447,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout_pullback",
+    "trigger": {
+      "price": "2712.49",
+      "field": "high",
+      "bar_index": 118,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2692.88",
+      "field": "low",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790330399999-170-1-1c1795d6.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "c2b0e516-f6d7-5636-aa8f-f1e1685c7a55",
+      "trader_intent_event_created_at_ms": 1790330496853,
+      "trader_intent_event_line": 446,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "464c4c14-4675-424c-8478-38facad2ebee",
+      "event_line": 447,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790330497043,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790330399999; GM rejection event time 1790330497043; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 131,
+        "round_id": "clock-1h-1790330399999-170"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 446,
+        "event_id": "c2b0e516-f6d7-5636-aa8f-f1e1685c7a55"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 447,
+        "event_id": "464c4c14-4675-424c-8478-38facad2ebee"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790341199999-174",
+    "cycle_line": 134,
+    "correlation_id": "ETH-USDT-1h-1790341199999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790341199999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790341346282,
+    "gm_event_created_at_ms": 1790341346277,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 456,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout-pullback long (pullback tested the 2699.53 H4 range break and was bought)",
+    "trigger": {
+      "price": "2717.41",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2688.28",
+      "field": "low",
+      "bar_index": 117,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790341199999-174-1-8da2e611.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "f39c0bde-3b8f-5814-bc3e-502b51f37873",
+      "trader_intent_event_created_at_ms": 1790341346088,
+      "trader_intent_event_line": 455,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "a673ea1a-7df5-4985-9a47-d8c1b0dfb06d",
+      "event_line": 456,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790341346277,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790341199999; GM rejection event time 1790341346277; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 134,
+        "round_id": "clock-1h-1790341199999-174"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 455,
+        "event_id": "f39c0bde-3b8f-5814-bc3e-502b51f37873"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 456,
+        "event_id": "a673ea1a-7df5-4985-9a47-d8c1b0dfb06d"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": true
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790456399999-215",
+    "cycle_line": 166,
+    "correlation_id": "ETH-USDT-1h-1790456399999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790456399999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790456504083,
+    "gm_event_created_at_ms": 1790456504079,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 539,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "failed bear breakout (bear trap) of the tight coil/range low, in the direction of the D1 bull trend",
+    "trigger": {
+      "price": "2676.05",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2665.14",
+      "field": "low",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790456399999-215-1-fc877240.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "e38eb5e2-ea43-5cbe-a652-d26b476f385b",
+      "trader_intent_event_created_at_ms": 1790456503822,
+      "trader_intent_event_line": 538,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "efafde3a-2092-404a-a275-1705e94f156e",
+      "event_line": 539,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790456504079,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790456399999; GM rejection event time 1790456504079; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 166,
+        "round_id": "clock-1h-1790456399999-215"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 538,
+        "event_id": "e38eb5e2-ea43-5cbe-a652-d26b476f385b"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 539,
+        "event_id": "efafde3a-2092-404a-a275-1705e94f156e"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": false
+  },
+  {
+    "dataset": "posterior",
+    "round_id": "clock-1h-1790474399999-222",
+    "cycle_line": 171,
+    "correlation_id": "ETH-USDT-1h-1790474399999",
+    "main_correlation_id": "ETH-USDT-1h-1789876799999",
+    "decision_time_ms": 1790474399999,
+    "main_close_time_ms": 1789916519999,
+    "decision_time_after_main_close": true,
+    "simulation_completed_at_ms": 1790474498159,
+    "gm_event_created_at_ms": 1790474498155,
+    "gm_event_after_main_close": true,
+    "gm_event_line": 554,
+    "gm_event_file": "posterior/events.jsonl",
+    "gm_result_type": "GM_ENTRY_REJECTED",
+    "gm_reason": "position ownership or structure is unresolved",
+    "decision": "ENTER_LONG",
+    "side": "LONG",
+    "setup": "breakout above tight range (breakout-mode resolution)",
+    "trigger": {
+      "price": "2703.08",
+      "field": "high",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "invalidation": {
+      "price": "2693.97",
+      "field": "low",
+      "bar_index": 119,
+      "timeframe": "M15"
+    },
+    "role_run_paths": [
+      "captures/clock-1h-1790474399999-222-1-dddab941.json"
+    ],
+    "cycle_source_path": "posterior/cycles.jsonl",
+    "ownership_binding_path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+    "ownership_binding_status": "reconciled",
+    "host_accepted": true,
+    "host_acceptance_evidence": {
+      "cycle_status": "completed",
+      "intent_present": true,
+      "trader_intent_event_type": "TRADER_INTENT_CREATED",
+      "trader_intent_event_id": "d4b103f5-3d37-5dda-8017-ad69788c6dce",
+      "trader_intent_event_created_at_ms": 1790474498042,
+      "trader_intent_event_line": 553,
+      "trader_intent_event_path": "posterior/events.jsonl"
+    },
+    "gm_event_evidence": {
+      "event_id": "586b3162-2dac-479e-9a0f-4098369acc2e",
+      "event_line": 554,
+      "event_path": "posterior/events.jsonl",
+      "created_at_ms": 1790474498155,
+      "payload_reason": "position ownership or structure is unresolved"
+    },
+    "simulation_open_positions_count": 0,
+    "severity": "high availability blocker, fail-closed; downstream GM outcome not established",
+    "observed": "GM rejected with exact reason: position ownership or structure is unresolved; this row is host-accepted; entry decision time 1790474399999; GM rejection event time 1790474498155; MAIN close 1789916519999.",
+    "expected": "The binding would need to resolve to structure_status=no_positions for compile_main to continue; this is only the first observed blocker. No approval after bypassing it is established.",
+    "root_cause_classification": "same persisted MAIN binding/structure gate across rejected rows; not independent market setup reasons",
+    "downstream_guard_evaluation": "Not reached after the early structure_status guard; do not infer a counterfactual approval.",
+    "confidence": "high for the recorded GM reason and common binding state; not established for counterfactual approval or market setup quality",
+    "production_impact": "Replay shows no execution for this rejected entry. A live impact is conditional on production carrying the same unresolved binding state.",
+    "evidence": [
+      {
+        "kind": "cycle and intent",
+        "path": "posterior/cycles.jsonl",
+        "line": 171,
+        "round_id": "clock-1h-1790474399999-222"
+      },
+      {
+        "kind": "Trader intent created event",
+        "path": "posterior/events.jsonl",
+        "line": 553,
+        "event_id": "d4b103f5-3d37-5dda-8017-ad69788c6dce"
+      },
+      {
+        "kind": "GM rejection event",
+        "path": "posterior/events.jsonl",
+        "line": 554,
+        "event_id": "586b3162-2dac-479e-9a0f-4098369acc2e"
+      },
+      {
+        "kind": "persisted binding",
+        "path": "posterior/trade_state/ETH-USDT-1h-1789876799999/binding.json",
+        "status": "reconciled",
+        "main_position_id": "wf-main-1"
+      },
+      {
+        "kind": "GM structure guard",
+        "repo_source_paths": [
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/gm.py:224-225",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:311-322",
+          "/home/valdemaster/brooks-condor/condor/condor/brooks/adapters.py:463-543"
+        ]
+      }
+    ],
+    "present_in_baseline": false
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "timeout": {
+    "aggregated_text": "",
+    "host_exception": "RoleRunError",
+    "host_message": "Brooks role returned invalid JSON",
+    "transient": false
+  },
+  "error": {
+    "aggregated_text": "Provider transport error: connection reset",
+    "host_exception": "RoleRunError",
+    "host_message": "Brooks role returned invalid JSON",
+    "transient": false
+  }
+}

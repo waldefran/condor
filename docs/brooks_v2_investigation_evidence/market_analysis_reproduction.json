@@ -1,0 +1,7 @@
+{
+  "exception_type": "AttributeError",
+  "message": "'TraderMarketTools' object has no attribute 'as_tools'",
+  "provider_called": false,
+  "source_called": false,
+  "scope": "default market-analysis runner; no patch or external client constructed"
+}

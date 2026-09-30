@@ -1,0 +1,1287 @@
+{
+  "schema": "brooks-investigation.decision-reviews.v1",
+  "scope": {
+    "repository_head": "7760041af8a6d2ea6ed737ddc7a8d86cbfeb305c",
+    "baseline_root": "baseline/docs/brooks_walkforward_2026-09-20_2026-09-29",
+    "current_root": "current",
+    "snapshot_integrity": {
+      "baseline_cycles": 145,
+      "current_cycles": 189,
+      "same_prefix_round_ids_intents_packet_hashes": 145,
+      "new_current_cycles": 44,
+      "future_packet_records": 0,
+      "duplicate_cycle_ids": 0,
+      "status": "current snapshot partial; manifest expects 240"
+    },
+    "captured_system_prompts": {
+      "trader": {
+        "sha256": "b7e4ea14b83a841200e2cab6f7aa2ccaab14be4909aea7615d59f00468e11765",
+        "characters": 7042,
+        "embedded_runtime_matches_local": true
+      },
+      "context_analyst": {
+        "sha256": "33ab82a69f2ad3798a5ccda2539ec5a437cb7163d70aca517488d25c3c4ca4e2",
+        "characters": 6469,
+        "embedded_runtime_matches_local": true
+      },
+      "position_manager": {
+        "sha256": "30068b8ace43f49394e33223453931d93a17eb7dc16601305be22e3f05cfb8dd",
+        "characters": 16277,
+        "embedded_skill_matches_local": true
+      }
+    },
+    "method": "All captured cycles/prompts scanned; representative cases reviewed against frozen packets and raw OHLC. Current contains baseline as exact prefix. No model calls, replay, restart, repo writes, or web research.",
+    "non_goals": [
+      "edge or PnL grading",
+      "model-specific causal attribution",
+      "unobserved future cycles",
+      "hidden chain-of-thought"
+    ],
+    "captured_source_git_head": "a83fb54cf2a770be73119190a6b31d27f73f3f21",
+    "reviewed_checkout_differs_from_manifest_head": true,
+    "capture_manifest_head": "a83fb54cf2a770be73119190a6b31d27f73f3f21",
+    "operative_code_diff_between_manifest_and_checkout": [
+      "scripts/brooks_walkforward_report.py"
+    ],
+    "skills_adapters_executor_unchanged_between_heads": true
+  },
+  "population": {
+    "baseline_145": {
+      "cycles": 145,
+      "trader_completed": 120,
+      "trader_failed": 25,
+      "decisions": {
+        "NO_TRADE": 97,
+        "ENTER_LONG": 20,
+        "ENTER_SHORT": 3
+      },
+      "freshness": {
+        "H4": {
+          "current": 102,
+          "stale": 43
+        },
+        "D1": {
+          "current": 138,
+          "stale": 7
+        }
+      },
+      "trader_tools": {
+        "get_closed_candles": 32,
+        "get_recent_structure": 5,
+        "read_brooks_reference": 5
+      },
+      "references": {
+        "trade_entry.entry_evidence": 5,
+        "market_context.context_evidence": 1,
+        "position_management.management_evidence": 0
+      }
+    },
+    "current_189": {
+      "cycles": 189,
+      "trader_completed": 159,
+      "trader_failed": 30,
+      "decisions": {
+        "NO_TRADE": 134,
+        "ENTER_LONG": 22,
+        "ENTER_SHORT": 3
+      },
+      "decision_rates_valid": {
+        "NO_TRADE": 0.8428,
+        "ENTER": 0.1572
+      },
+      "no_trade_reasons": {
+        "poor_location": 93,
+        "balanced_context": 31,
+        "no_trigger": 6,
+        "weak_signal": 3,
+        "timeframe_conflict": 1
+      },
+      "enter_mechanisms": {
+        "breakout_pullback": 15,
+        "continuation": 4,
+        "reversal": 3,
+        "breakout": 3
+      },
+      "enter_signal_quality": {
+        "clear": 24,
+        "weak": 1
+      },
+      "enter_location": {
+        "neutral": 17,
+        "favorable": 8
+      },
+      "enter_trigger_status": {
+        "pending": 23,
+        "present": 1,
+        "triggered": 1
+      },
+      "failed_cycle_categories": {
+        "source_timeframe_15m_vs_M15": 11,
+        "invalid_json": 11,
+        "schema_validation": 4,
+        "entry_reference_mismatch": 4
+      },
+      "freshness": {
+        "H4": {
+          "current": 135,
+          "stale": 54
+        },
+        "D1": {
+          "current": 181,
+          "stale": 8
+        }
+      },
+      "trader_tools": {
+        "get_closed_candles": 40,
+        "get_recent_structure": 7,
+        "read_brooks_reference": 7
+      },
+      "references": {
+        "trade_entry.entry_evidence": 7,
+        "trade_entry.source_notes": 0,
+        "market_context.context_evidence": 1,
+        "market_context.source_notes": 0,
+        "position_management.management_evidence": 0
+      },
+      "context_analyst": {
+        "accepted": 57,
+        "rejected": 2,
+        "boundary_checks": 542,
+        "numeric_ohlc_match": 542,
+        "format_only_text_mismatch": 27,
+        "accepted_role_outputs": 57,
+        "unique_context_history_records": 56,
+        "history_by_timeframe_including_bootstrap": {
+          "D1": 9,
+          "H4": 47
+        },
+        "successful_duplicate_retry_at_ms": 1790150399999
+      },
+      "position_manager": {
+        "runs": 47,
+        "completed": 40,
+        "failed": 7,
+        "all_valid_actions_HOLD": true,
+        "get_candles_15m": 41
+      }
+    },
+    "evidence_anchor_heuristic": {
+      "accepted_trader_evidence_items": 1231,
+      "with_explicit_bar_or_time_anchor": 1051,
+      "ratio": 0.8538,
+      "without_lexical_anchor": 180,
+      "warning": "Heuristic only; absence of a lexical anchor does not prove unsupported evidence."
+    }
+  },
+  "findings": [
+    {
+      "id": "BRK-IF-01",
+      "severity": "high",
+      "area": "trade-entry host contract",
+      "title": "Alias 15m/M15 rejeita propostas M15 com OHLC válido",
+      "claim": "11 propostas ENTER falham a validação literal de source.timeframe: a role escreve 15m, valor de ferramenta, enquanto o contrato/host exige M15. Índices e valores referem-se a velas M15; isso não é evidência de seleção errada de timeframe.",
+      "evidence": [
+        {
+          "cid": "clock-1h-1789873199999-6",
+          "artifact": "current/role_runs/clock-1h-1789873199999-6-1-66c39a10.json",
+          "anchor": "raw response source.timeframe=15m; candidate trigger M15 idx18 low 2604.75; invalidation idx117 high 2622.64"
+        },
+        {
+          "artifact": "current/failures.jsonl and host audit",
+          "count": 11,
+          "error": "production entry trigger and invalidation must cite M15 bars"
+        },
+        {
+          "artifact": "agents/brooks_price_action/skills/brooks-trade-entry/RUNTIME.md",
+          "anchor": "tool timeframe uses 15m; entry source contract requires M15"
+        }
+      ],
+      "interpretation": "Interface/serialization mismatch with material decision loss. Not a demonstrated Brooks-content defect.",
+      "limits": [
+        "Rejected proposals did not create positions.",
+        "Independent audit verified cited OHLC values against supplied M15 bars."
+      ]
+    },
+    {
+      "id": "BRK-IF-02",
+      "severity": "medium",
+      "area": "trade-entry reference integrity",
+      "title": "Quatro propostas têm referência de candle incompatível",
+      "claim": "Quatro propostas ENTER são rejeitadas por índice/open_time ou close_time incompatível com a barra do packet.",
+      "evidence": [
+        {
+          "cid": "clock-1h-1789927199999-25",
+          "anchor": "M15 idx118 reported open 1789924500000 vs actual idx118 open 1789925400000; low 2624.89 belongs to raw idx118; timestamps belong to idx117"
+        },
+        {
+          "cid": "clock-1h-1790207999999-125",
+          "anchor": "M15 idx112 close actual 1790201699999 vs reported 1790201799999 (+100s)"
+        },
+        {
+          "cid": "clock-1h-1790488799999-227",
+          "anchor": "M15 idx118 close actual 1790487899999 vs reported 1790487999999 (+100s)"
+        },
+        {
+          "cid": "clock-1h-1790517599999-237",
+          "anchor": "M15 idx96 close actual 1790496899999 vs reported 1790498699999 (+30m)"
+        }
+      ],
+      "interpretation": "Executability/reference contract failure, distinct from setup quality.",
+      "limits": [
+        "Proposals rejected, not trades."
+      ]
+    },
+    {
+      "id": "BRK-PM-01",
+      "severity": "medium",
+      "area": "position-management input",
+      "title": "Adapter remove facts que a skill declara autoritativos",
+      "claim": "PM skill espera entry/PnL/fills/protection; shared adapter emite mark/posição, mas omite entry/custo-base/PnL, fills e barreiras do executor.",
+      "evidence": [
+        {
+          "cid": "timer-pm-1789888500000-339",
+          "artifact": "current/role_runs/timer-pm-1789888500000-339-1-b395dbd4.json",
+          "anchor": "wf-main-1 SHORT .478 mark 2574.95; no entry_price; open_orders/recent_fills/fills_since_last_event empty"
+        },
+        {
+          "artifact": "agents/brooks_price_action/skills/brooks-position-management/SKILL.md",
+          "anchor": "input boundary requires entry, mark, PnL, protection, orders, fills"
+        },
+        {
+          "artifact": "current/simulation/snapshot.json",
+          "anchor": "separate stop barrier at 2594.57 not exposed to PM"
+        }
+      ],
+      "interpretation": "PM cannot verify exact basis/fill/protection; it marks uncertainty and can assess structural premise. strategy_stop_required=false still makes HOLD policy-allowed in coherent SAFE state. Hidden simulator stop creates cross-layer observability mismatch, not evidence of PM direction error.",
+      "limits": [
+        "Replay-only root-path omission is excluded from production attribution; production wiring uses strategy_home.",
+        "Single simulated position cannot establish action quality."
+      ]
+    },
+    {
+      "id": "BRK-PM-02",
+      "severity": "medium",
+      "area": "production integration",
+      "title": "PM fresh market-analysis path raises before provider call",
+      "claim": "Read-only reproduction of default REQUEST_MARKET_ANALYSIS runner raises AttributeError because TraderMarketTools.as_tools is missing, before calling provider or source.",
+      "evidence": [
+        {
+          "artifact": "market_analysis_reproduction.json",
+          "anchor": "exception_type AttributeError; provider_called=false; source_called=false"
+        },
+        {
+          "artifact": "brooks-position-management/SKILL.md",
+          "anchor": "skill permits REQUEST_MARKET_ANALYSIS when a fresh independent read is necessary"
+        }
+      ],
+      "interpretation": "Exposed integration path if future PM decision requests fresh analysis; not exercised by the 40 HOLD outputs.",
+      "limits": [
+        "No observed PM output called this action."
+      ]
+    },
+    {
+      "id": "BRK-MKT-01",
+      "severity": "low",
+      "area": "context output exactness",
+      "title": "27 range boundaries are numerically exact but use alternate text format",
+      "claim": "All 542 price boundaries from 57 accepted Context outputs numerically match a supplied OHLC value; 27 strings differ only in decimal formatting.",
+      "evidence": [
+        {
+          "artifact": "context_boundary_audit.json",
+          "anchor": "515 exact text matches; 27 numeric matches with text mismatch; example 2700.00 vs 2700"
+        }
+      ],
+      "interpretation": "Small literal violation of canonical-copy rule, no numeric invented level and no context was rejected for it.",
+      "limits": [
+        "Numeric equality does not validate the regime classification."
+      ]
+    },
+    {
+      "id": "BRK-MKT-02",
+      "severity": "low",
+      "area": "context evidence separation",
+      "title": "Some observations include pattern interpretation",
+      "claim": "Some Context Analyst observation strings already name a bull spike/range leg despite the skill reserving observations for facts and interpretation for evidence fields.",
+      "evidence": [
+        {
+          "cid": "context-H4-1790539199999",
+          "artifact": "current/contexts/h4/history.jsonl",
+          "anchor": "observation says Bull leg with multiple timestamped OHLC facts"
+        },
+        {
+          "artifact": "agents/brooks_price_action/skills/brooks-market-context/SKILL.md",
+          "anchor": "requires fact ledger separate from interpretation"
+        }
+      ],
+      "interpretation": "Mild field-boundary drift; sample remains anchored to bars and includes for/against evidence.",
+      "limits": [
+        "Qualitative sample; no population failure rate computed."
+      ]
+    },
+    {
+      "id": "BRK-TIME-01",
+      "severity": "low",
+      "area": "ex-ante timing",
+      "title": "Um timestamp H4 futuro aparece em incerteza, sem barra futura",
+      "claim": "NO_TRADE cites H4 close time 1789931199999, 6 min 40 s after decision 1789930799999; packet audit found no future records.",
+      "evidence": [
+        {
+          "cid": "clock-1h-1789930799999-26",
+          "artifact": "current/role_runs/clock-1h-1789930799999-26-1-69c401b7.json",
+          "anchor": "uncertainty mentions 1789931199999 vs decision time 1789930799999"
+        },
+        {
+          "artifact": "snapshot_integrity.json",
+          "anchor": "future_records empty"
+        }
+      ],
+      "interpretation": "Isolated timestamp slip; not evidence of future-price leakage.",
+      "limits": [
+        "No hidden reasoning available for review."
+      ]
+    },
+    {
+      "id": "BRK-HTF-01",
+      "severity": "low",
+      "area": "D1 freshness",
+      "title": "Uma entrada usa D1 stale sem raw refresh",
+      "claim": "Among eight D1-stale cycles, one accepted entry includes D1 as used without raw D1 read; materiality is uncertain because H1/M15/H4 evidence supports the setup.",
+      "evidence": [
+        {
+          "cid": "clock-1h-1790035199999-63",
+          "artifact": "current/frozen_packets and role_runs",
+          "anchor": "D1 stale; D1 listed in context_timeframes_used; no 1d raw call"
+        },
+        {
+          "artifact": "brooks-trade-entry/RUNTIME.md",
+          "anchor": "read D1 raw only when D1 structure materially matters"
+        }
+      ],
+      "interpretation": "Review item, not confirmed rule violation.",
+      "limits": [
+        "No D1-removed counterfactual."
+      ]
+    },
+    {
+      "id": "BRK-MODE-01",
+      "severity": "info",
+      "area": "Brooks adherence",
+      "title": "Samples preserve distinctions among context, setup and trigger",
+      "claim": "Range-middle abstention, breakout-pullback, failed breakout/reversal and pending breakout examples provide cited facts and opposing cases. Eight D1/H4 Always-In conflicts yielded six NO_TRADE, one long, one short; no fixed veto/vote pattern is apparent.",
+      "evidence": [
+        {
+          "cids": [
+            "clock-1h-1789862399999-1",
+            "clock-1h-1789876799999-7",
+            "clock-1h-1790189999999-119",
+            "clock-1h-1790456399999-215",
+            "clock-1h-1790474399999-222"
+          ],
+          "artifact": "current cycles, role_runs and frozen_packets",
+          "anchor": "bar-level reviews below"
+        },
+        {
+          "artifact": "brooks-trade-entry/RUNTIME.md",
+          "anchor": "pending stop can support entry; HTF disagreement is opposition evidence, not automatic veto"
+        }
+      ],
+      "interpretation": "Observed adherence in sample; no score of skill accuracy or edge.",
+      "limits": [
+        "No human labeled benchmark or counterfactuals."
+      ]
+    },
+    {
+      "id": "BRK-PM-03",
+      "severity": "low",
+      "area": "position-management evidence accuracy",
+      "title": "Duas respostas supercontam histórico PM por dois itens",
+      "claim": "Em dois outputs, PM diz que management_history contém doze HOLD anteriores; a mensagem de entrada tem dez.",
+      "evidence": [
+        {
+          "cid": "timer-pm-1789888500000-339",
+          "artifact": "current/role_runs/timer-pm-1789888500000-339-1-b395dbd4.json",
+          "anchor": "input history length 10; raw final output says twelve prior HOLD decisions"
+        },
+        {
+          "cid": "timer-pm-1789910100000-363",
+          "artifact": "current/role_runs/timer-pm-1789910100000-363-1-8f03181b.json",
+          "anchor": "input history length 10; output repeats twelve"
+        }
+      ],
+      "interpretation": "Pequeno erro factual de leitura/contagem explícita. Não muda prova de estrutura Brooks ou política de HOLD.",
+      "limits": [
+        "Não extrapolar duas respostas para uma incapacidade geral."
+      ]
+    },
+    {
+      "id": "BRK-PM-04",
+      "severity": "low",
+      "area": "reference/tool-use adherence",
+      "title": "PM não carregou a referência condicional de gestão",
+      "claim": "Nenhuma das 47 execuções PM chamou position_management.management_evidence, embora as 40 respostas válidas avaliem a premissa anterior e o trade-off de manter posição.",
+      "evidence": [
+        {
+          "artifact": "current/role_runs timer-pm tool records",
+          "anchor": "0 calls to read_brooks_reference across PM runs"
+        },
+        {
+          "artifact": "agents/brooks_price_action/skills/brooks-position-management/SKILL.md",
+          "anchor": "Reference section says use management_evidence when assessing the premise or when the intervention trade-off is material"
+        }
+      ],
+      "interpretation": "Possível não aderência à orientação de referência. Peso baixo porque o prompt do sistema já embute SKILL completa e os outputs registram evidência e oposição.",
+      "limits": [
+        "Não demonstra falta de conhecimento nem causalidade na decisão HOLD."
+      ]
+    }
+  ],
+  "decision_reviews": [
+    {
+      "cid": "clock-1h-1789862399999-1",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789862399999,
+      "decision": "NO_TRADE",
+      "label": "NO_TRADE: range middle; stale H4 refreshed",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/1a3d937d0112efc5093d2a8d3c8a535f6585812f54b8dcdc57504bbe12645abb.json",
+      "packet_hash": "3dcd3d9cdab078c8d2103398acff02545e1231baf29a7c338cfb5d6aa4c14b07",
+      "role_run": "role_runs/clock-1h-1789862399999-1-1-a03fb335.json",
+      "assessment": "Abstenção alinhada: última M15 fica entre piso e teto próximos, sem vantagem de localização. Output oferece leitura bull-flag alternativa e declara leitura de 120 candles H4 raw embora contexto estivesse stale.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 119,
+          "open_time_ms": 1789861500000,
+          "OHLC": [
+            "2633.91",
+            "2634.63",
+            "2632.98",
+            "2632.98"
+          ]
+        },
+        {
+          "tf": "H1",
+          "index": 97,
+          "field": "low",
+          "price": "2604.75"
+        },
+        {
+          "tf": "H4",
+          "index": 110,
+          "field": "low",
+          "price": "2604.75"
+        },
+        {
+          "tf": "M15",
+          "index": 93,
+          "field": "high",
+          "price": "2658.79"
+        },
+        {
+          "tf": "H4 raw",
+          "bars": 120,
+          "close_at_or_before_decision": true
+        }
+      ],
+      "caution": "Ex-ante only; no later price movement used.",
+      "tools_or_references": [
+        "get_closed_candles(4h,120) completed",
+        "no entry reference used"
+      ]
+    },
+    {
+      "cid": "clock-1h-1789876799999-7",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789876799999,
+      "decision": "ENTER_SHORT",
+      "label": "ENTER_SHORT: bear breakout pullback; stale H4 refreshed",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/10343801090ca702c347b852d3b027342a8b06458574bce461156d1b2dadce01.json",
+      "packet_hash": "7e34b1adc4cdcd068705589d6bb425dd0599c1c7f1a7b14736bcb04e7be6b4df",
+      "role_run": "role_runs/clock-1h-1789876799999-7-1-31b6e86d.json",
+      "assessment": "Trader diferencia breakout M15, retorno para dentro e flag de quatro candles; cita estrutura D1 bull e pressão compradora como oposição. Trigger e invalidation são fontes M15 exatas.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 115,
+          "open_time_ms": 1789872300000,
+          "close_time_ms": 1789873199999,
+          "OHLC": [
+            "2603.75",
+            "2606.04",
+            "2571",
+            "2573.13"
+          ],
+          "feature": "bear breakout below 2604.75"
+        },
+        {
+          "tf": "M15",
+          "index": 116,
+          "open_time_ms": 1789873200000,
+          "close_time_ms": 1789874099999,
+          "OHLC": [
+            "2572.94",
+            "2594.57",
+            "2570.27",
+            "2579.45"
+          ],
+          "feature": "close returned inside prior range"
+        },
+        {
+          "tf": "M15",
+          "index": 117,
+          "open_time_ms": 1789874100000,
+          "close_time_ms": 1789874999999,
+          "trigger_low": "2569.8",
+          "invalidation_high": "2594.57"
+        },
+        {
+          "tf": "D1 context",
+          "decision_time_ms": 1789862399999,
+          "read": "bull-trend / breakout-spike / Always-In long"
+        },
+        {
+          "tf": "H4 raw tool read",
+          "bars": 120,
+          "decision_close_time_ms": 1789876799999
+        }
+      ],
+      "caution": "This is the only simulated trade; fill/stop are outcome-only and not scored.",
+      "tools_or_references": [
+        "get_closed_candles(4h,120) completed",
+        "trade_entry.entry_evidence not read"
+      ]
+    },
+    {
+      "cid": "clock-1h-1789916399999-21",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789916399999,
+      "decision": "ENTER_LONG",
+      "label": "ENTER_LONG: neutral location, overhead supply close",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/4129cb91f9ad95cc9ac66ec0a59584774059aba575496e0a6c23f322d206b18a.json",
+      "packet_hash": "d8fa1ea2ba505a85fb3447803d5d677091533795305513a9274a70440f34241f",
+      "role_run": "role_runs/clock-1h-1789916399999-21-1-a9431f09.json",
+      "assessment": "Setup long has higher lows and a closed M15 signal, but model labels location neutral and cites supply 8.57 points overhead, a bear-flag alternative and D1 mid-range. Context/location/trigger are separated.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 119,
+          "open_time_ms": 1789915500000,
+          "close_time_ms": 1789916399999,
+          "OHLC": [
+            "2581.25",
+            "2586",
+            "2579.33",
+            "2586"
+          ],
+          "trigger": "above high 2586"
+        },
+        {
+          "tf": "M15",
+          "index": 105,
+          "open_time_ms": 1789902900000,
+          "field": "low",
+          "price": "2568.16",
+          "role": "invalidation"
+        },
+        {
+          "tf": "M15",
+          "indices": [
+            72,
+            73
+          ],
+          "high": "2594.57",
+          "feature": "nearby overhead supply"
+        },
+        {
+          "tf": "D1 context",
+          "feature": "range 2357.18-2700; decision area mid-range"
+        }
+      ],
+      "caution": "Whether neutral location is acceptable is subjective; no later outcome used.",
+      "tools_or_references": []
+    },
+    {
+      "cid": "clock-1h-1789930799999-26",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789930799999,
+      "decision": "NO_TRADE",
+      "label": "NO_TRADE: counter-case long; one future timestamp slip",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/0117155b9c9587d3a9a3d35b7e825af42de907d7a90448b2c34cd75785e7a2c6.json",
+      "packet_hash": "d9e46e0f2e288078c5e8a929c6f16fb3aa569d7eee1de01394239c3e1906a715",
+      "role_run": "role_runs/clock-1h-1789930799999-26-1-69c401b7.json",
+      "assessment": "NO_TRADE cites a M15 pause and middle-of-band location, while retaining a bull-flag/Always-In long alternative. One uncertainty sentence mentions H4 close at 1789931199999, 400,000ms (6m40s) after the decision time; packet contains no future price bar.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 119,
+          "open_time_ms": 1789929900000,
+          "OHLC": [
+            "2631.65",
+            "2632.57",
+            "2622.24",
+            "2625.53"
+          ]
+        },
+        {
+          "tf": "M15",
+          "indices": [
+            113,
+            119
+          ],
+          "range_low": "2622.06",
+          "range_high": "2638.24"
+        },
+        {
+          "tf": "H4 context",
+          "latest_close_time_ms": 1789919999999
+        },
+        {
+          "tf": "uncertainty timestamp",
+          "reported_ms": 1789931199999,
+          "decision_time_ms": 1789930799999,
+          "difference_ms": 400000,
+          "difference_minutes_seconds": "6m40s"
+        }
+      ],
+      "caution": "Isolated timing slip; integrity audit found no future packet records.",
+      "tools_or_references": []
+    },
+    {
+      "cid": "clock-1h-1790035199999-63",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1790035199999,
+      "decision": "ENTER_LONG",
+      "label": "ENTER_LONG: D1 stale sem raw refresh",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/fc9ba2972e1270dc21c7df2c4d6fe47b15c833f82d9760af646f13ccb1cf9b78.json",
+      "packet_hash": "16cbcada63f35ea53f16fc83cfb501a5914f222a5e501690df1138ba8f9a65d4",
+      "role_run": "role_runs/clock-1h-1790035199999-63-1-e8d33d2f.json",
+      "assessment": "Entre oito decisões D1-stale, esta única entrada aceita lista D1 como contexto usado, sem leitura raw D1. H1/M15 e refresh H4 sustentam a proposta; é incerto se D1 foi material.",
+      "candle_bar_anchors": [
+        {
+          "tf": "D1",
+          "freshness": "stale",
+          "latest_context_time_ms": 1789775999999,
+          "raw_D1_read": false
+        },
+        {
+          "tf": "H4",
+          "freshness": "stale",
+          "raw_H4_read": true,
+          "bars": 120
+        },
+        {
+          "tf": "M15/H1",
+          "anchor": "entry trigger/invalidation in accepted intent; inspect frozen packet"
+        }
+      ],
+      "caution": "Potential materiality ambiguity, not a confirmed skill violation.",
+      "tools_or_references": []
+    },
+    {
+      "cid": "clock-1h-1790189999999-119",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1790189999999,
+      "decision": "ENTER_LONG",
+      "label": "ENTER_LONG: M15 reversal under D1/H4 conflict",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/d767c890737fd4b5bd64277efafdf0e12d478c6658e509d4d6de96b06082a6b8.json",
+      "packet_hash": "4f64b88dc8f6ad286daf56b0c01897300980786707a000441d6c104e7c37e3cd",
+      "role_run": "role_runs/clock-1h-1790189999999-119-1-cc516b38.json",
+      "assessment": "D1 Always-In long and H4 Always-In short coexist. Trader proposes M15 double-bottom/second-entry long, but records the H4 breakdown, H1 lower highs, nearby resistance and bear-flag alternative. No automatic vote or veto is apparent.",
+      "candle_bar_anchors": [
+        {
+          "tf": "D1 context",
+          "decision_time_ms": 1790121599999,
+          "always_in": "long",
+          "regime": "bull-trend / breakout-spike"
+        },
+        {
+          "tf": "H4 context",
+          "decision_time_ms": 1790179199999,
+          "always_in": "short",
+          "directional_pressure": "bear",
+          "regime": "bull-trend",
+          "phase": "range",
+          "breakout_mode": true
+        },
+        {
+          "tf": "H4",
+          "open_time_ms": 1790164800000,
+          "OHLC": [
+            "2726.71",
+            "2727.77",
+            "2648.49",
+            "2659"
+          ],
+          "feature": "breaks range low 2716.01 and spike low 2658.06"
+        },
+        {
+          "tf": "M15",
+          "index": 108,
+          "open_time_ms": 1790179200000,
+          "low": "2641.37",
+          "feature": "bull reversal/double-bottom low"
+        },
+        {
+          "tf": "M15",
+          "index": 119,
+          "open_time_ms": 1790189100000,
+          "close_time_ms": 1790189999999,
+          "high": "2672.55",
+          "trigger": "above high"
+        }
+      ],
+      "caution": "This is evidence of reasoning structure, not correctness/outcome.",
+      "tools_or_references": []
+    },
+    {
+      "cid": "clock-1h-1790456399999-215",
+      "snapshot_presence": {
+        "baseline": false,
+        "current": true
+      },
+      "decision_time_ms": 1790456399999,
+      "decision": "ENTER_LONG",
+      "label": "ENTER_LONG: failed bear breakout / bear trap",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/1511009dcf73ec13d1c74d555eb958f2db44205149b1a4c87249117e53313062.json",
+      "packet_hash": "7cb637df182f4e655ce28efba37bcd2c5dc6e6ab647859e07e0b4df361099823",
+      "role_run": "role_runs/clock-1h-1790456399999-215-1-fc877240.json",
+      "assessment": "M15 bar sweeps coil low then recovers on close; model supports reversal but also notes declining H1 highs, no confirmation and H4 range/unclear. The weak signal and pending trigger preserve uncertainty.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 119,
+          "open_time_ms": 1790455500000,
+          "close_time_ms": 1790456399999,
+          "OHLC": [
+            "2670.85",
+            "2676.05",
+            "2665.14",
+            "2675.70"
+          ],
+          "feature": "sweeps H4 coil low 2669.67, closes back inside"
+        },
+        {
+          "tf": "H4 context",
+          "decision_time_ms": 1790452799999,
+          "regime": "trading-range",
+          "phase": "range",
+          "breakout_mode": true,
+          "coil": [
+            "2669.67",
+            "2721.75"
+          ]
+        },
+        {
+          "tf": "H1",
+          "indices": [
+            114,
+            119
+          ],
+          "feature": "descending highs; no confirming higher high"
+        }
+      ],
+      "caution": "No use of later GM rejection or market movement as score.",
+      "tools_or_references": []
+    },
+    {
+      "cid": "clock-1h-1790474399999-222",
+      "snapshot_presence": {
+        "baseline": false,
+        "current": true
+      },
+      "decision_time_ms": 1790474399999,
+      "decision": "ENTER_LONG",
+      "label": "ENTER_LONG: breakout pending; follow-through absent",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/99e655bdb43da000b258ede05772814408e8a97972437cca88dc77d268dad86e.json",
+      "packet_hash": "3400afaab807950d0630ca232ed9644c577ce04b2667e39ca31b11749cf3e229",
+      "role_run": "role_runs/clock-1h-1790474399999-222-1-dddab941.json",
+      "assessment": "M15 closes above prior tight-range highs; this is the final supplied bar. Model keeps trigger pending, location neutral, notes H4 range/resistance and states no follow-through bar exists.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 119,
+          "open_time_ms": 1790473500000,
+          "close_time_ms": 1790474399999,
+          "OHLC": [
+            "2694.18",
+            "2703.08",
+            "2693.97",
+            "2700.45"
+          ],
+          "trigger": "above 2703.08"
+        },
+        {
+          "tf": "M15",
+          "indices": [
+            110,
+            117
+          ],
+          "repeated_highs": [
+            "2694.95",
+            "2694.96"
+          ]
+        },
+        {
+          "tf": "H4 context",
+          "feature": "range 2633.31-2740.42, breakout mode, lower highs after 2850"
+        }
+      ],
+      "caution": "No subsequent bars used to judge acceptance.",
+      "tools_or_references": []
+    },
+    {
+      "cid": "clock-1h-1789873199999-6",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789873199999,
+      "decision": "NO_ACCEPTED_INTENT",
+      "label": "Host reject: M15/15m alias conflict",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/d8a6b03322f2874217334c71cbdf21a6106d6cfb96cf590fd600564aee4ed6ca.json",
+      "packet_hash": "c1b9963857e5c2f6d8a2aff1e1da0148d4d37a061f05812d3fdf0a030299b26a",
+      "role_run": "role_runs/clock-1h-1789873199999-6-1-66c39a10.json",
+      "assessment": "Raw proposal uses source.timeframe=15m (tool alias) in trigger and invalidation, while output contract/host require M15. Indices/prices identify M15 bars. This is interface rejection, not evidence of choosing H1 or another chart.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 18,
+          "open_time_ms": 1789781400000,
+          "close_time_ms": 1789782299999,
+          "field": "low",
+          "price": "2604.75",
+          "candidate_trigger": true
+        },
+        {
+          "tf": "M15",
+          "index": 117,
+          "open_time_ms": 1789870500000,
+          "close_time_ms": 1789871399999,
+          "field": "high",
+          "price": "2622.64",
+          "candidate_invalidation": true
+        }
+      ],
+      "caution": "Rejected proposal; raw response in role run; not counted as position.",
+      "tools_or_references": [
+        "read_brooks_reference trade_entry.entry_evidence used"
+      ]
+    },
+    {
+      "cid": "clock-1h-1789927199999-25",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789927199999,
+      "decision": "NO_ACCEPTED_INTENT",
+      "label": "Host reject: source index/open time mismatch",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/889dfc0af7dec3b24b21046879cf01670d5f6de1e6175d380fcd376357604fcc.json",
+      "packet_hash": "949d0a46c0c83c4eb89a55e7139f01006af96ced89966d2eb6fb795249ffe01f",
+      "role_run": "role_runs/clock-1h-1789927199999-25-1-217fb766.json",
+      "assessment": "Trigger index/time pair is coherent. Invalidation reports idx118 opening at 1789924500000, while raw idx118 opens 1789925400000; price 2624.89 belongs to raw idx118; reported timestamps belong to idx117. The host rejected the proposal.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "reported_index": 118,
+          "reported_open_time_ms": 1789924500000,
+          "actual_index": 118,
+          "actual_open_time_ms": 1789925400000,
+          "reported_low": "2624.89"
+        }
+      ],
+      "caution": "Citation contract issue separated from setup classification."
+    },
+    {
+      "cid": "clock-1h-1790207999999-125",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1790207999999,
+      "decision": "NO_ACCEPTED_INTENT",
+      "label": "Host reject: close timestamp off by 100 seconds",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/7dd3cfb1be7c64ca1fe8255f5635b77acb7b81f9f181aced0525464a1a58d018.json",
+      "packet_hash": "944477dcd3f2d0b034b9b4f46cc854b85b53d8054585cb4e5feb9de8e6c4f67a",
+      "role_run": "role_runs/clock-1h-1790207999999-125-1-6a1dedf1.json",
+      "assessment": "Invalidation open time is correct but the reported close time is 100 seconds later than raw bar close.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 112,
+          "open_time_ms": 1790200800000,
+          "actual_close_time_ms": 1790201699999,
+          "reported_close_time_ms": 1790201799999,
+          "field": "low",
+          "price": "2675.73"
+        }
+      ],
+      "caution": "Rejected proposal, not a trade."
+    },
+    {
+      "cid": "clock-1h-1790517599999-237",
+      "snapshot_presence": {
+        "baseline": false,
+        "current": true
+      },
+      "decision_time_ms": 1790517599999,
+      "decision": "NO_ACCEPTED_INTENT",
+      "label": "Host reject: close timestamp off by 30 minutes",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/0f991030629c4558a91b702017e87d5634aa346199eec6749f711d1291e32b25.json",
+      "packet_hash": "af1258fae472aa08db5602e9d4dd48dad2376c6414c490b9e8123eeb0c7ab4c6",
+      "role_run": "role_runs/clock-1h-1790517599999-237-1-3dfd5e8f.json",
+      "assessment": "Trigger index/open time and high value exist, but source close_time_ms differs from that raw bar by 30 minutes.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 96,
+          "open_time_ms": 1790496000000,
+          "actual_close_time_ms": 1790496899999,
+          "reported_close_time_ms": 1790498699999,
+          "field": "high",
+          "price": "2718.83"
+        },
+        {
+          "tf": "M15",
+          "index": 117,
+          "open_time_ms": 1790514900000,
+          "close_time_ms": 1790515799999,
+          "field": "low",
+          "price": "2700"
+        }
+      ],
+      "caution": "Rejected proposal, not a trade."
+    },
+    {
+      "cid": "context-H4-1790179199999",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1790179199999,
+      "decision": "CONTEXT_ANALYST",
+      "label": "H4 regime, phase, pressure and Always-In separated",
+      "ex_ante_only": true,
+      "source_artifacts": [
+        "current/contexts/h4/history.jsonl"
+      ],
+      "assessment": "Regime bull-trend and phase range coexist with breakout_mode true, directional_pressure bear and Always-In short/relevance low. The output gives both the dominant bull leg and immediate lower-low/bear leg as evidence.",
+      "candle_bar_anchors": [
+        {
+          "tf": "H4",
+          "decision_time_ms": 1790179199999,
+          "regime": "bull-trend",
+          "phase": "range",
+          "breakout_mode": true,
+          "directional_pressure": "bear",
+          "always_in": "short",
+          "always_in_relevance": "low"
+        },
+        {
+          "tf": "H4",
+          "open_time_ms": 1790164800000,
+          "OHLC": [
+            "2726.71",
+            "2727.77",
+            "2648.49",
+            "2659"
+          ],
+          "feature": "recent downside breakout bar"
+        }
+      ],
+      "caution": "Not an independent gold-label classification."
+    },
+    {
+      "cid": "context-boundary-audit",
+      "snapshot_presence": {
+        "baseline": false,
+        "current": true
+      },
+      "decision": "CONTEXT_ANALYST outputs",
+      "label": "Range boundary text exactness",
+      "ex_ante_only": true,
+      "source_artifacts": [
+        "context_boundary_audit.json",
+        "current/contexts/h4/history.jsonl"
+      ],
+      "assessment": "Across 57 accepted contexts, 542 numeric boundaries match an OHLC value; 27 differ only in decimal text formatting. Example H4 upper boundary 2700.00 versus raw OHLC 2700.",
+      "candle_bar_anchors": [
+        {
+          "tf": "H4",
+          "decision_time_ms": 1789919999999,
+          "field": "upper_boundary",
+          "reported": "2700.00",
+          "raw_numeric": "2700",
+          "numeric_match": true,
+          "text_match": false
+        }
+      ],
+      "caution": "A boundary match does not validate best regime choice."
+    },
+    {
+      "cid": "timer-pm-1789888500000-339",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789888500000,
+      "decision": "POSITION_MANAGER / HOLD",
+      "label": "PM uses structural premise but cannot reconcile missing basis/fill",
+      "ex_ante_only": true,
+      "source_artifacts": [
+        "current/role_runs/timer-pm-1789888500000-339-1-b395dbd4.json",
+        "current/simulation/snapshot.json"
+      ],
+      "assessment": "Input has MAIN short wf-main-1, qty 0.478, mark 2574.95, SAFE margin, running executor, no open orders or fills, and strategy_stop_required false. PM reads 30 M15 candles, compares subsequent overlap with breakout premise, lists opposing case, and says entry/cost/fill are absent. HOLD is consistent with supplied policy; the missing basis limits reconciliation.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "decision_time_ms": 1789888500000,
+          "latest_close_time_ms": 1789887599999,
+          "latest_bar": "O 2571.76 H 2574.94 L 2570 C 2574.06"
+        },
+        {
+          "tf": "M15",
+          "open_time_ms": 1789872300000,
+          "OHLC": "2603.75 / 2606.04 / 2571 / 2573.13",
+          "feature": "breakdown below 2604.75"
+        },
+        {
+          "position": "wf-main-1",
+          "side": "SHORT",
+          "qty": "0.478",
+          "mark": "2574.95",
+          "entry": "not supplied",
+          "fills": "empty",
+          "open_orders": "empty",
+          "strategy_stop_required": false
+        }
+      ],
+      "tools_or_references": [
+        "get_candles(15m,30) completed",
+        "position_management.management_evidence not read",
+        "replay latest trader/context null root-path artifact excluded from production analysis"
+      ],
+      "caution": "Simulator barrier at 2594.57 is not exposed as a venue stop to PM; outcome is separate."
+    },
+    {
+      "cid": "market-analysis-runner-reproduction",
+      "snapshot_presence": {
+        "baseline": false,
+        "current": false
+      },
+      "decision": "NOT CALLED IN CAPTURED PM OUTPUTS",
+      "label": "PM REQUEST_MARKET_ANALYSIS path fails before provider",
+      "ex_ante_only": true,
+      "source_artifacts": [
+        "market_analysis_reproduction.json"
+      ],
+      "assessment": "Read-only reproduction returns AttributeError: TraderMarketTools has no as_tools; provider_called=false and source_called=false. This is an exposed production integration path when PM asks for fresh market analysis, not an explanation for captured HOLDs.",
+      "candle_bar_anchors": [],
+      "caution": "No captured PM output requested this action."
+    },
+    {
+      "cid": "context-H4-1790539199999",
+      "snapshot_presence": {
+        "baseline": false,
+        "current": true
+      },
+      "decision_time_ms": 1790539199999,
+      "decision": "CONTEXT_ANALYST",
+      "label": "H4 range / breakout-mode overlay and low Always-In relevance",
+      "ex_ante_only": true,
+      "source_artifacts": [
+        "current/contexts/h4/history.jsonl"
+      ],
+      "assessment": "Context is trading-range/range with breakout_mode true, balanced pressure, Always-In unclear and low relevance. The recent dominant bull leg is explicitly counter-evidence, and post-spike overlap prevents treating the leg alone as breakout acceptance.",
+      "candle_bar_anchors": [
+        {
+          "tf": "H4",
+          "decision_time_ms": 1790539199999,
+          "context_axes": {
+            "primary_regime": "trading-range",
+            "phase": "range",
+            "breakout_mode": true,
+            "directional_pressure": "balanced",
+            "always_in": "unclear",
+            "always_in_relevance": "low"
+          }
+        },
+        {
+          "tf": "H4",
+          "open_time_ms": 1789977600000,
+          "high": "2850",
+          "close": "2723.15",
+          "feature": "spike without later acceptance"
+        },
+        {
+          "tf": "H4",
+          "feature": "post-spike overlapping bounds 2633.31-2804.59"
+        }
+      ],
+      "caution": "Structural quality assessed from output and raw timestamps; no expert ground truth."
+    },
+    {
+      "cid": "clock-1h-1790488799999-227",
+      "snapshot_presence": {
+        "baseline": false,
+        "current": true
+      },
+      "decision_time_ms": 1790488799999,
+      "decision": "NO_ACCEPTED_INTENT",
+      "label": "Host reject: both source close times are 100s late",
+      "ex_ante_only": true,
+      "frozen_packet": "frozen_packets/467eabf8b65d6705e975fed9f1b725e9fb52f0264ad36f245ac510a8c5cb136e.json",
+      "packet_hash": "4723a0a797fab06ed90282fae4ca4a33037319726d0e05c11db72e2e128ba2c6",
+      "role_run": "role_runs/clock-1h-1790488799999-227-1-be14ce92.json",
+      "assessment": "Source M15 index/open time and trigger/invalidation values exist, but both reported close times are 100 seconds later than the raw candle close.",
+      "candle_bar_anchors": [
+        {
+          "tf": "M15",
+          "index": 118,
+          "open_time_ms": 1790487000000,
+          "actual_close_time_ms": 1790487899999,
+          "reported_close_time_ms": 1790487999999,
+          "high": "2707.7",
+          "low": "2694.44"
+        }
+      ],
+      "caution": "Rejected proposal; not a trade."
+    },
+    {
+      "cid": "timer-pm-1789888500000-339",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789888500000,
+      "decision": "POSITION_MANAGER / HOLD",
+      "label": "PM history count overstatement",
+      "ex_ante_only": true,
+      "source_artifacts": [
+        "current/role_runs/timer-pm-1789888500000-339-1-b395dbd4.json"
+      ],
+      "assessment": "Raw PM input has exactly 10 management_history items, but output states “twelve prior HOLD decisions”. The number is observable and off by two; price-action argument itself is not implicated.",
+      "candle_bar_anchors": [
+        {
+          "field": "management_history",
+          "input_count": 10,
+          "output_claim": 12,
+          "time_range": "1789877288508 through 1789887600000"
+        }
+      ],
+      "caution": "Minor factual slip in narrative; action remains HOLD."
+    },
+    {
+      "cid": "timer-pm-1789910100000-363",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1789910100000,
+      "decision": "POSITION_MANAGER / HOLD",
+      "label": "Second PM history count overstatement",
+      "ex_ante_only": true,
+      "source_artifacts": [
+        "current/role_runs/timer-pm-1789910100000-363-1-8f03181b.json"
+      ],
+      "assessment": "Raw PM input has exactly 10 management_history items, while output says twelve prior HOLD decisions. Confirms this is not a one-off extraction issue.",
+      "candle_bar_anchors": [
+        {
+          "field": "management_history",
+          "input_count": 10,
+          "output_claim": 12,
+          "time_range": "1789899300000 through 1789909200000"
+        }
+      ],
+      "caution": "This count slip does not establish a cause for HOLD or any price-action conclusion."
+    },
+    {
+      "cid": "context-H4-1790251199999",
+      "snapshot_presence": {
+        "baseline": true,
+        "current": true
+      },
+      "decision_time_ms": 1790251199999,
+      "decision": "CONTEXT_ANALYST",
+      "label": "Context reference loaded for structural ambiguity",
+      "ex_ante_only": true,
+      "source_artifacts": [
+        "current/role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+        "current/contexts/h4/history.jsonl"
+      ],
+      "assessment": "Role calls market_context.context_evidence on a material trend-versus-range distinction. The output assesses overlap, failed follow-through, and the alternative bull-leg interpretation. Most other context outputs did not load a reference; reads are conditional and do not imply higher quality by themselves.",
+      "candle_bar_anchors": [
+        {
+          "tf": "H4",
+          "decision_time_ms": 1790251199999,
+          "range_or_trend_evidence": "Use captured role output and 120-bar packet at this frozen decision time."
+        }
+      ],
+      "tools_or_references": [
+        "read_brooks_reference market_context.context_evidence used"
+      ]
+    }
+  ],
+  "outcome_only": {
+    "use_for_skill_score": false,
+    "single_position": {
+      "source_cid": "clock-1h-1789876799999-7",
+      "side": "SHORT",
+      "simulated_fill_price": "2583.861588",
+      "simulated_stop_price": "2594.57",
+      "exit": "STOP_LOSS",
+      "note": "Execution outcome excluded from ex-ante skill/setup score; one trade cannot establish edge."
+    },
+    "pm_protection_visibility": {
+      "pm_open_orders": [],
+      "separate_simulator_barrier": true,
+      "interpretation": "PM reports venue order state; replay applies a separate barrier. Cross-layer mismatch."
+    },
+    "gm_entries": {
+      "approved": 1,
+      "rejected": 24,
+      "rejection_reason": "position ownership or structure unresolved",
+      "note": "Not market-direction ground truth."
+    }
+  },
+  "limitations": [
+    "Capture partial at 189/240; no extrapolation to unseen cycles.",
+    "Only one simulated position, no human-labeled Brooks benchmark and no counterfactual; cannot estimate edge.",
+    "No provider token usage, reliable finish metadata, or hidden reasoning; character count does not prove truncation.",
+    "Trader receives 120 raw H1 and 120 raw M15 bars; HTF is compressed context unless conditional raw refresh occurs. Hourly cadence is slower than M15, a sampling limitation rather than proof of missed trades.",
+    "Low reference use is descriptive because reads are conditional and runtime already contains the procedure.",
+    "Separate model-output, host-contract, adapter, production-runner and replay-harness findings; do not assign harness-only root-path issue to production.",
+    "No specific model capability or causal attribution.",
+    "Capture manifest head a83fb54 differs from checkout 7760041; the only non-generated code diff is scripts/brooks_walkforward_report.py. Skills, adapters and executor are unchanged between heads."
+  ]
+}

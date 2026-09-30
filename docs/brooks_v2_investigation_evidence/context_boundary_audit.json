@@ -1,0 +1,5425 @@
+{
+  "checks": [
+    {
+      "file": "role_runs/clock-4h-1790351999999-178-1-2197f19a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790351999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790351999999-178-1-2197f19a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790351999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790351999999-178-1-2197f19a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790351999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790351999999-178-1-2197f19a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790351999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790351999999-178-1-2197f19a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790351999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790351999999-178-1-2197f19a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790351999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790063999999-75-1-86b0c1df.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790063999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790063999999-75-1-86b0c1df.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790063999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790063999999-75-1-86b0c1df.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790063999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790063999999-75-1-86b0c1df.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790063999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2646.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790063999999-75-1-86b0c1df.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790063999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790063999999-75-1-86b0c1df.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790063999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790380799999-188-1-b4938896.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790380799999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790179199999-116-1-bdb57e68.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790179199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790179199999-116-1-bdb57e68.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790179199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790179199999-116-1-bdb57e68.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790179199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790179199999-116-1-bdb57e68.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790179199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2486.12",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790179199999-116-1-bdb57e68.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790179199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790179199999-116-1-bdb57e68.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790179199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790179199999-116-1-bdb57e68.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790179199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790179199999-116-1-bdb57e68.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790179199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2648.49",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2435.71",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790078399999-80-1-533ff903.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790078399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-4h-1789847999999-1-d5d74ca2.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789847999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-4h-1789847999999-1-d5d74ca2.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789847999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-4h-1789847999999-1-d5d74ca2.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789847999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-4h-1789847999999-1-d5d74ca2.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789847999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-4h-1789847999999-1-d5d74ca2.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789847999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-4h-1789847999999-1-d5d74ca2.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789847999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-4h-1789847999999-1-d5d74ca2.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789847999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-4h-1789847999999-1-d5d74ca2.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789847999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2604.75",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790539199999-245-1-9068ab9e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790539199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790539199999-245-1-9068ab9e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790539199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2436.87",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790539199999-245-1-9068ab9e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790539199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790539199999-245-1-9068ab9e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790539199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790539199999-245-1-9068ab9e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790539199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2718.83",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790539199999-245-1-9068ab9e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790539199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2665.14",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790539199999-245-1-9068ab9e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790539199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790539199999-245-1-9068ab9e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790539199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2444.19",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790423999999-204-1-d2303c11.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790423999999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2721.75",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790452799999-214-1-6c208461.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790452799999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2669.67",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789919999999-23-1-0ccc8785.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789919999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789919999999-23-1-0ccc8785.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789919999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789919999999-23-1-0ccc8785.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789919999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789919999999-23-1-0ccc8785.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789919999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2519.81",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789919999999-23-1-0ccc8785.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789919999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789919999999-23-1-0ccc8785.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789919999999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2658.79",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789919999999-23-1-0ccc8785.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789919999999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790495999999-230-1-c58833c8.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790495999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790495999999-230-1-c58833c8.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790495999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790495999999-230-1-c58833c8.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790495999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790495999999-230-1-c58833c8.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790495999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790495999999-230-1-c58833c8.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790495999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2740.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790495999999-230-1-c58833c8.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790495999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2665.14",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2641.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2698.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790236799999-137-1-a7fd4245.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790236799999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2641.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2139.34",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "1974.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "1512.91",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "1905.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790035199999-65-1-414cfda5.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790035199999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2436.87",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790020799999-59-1-d2ec3451.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790020799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790020799999-59-1-d2ec3451.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790020799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790020799999-59-1-d2ec3451.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790020799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790020799999-59-1-d2ec3451.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790020799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790020799999-59-1-d2ec3451.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790020799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790020799999-59-1-d2ec3451.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790020799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790020799999-59-1-d2ec3451.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790020799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790020799999-59-1-d2ec3451.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790020799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790222399999-132-1-e33b8466.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790222399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2641.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2537.57",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2444.19",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2646.36",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790107199999-90-1-7d47ec5e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790107199999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790164799999-111-1-2c5fdcec.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790164799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2544.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790164799999-111-1-2c5fdcec.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790164799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790164799999-111-1-2c5fdcec.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790164799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790164799999-111-1-2c5fdcec.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790164799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2495.82",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790164799999-111-1-2c5fdcec.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790164799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790164799999-111-1-2c5fdcec.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790164799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790164799999-111-1-2c5fdcec.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790164799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790164799999-111-1-2c5fdcec.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790164799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790092799999-85-1-47434b66.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790092799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2545.29",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790092799999-85-1-47434b66.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790092799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790092799999-85-1-47434b66.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790092799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790092799999-85-1-47434b66.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790092799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790092799999-85-1-47434b66.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790092799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790193599999-121-1-37ec8dd7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790193599999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2643.52",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790193599999-121-1-37ec8dd7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790193599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2495.82",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790193599999-121-1-37ec8dd7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790193599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790193599999-121-1-37ec8dd7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790193599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790193599999-121-1-37ec8dd7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790193599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2786.81",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790193599999-121-1-37ec8dd7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790193599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790193599999-121-1-37ec8dd7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790193599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790193599999-121-1-37ec8dd7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790193599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2641.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2643.52",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2495.82",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790395199999-194-1-c9fb30c3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790395199999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2643.52",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2495.82",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2658.79",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2608.83",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789876799999-8-1-12670353.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789876799999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790150399999-106-2-7f458100.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790150399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2444.19",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2464.27",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2484.35",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2370.54",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 6,
+      "field": "upper_boundary",
+      "value": "2786.81",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 6,
+      "field": "lower_boundary",
+      "value": "2648.49",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 7,
+      "field": "upper_boundary",
+      "value": "2699.53",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 7,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 8,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790337599999-173-1-33c6c1ce.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790337599999,
+      "structure": 8,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2520.68",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2786.81",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2721.75",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790524799999-240-1-ae033b89.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790524799999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2665.14",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2537.57",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2444.19",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2464.27",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2485.45",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2436.87",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 6,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790049599999-70-1-4fcc071b.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790049599999,
+      "structure": 6,
+      "field": "lower_boundary",
+      "value": "2718.09",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789905599999-18-1-d044f570.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789905599999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789905599999-18-1-d044f570.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789905599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789905599999-18-1-d044f570.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789905599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789905599999-18-1-d044f570.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789905599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789905599999-18-1-d044f570.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789905599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2633.05",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789905599999-18-1-d044f570.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789905599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789905599999-18-1-d044f570.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789905599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789905599999-18-1-d044f570.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789905599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2537.57",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789991999999-49-1-6e246cbe.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789991999999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2143.61",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "1959.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "1905.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789862399999-3-1-460ffd01.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789862399999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2436.87",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790510399999-235-1-ea162c0a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790510399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790510399999-235-1-ea162c0a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790510399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790510399999-235-1-ea162c0a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790510399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790510399999-235-1-ea162c0a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790510399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790510399999-235-1-ea162c0a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790510399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790510399999-235-1-ea162c0a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790510399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790510399999-235-1-ea162c0a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790510399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2718.83",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790510399999-235-1-ea162c0a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790510399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2665.14",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2544.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2444.19",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2486.12",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2778.33",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790135999999-101-1-71ded2bc.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790135999999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2537.57",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2436.73",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2436.87",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789934399999-28-1-310e034a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789934399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2143.61",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "1974.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "1803.74",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "1905.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/bootstrap-1d-1789775999999-1-7280bf4f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789775999999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.80",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2696.09",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790438399999-209-1-5419d434.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790438399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2676.22",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2436.87",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2648.49",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2740.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2696.09",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790467199999-219-1-1b6531c1.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790467199999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2665.14",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2042.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "1599.27",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "1845.09",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "1512.91",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "1944.39",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "1597.72",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "1974.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "1803.74",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "1905.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 6,
+      "field": "upper_boundary",
+      "value": "2557.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 6,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 7,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 7,
+      "field": "lower_boundary",
+      "value": "2436.87",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 8,
+      "field": "upper_boundary",
+      "value": "2776.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790294399999-158-1-6930bdc2.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790294399999,
+      "structure": 8,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790207999999-126-1-2791ff3e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790207999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790207999999-126-1-2791ff3e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790207999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790207999999-126-1-2791ff3e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790207999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2643.52",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790207999999-126-1-2791ff3e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790207999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2495.82",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790207999999-126-1-2791ff3e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790207999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790207999999-126-1-2791ff3e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790207999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790207999999-126-1-2791ff3e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790207999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790207999999-126-1-2791ff3e.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790207999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2641.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2444.19",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 6,
+      "field": "upper_boundary",
+      "value": "2696.09",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790409599999-199-1-9a39acda.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790409599999,
+      "structure": 6,
+      "field": "lower_boundary",
+      "value": "2676.22",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789948799999-33-1-2f6b90bf.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789948799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789948799999-33-1-2f6b90bf.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789948799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789948799999-33-1-2f6b90bf.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789948799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789948799999-33-1-2f6b90bf.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789948799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789948799999-33-1-2f6b90bf.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789948799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789948799999-33-1-2f6b90bf.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789948799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2569.80",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789948799999-33-1-2f6b90bf.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789948799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789948799999-33-1-2f6b90bf.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789948799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2569.80",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "1974.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "1512.91",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "1905.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790121599999-96-1-f76e1296.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790121599999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "1974.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1512.91",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "1905.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2557.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2786.81",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790380799999-189-1-f2d25f0f.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790380799999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790207999999-127-1-2e1b220b.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790207999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "1974.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790207999999-127-1-2e1b220b.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790207999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1512.91",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790207999999-127-1-2e1b220b.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790207999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790207999999-127-1-2e1b220b.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790207999999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790207999999-127-1-2e1b220b.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790207999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790207999999-127-1-2e1b220b.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790207999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2641.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2604.75",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789862399999-2-1-a9491724.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789862399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790279999999-152-1-f2e8a642.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790279999999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790279999999-152-1-f2e8a642.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790279999999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790279999999-152-1-f2e8a642.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790279999999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790279999999-152-1-f2e8a642.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790279999999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790279999999-152-1-f2e8a642.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790279999999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790279999999-152-1-f2e8a642.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790279999999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790279999999-152-1-f2e8a642.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790279999999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2139.34",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "1974.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "1821.49",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "1905.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1789948799999-34-1-9829df14.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1789948799999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2524.68",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2370.54",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2721.75",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790481599999-225-1-c486bd4c.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790481599999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2665.14",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.80",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2740.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790366399999-183-1-58526def.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790366399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2464.27",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2727.77",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790251199999-142-1-3c15cdb9.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790251199999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790035199999-64-1-b8dc46b5.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790035199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790035199999-64-1-b8dc46b5.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790035199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790035199999-64-1-b8dc46b5.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790035199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790035199999-64-1-b8dc46b5.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790035199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790035199999-64-1-b8dc46b5.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790035199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790035199999-64-1-b8dc46b5.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790035199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2718.09",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2444.19",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2716.01",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2727.77",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2641.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 6,
+      "field": "upper_boundary",
+      "value": "2694.37",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790265599999-147-1-fd72e537.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790265599999,
+      "structure": 6,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2483.9",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2537.57",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2404.35",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2444.19",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2464.27",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2484.35",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 6,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789963199999-39-1-5f87a319.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789963199999,
+      "structure": 6,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2528.80",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790294399999-157-1-d0071b86.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790294399999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789891199999-13-1-f9d1db53.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789891199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789891199999-13-1-f9d1db53.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789891199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789891199999-13-1-f9d1db53.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789891199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789891199999-13-1-f9d1db53.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789891199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789891199999-13-1-f9d1db53.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789891199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789891199999-13-1-f9d1db53.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789891199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2608.83",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789891199999-13-1-f9d1db53.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789891199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.80",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2727.77",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790308799999-163-1-ee39c50a.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790308799999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789977599999-44-1-001e3ca3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789977599999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2680.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789977599999-44-1-001e3ca3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789977599999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789977599999-44-1-001e3ca3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789977599999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789977599999-44-1-001e3ca3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789977599999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2609.02",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789977599999-44-1-001e3ca3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789977599999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789977599999-44-1-001e3ca3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789977599999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1789977599999-44-1-001e3ca3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789977599999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2700.00",
+      "numeric_ohlc_match": true,
+      "exact_text_match": false
+    },
+    {
+      "file": "role_runs/clock-4h-1789977599999-44-1-001e3ca3.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1789977599999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2568.16",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2030.49",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "1368.42",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "1974.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "1512.91",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2771",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "1905.63",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2557.46",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2357.18",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 5,
+      "field": "upper_boundary",
+      "value": "2786.81",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-1d-1790467199999-220-1-10d97cde.json",
+      "timeframe": "D1",
+      "decision_time_ms": 1790467199999,
+      "structure": 5,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 0,
+      "field": "upper_boundary",
+      "value": "2528.8",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 0,
+      "field": "lower_boundary",
+      "value": "2411.04",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 1,
+      "field": "upper_boundary",
+      "value": "2680",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 1,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 2,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 2,
+      "field": "lower_boundary",
+      "value": "2358.62",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 3,
+      "field": "upper_boundary",
+      "value": "2850",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 3,
+      "field": "lower_boundary",
+      "value": "2658.06",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 4,
+      "field": "upper_boundary",
+      "value": "2804.59",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    },
+    {
+      "file": "role_runs/clock-4h-1790323199999-168-1-bcbd8bb7.json",
+      "timeframe": "H4",
+      "decision_time_ms": 1790323199999,
+      "structure": 4,
+      "field": "lower_boundary",
+      "value": "2633.31",
+      "numeric_ohlc_match": true,
+      "exact_text_match": true
+    }
+  ],
+  "nonmatching_numeric_boundaries": []
+}

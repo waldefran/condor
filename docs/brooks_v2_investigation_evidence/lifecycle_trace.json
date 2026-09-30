@@ -1,0 +1,537 @@
+{
+  "baseline": {
+    "artifact_root": "/tmp/brooks-investigation-20260930/baseline/docs/brooks_walkforward_2026-09-20_2026-09-29",
+    "gm_management_approved_actions": [
+      "HOLD"
+    ],
+    "gm_management_approved_count": 40,
+    "persisted_binding": {
+      "account_name": "walkforward",
+      "connector_name": "binance_perpetual_demo",
+      "controller_id": "brooks-walkforward-10d",
+      "correlation_id": "ETH-USDT-1h-1789876799999",
+      "executor_id": "wf-exec-1",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_side": "SHORT",
+      "planned_quantity": "0.478",
+      "schema": "condor.brooks.trade-binding.v1",
+      "status": "reconciled",
+      "symbol": "ETH-USDT"
+    },
+    "run_manifest": {
+      "end_ms": 1790726400000,
+      "git_head": "a83fb54cf2a770be73119190a6b31d27f73f3f21",
+      "simulation_time_ms": 1790380952425,
+      "start_ms": 1789862400000,
+      "status": "running",
+      "updated_at_ms": 1790764208951
+    },
+    "simulation_executor_exits": [
+      {
+        "ambiguous_bar": false,
+        "at_ms": 1789916519999,
+        "bar_close_time_ms": 1789916519999,
+        "bar_open_time_ms": 1789916460000,
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event": "executor_exit",
+        "fill_price": "2594.829456999999999999999999",
+        "position_id": "wf-main-1",
+        "reason": "STOP_LOSS",
+        "reference_exit_price": "2594.569999999999999999999999",
+        "stop_first_assumption": false
+      }
+    ],
+    "simulation_fills": [
+      {
+        "action": "MAIN_OPEN",
+        "client_order_id": "wf-fill-1",
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "executor_id": "wf-exec-1",
+        "filled_amount": "0.478",
+        "order_id": "wf-fill-1",
+        "position_action": "OPEN",
+        "price": "2583.861588",
+        "status": "FILLED",
+        "timestamp_ms": 1789877076410,
+        "trade_type": "SELL",
+        "trading_pair": "ETH-USDT"
+      },
+      {
+        "action": "STOP_LOSS",
+        "client_order_id": "wf-fill-2",
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "executor_id": "wf-exec-2",
+        "filled_amount": "0.478",
+        "order_id": "wf-fill-2",
+        "position_action": "CLOSE",
+        "price": "2594.829456999999999999999999",
+        "reason": "STOP_LOSS",
+        "status": "FILLED",
+        "timestamp_ms": 1789916519999,
+        "trade_type": "BUY",
+        "trading_pair": "ETH-USDT"
+      }
+    ],
+    "simulation_trade": {
+      "ambiguous_bar_count": 0,
+      "close_reason": "STOP_LOSS",
+      "closed_at_ms": 1789916519999,
+      "correlation_id": "ETH-USDT-1h-1789876799999",
+      "entry_price": "2583.861588",
+      "exit_price": "2594.829456999999999999999999",
+      "fees": "0.9901657278040000000000000000",
+      "initial_quantity": "0.478",
+      "initial_risk_usd": "4.995099999999999999999999522",
+      "mae_price": "2594.7",
+      "mae_r": "1.037168612440191387559808712",
+      "management_actions": [
+        {
+          "action": "OPEN_MAIN",
+          "at_ms": 1789877076410,
+          "fill_price": "2583.861588",
+          "mark_at_submission": "2584.12",
+          "order_type": "MARKET",
+          "quantity": "0.478",
+          "trigger_kind": "stop",
+          "trigger_status": "pending"
+        },
+        {
+          "action": "STOP_LOSS",
+          "at_ms": 1789916519999,
+          "executor_id": "wf-exec-2",
+          "mark_or_fill_price": "2594.829456999999999999999999",
+          "quantity": "0.478"
+        }
+      ],
+      "mfe_price": "2568.16",
+      "mfe_r": "1.502544306220095693779904450",
+      "net_pnl_including_open": "-6.232807109803999999999999522",
+      "net_realized_pnl": "-6.232807109803999999999999522",
+      "opened_at_ms": 1789877076410,
+      "partial_entry_bar_count": 1,
+      "r_multiple": "-1.247784250526315789473684234",
+      "realized_gross_pnl": "-5.242641381999999999999999522",
+      "remaining_main_quantity": "0.000",
+      "side": "SHORT",
+      "slippage_cost": "0.247541382000000000000000000",
+      "status": "closed",
+      "stop_price": "2594.569999999999999999999999",
+      "submission_mark": "2584.12",
+      "submitted_order_type": "MARKET",
+      "symbol": "ETH-USDT",
+      "target_price": "2563.220000000000000000000000",
+      "trigger_kind": "stop",
+      "trigger_status": "pending",
+      "unrealized_pnl": "0E-9"
+    },
+    "target_related_event_count": 90,
+    "target_related_event_sha256": "6acd0c5d5517189d7b307e8d51c075a032eea38f83bea58e0222accf62ff5596",
+    "timeline": [
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "decision_time_ms": 1789876799999,
+        "event_id": "8aa46089-7942-4cfa-a1e1-63cf7cf4c265",
+        "type": "H1_BAR_CLOSED",
+        "virtual_time_ms": 1789876802000,
+        "virtual_time_utc": "2026-09-20T04:00:02.000+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "decision": "ENTER_SHORT",
+        "decision_time_ms": 1789876799999,
+        "event_id": "7ec6bace-73c0-5037-87d0-35f7c536bfc4",
+        "type": "TRADER_INTENT_CREATED",
+        "virtual_time_ms": 1789877076283,
+        "virtual_time_utc": "2026-09-20T04:04:36.283+00:00"
+      },
+      {
+        "binding": {
+          "account_name": "walkforward",
+          "connector_name": "binance_perpetual_demo",
+          "controller_id": "brooks-walkforward-10d",
+          "correlation_id": "ETH-USDT-1h-1789876799999",
+          "executor_id": "wf-exec-1",
+          "main_executor_id": "wf-exec-1",
+          "main_position_id": "wf-main-1",
+          "main_side": "SHORT",
+          "planned_quantity": "0.478",
+          "schema": "condor.brooks.trade-binding.v1",
+          "status": "reconciled",
+          "symbol": "ETH-USDT"
+        },
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "b0d6812b-27a4-44f5-8f89-4b7f7cf3635f",
+        "type": "GM_ENTRY_APPROVED",
+        "virtual_time_ms": 1789877076410,
+        "virtual_time_utc": "2026-09-20T04:04:36.410+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "158285f5-739b-4bd9-9ff7-e744c8aeb306",
+        "payload": {
+          "current": {
+            "id": "wf-main-1",
+            "qty": "0.478",
+            "side": "SHORT"
+          },
+          "previous": {
+            "id": "",
+            "qty": "0",
+            "side": ""
+          }
+        },
+        "type": "POSITION_OPENED",
+        "virtual_time_ms": 1789877099999,
+        "virtual_time_utc": "2026-09-20T04:04:59.999+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "28ef8250-f80c-473e-a4e1-6dccee1a82b2",
+        "payload": {
+          "executors": [
+            {
+              "id": "wf-exec-1",
+              "status": "RUNNING"
+            }
+          ],
+          "open_orders": []
+        },
+        "type": "ORDER_CHANGED",
+        "virtual_time_ms": 1789877099999,
+        "virtual_time_utc": "2026-09-20T04:04:59.999+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789916399999",
+        "decision_time_ms": 1789916399999,
+        "event_id": "7f2423eb-321c-4825-b8ee-6a58a1d1d6d0",
+        "type": "H1_BAR_CLOSED",
+        "virtual_time_ms": 1789916460173,
+        "virtual_time_utc": "2026-09-20T15:01:00.173+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "a94f73ed-1b3d-4e29-812a-dea0284bf889",
+        "payload": {
+          "current": {
+            "id": "",
+            "qty": "0",
+            "side": ""
+          },
+          "previous": {
+            "id": "wf-main-1",
+            "qty": "0.478",
+            "side": "SHORT"
+          }
+        },
+        "type": "POSITION_CLOSED",
+        "virtual_time_ms": 1789916519999,
+        "virtual_time_utc": "2026-09-20T15:01:59.999+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "73f9e2b6-e99b-40e8-aabf-9703420c9ea3",
+        "payload": {
+          "executors": [
+            {
+              "id": "wf-exec-1",
+              "status": "CLOSED"
+            }
+          ],
+          "open_orders": []
+        },
+        "type": "ORDER_CHANGED",
+        "virtual_time_ms": 1789916519999,
+        "virtual_time_utc": "2026-09-20T15:01:59.999+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789916399999",
+        "decision": "ENTER_LONG",
+        "decision_time_ms": 1789916399999,
+        "event_id": "14d18232-2952-5903-94bd-62f57815edc4",
+        "type": "TRADER_INTENT_CREATED",
+        "virtual_time_ms": 1789916660861,
+        "virtual_time_utc": "2026-09-20T15:04:20.861+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789916399999",
+        "event_id": "4061394a-57a6-4527-8f15-3f7637b345d8",
+        "reason": "position ownership or structure is unresolved",
+        "type": "GM_ENTRY_REJECTED",
+        "virtual_time_ms": 1789916661072,
+        "virtual_time_utc": "2026-09-20T15:04:21.072+00:00"
+      }
+    ]
+  },
+  "caveat": "Both run manifests name git_head a83fb54cf2a770be73119190a6b31d27f73f3f21; do not conflate that artifact provenance with the inspected code checkout HEAD.",
+  "code_checkout": {
+    "branch": "feat/brooks-agents-v1",
+    "head": "7760041af8a6d2ea6ed737ddc7a8d86cbfeb305c"
+  },
+  "current": {
+    "artifact_root": "/tmp/brooks-investigation-20260930/current",
+    "gm_management_approved_actions": [
+      "HOLD"
+    ],
+    "gm_management_approved_count": 40,
+    "persisted_binding": {
+      "account_name": "walkforward",
+      "connector_name": "binance_perpetual_demo",
+      "controller_id": "brooks-walkforward-10d",
+      "correlation_id": "ETH-USDT-1h-1789876799999",
+      "executor_id": "wf-exec-1",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_side": "SHORT",
+      "planned_quantity": "0.478",
+      "schema": "condor.brooks.trade-binding.v1",
+      "status": "reconciled",
+      "symbol": "ETH-USDT"
+    },
+    "run_manifest": {
+      "end_ms": 1790726400000,
+      "git_head": "a83fb54cf2a770be73119190a6b31d27f73f3f21",
+      "simulation_time_ms": 1790539351418,
+      "start_ms": 1789862400000,
+      "status": "running",
+      "updated_at_ms": 1790770324381
+    },
+    "simulation_executor_exits": [
+      {
+        "ambiguous_bar": false,
+        "at_ms": 1789916519999,
+        "bar_close_time_ms": 1789916519999,
+        "bar_open_time_ms": 1789916460000,
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event": "executor_exit",
+        "fill_price": "2594.829456999999999999999999",
+        "position_id": "wf-main-1",
+        "reason": "STOP_LOSS",
+        "reference_exit_price": "2594.569999999999999999999999",
+        "stop_first_assumption": false
+      }
+    ],
+    "simulation_fills": [
+      {
+        "action": "MAIN_OPEN",
+        "client_order_id": "wf-fill-1",
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "executor_id": "wf-exec-1",
+        "filled_amount": "0.478",
+        "order_id": "wf-fill-1",
+        "position_action": "OPEN",
+        "price": "2583.861588",
+        "status": "FILLED",
+        "timestamp_ms": 1789877076410,
+        "trade_type": "SELL",
+        "trading_pair": "ETH-USDT"
+      },
+      {
+        "action": "STOP_LOSS",
+        "client_order_id": "wf-fill-2",
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "executor_id": "wf-exec-2",
+        "filled_amount": "0.478",
+        "order_id": "wf-fill-2",
+        "position_action": "CLOSE",
+        "price": "2594.829456999999999999999999",
+        "reason": "STOP_LOSS",
+        "status": "FILLED",
+        "timestamp_ms": 1789916519999,
+        "trade_type": "BUY",
+        "trading_pair": "ETH-USDT"
+      }
+    ],
+    "simulation_trade": {
+      "ambiguous_bar_count": 0,
+      "close_reason": "STOP_LOSS",
+      "closed_at_ms": 1789916519999,
+      "correlation_id": "ETH-USDT-1h-1789876799999",
+      "entry_price": "2583.861588",
+      "exit_price": "2594.829456999999999999999999",
+      "fees": "0.9901657278040000000000000000",
+      "initial_quantity": "0.478",
+      "initial_risk_usd": "4.995099999999999999999999522",
+      "mae_price": "2594.7",
+      "mae_r": "1.037168612440191387559808712",
+      "management_actions": [
+        {
+          "action": "OPEN_MAIN",
+          "at_ms": 1789877076410,
+          "fill_price": "2583.861588",
+          "mark_at_submission": "2584.12",
+          "order_type": "MARKET",
+          "quantity": "0.478",
+          "trigger_kind": "stop",
+          "trigger_status": "pending"
+        },
+        {
+          "action": "STOP_LOSS",
+          "at_ms": 1789916519999,
+          "executor_id": "wf-exec-2",
+          "mark_or_fill_price": "2594.829456999999999999999999",
+          "quantity": "0.478"
+        }
+      ],
+      "mfe_price": "2568.16",
+      "mfe_r": "1.502544306220095693779904450",
+      "net_pnl_including_open": "-6.232807109803999999999999522",
+      "net_realized_pnl": "-6.232807109803999999999999522",
+      "opened_at_ms": 1789877076410,
+      "partial_entry_bar_count": 1,
+      "r_multiple": "-1.247784250526315789473684234",
+      "realized_gross_pnl": "-5.242641381999999999999999522",
+      "remaining_main_quantity": "0.000",
+      "side": "SHORT",
+      "slippage_cost": "0.247541382000000000000000000",
+      "status": "closed",
+      "stop_price": "2594.569999999999999999999999",
+      "submission_mark": "2584.12",
+      "submitted_order_type": "MARKET",
+      "symbol": "ETH-USDT",
+      "target_price": "2563.220000000000000000000000",
+      "trigger_kind": "stop",
+      "trigger_status": "pending",
+      "unrealized_pnl": "0E-9"
+    },
+    "target_related_event_count": 90,
+    "target_related_event_sha256": "6acd0c5d5517189d7b307e8d51c075a032eea38f83bea58e0222accf62ff5596",
+    "timeline": [
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "decision_time_ms": 1789876799999,
+        "event_id": "8aa46089-7942-4cfa-a1e1-63cf7cf4c265",
+        "type": "H1_BAR_CLOSED",
+        "virtual_time_ms": 1789876802000,
+        "virtual_time_utc": "2026-09-20T04:00:02.000+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "decision": "ENTER_SHORT",
+        "decision_time_ms": 1789876799999,
+        "event_id": "7ec6bace-73c0-5037-87d0-35f7c536bfc4",
+        "type": "TRADER_INTENT_CREATED",
+        "virtual_time_ms": 1789877076283,
+        "virtual_time_utc": "2026-09-20T04:04:36.283+00:00"
+      },
+      {
+        "binding": {
+          "account_name": "walkforward",
+          "connector_name": "binance_perpetual_demo",
+          "controller_id": "brooks-walkforward-10d",
+          "correlation_id": "ETH-USDT-1h-1789876799999",
+          "executor_id": "wf-exec-1",
+          "main_executor_id": "wf-exec-1",
+          "main_position_id": "wf-main-1",
+          "main_side": "SHORT",
+          "planned_quantity": "0.478",
+          "schema": "condor.brooks.trade-binding.v1",
+          "status": "reconciled",
+          "symbol": "ETH-USDT"
+        },
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "b0d6812b-27a4-44f5-8f89-4b7f7cf3635f",
+        "type": "GM_ENTRY_APPROVED",
+        "virtual_time_ms": 1789877076410,
+        "virtual_time_utc": "2026-09-20T04:04:36.410+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "158285f5-739b-4bd9-9ff7-e744c8aeb306",
+        "payload": {
+          "current": {
+            "id": "wf-main-1",
+            "qty": "0.478",
+            "side": "SHORT"
+          },
+          "previous": {
+            "id": "",
+            "qty": "0",
+            "side": ""
+          }
+        },
+        "type": "POSITION_OPENED",
+        "virtual_time_ms": 1789877099999,
+        "virtual_time_utc": "2026-09-20T04:04:59.999+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "28ef8250-f80c-473e-a4e1-6dccee1a82b2",
+        "payload": {
+          "executors": [
+            {
+              "id": "wf-exec-1",
+              "status": "RUNNING"
+            }
+          ],
+          "open_orders": []
+        },
+        "type": "ORDER_CHANGED",
+        "virtual_time_ms": 1789877099999,
+        "virtual_time_utc": "2026-09-20T04:04:59.999+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789916399999",
+        "decision_time_ms": 1789916399999,
+        "event_id": "7f2423eb-321c-4825-b8ee-6a58a1d1d6d0",
+        "type": "H1_BAR_CLOSED",
+        "virtual_time_ms": 1789916460173,
+        "virtual_time_utc": "2026-09-20T15:01:00.173+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "a94f73ed-1b3d-4e29-812a-dea0284bf889",
+        "payload": {
+          "current": {
+            "id": "",
+            "qty": "0",
+            "side": ""
+          },
+          "previous": {
+            "id": "wf-main-1",
+            "qty": "0.478",
+            "side": "SHORT"
+          }
+        },
+        "type": "POSITION_CLOSED",
+        "virtual_time_ms": 1789916519999,
+        "virtual_time_utc": "2026-09-20T15:01:59.999+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "event_id": "73f9e2b6-e99b-40e8-aabf-9703420c9ea3",
+        "payload": {
+          "executors": [
+            {
+              "id": "wf-exec-1",
+              "status": "CLOSED"
+            }
+          ],
+          "open_orders": []
+        },
+        "type": "ORDER_CHANGED",
+        "virtual_time_ms": 1789916519999,
+        "virtual_time_utc": "2026-09-20T15:01:59.999+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789916399999",
+        "decision": "ENTER_LONG",
+        "decision_time_ms": 1789916399999,
+        "event_id": "14d18232-2952-5903-94bd-62f57815edc4",
+        "type": "TRADER_INTENT_CREATED",
+        "virtual_time_ms": 1789916660861,
+        "virtual_time_utc": "2026-09-20T15:04:20.861+00:00"
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789916399999",
+        "event_id": "4061394a-57a6-4527-8f15-3f7637b345d8",
+        "reason": "position ownership or structure is unresolved",
+        "type": "GM_ENTRY_REJECTED",
+        "virtual_time_ms": 1789916661072,
+        "virtual_time_utc": "2026-09-20T15:04:21.072+00:00"
+      }
+    ]
+  },
+  "same_relevant_event_trace": true,
+  "scope": "Read-only extraction; virtual timestamps come from events.jsonl / simulation data. Wall timestamps are excluded."
+}

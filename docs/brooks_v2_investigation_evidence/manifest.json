@@ -1,0 +1,43 @@
+{
+  "snapshot_at_utc": "2026-09-30T12:12:09.556539+00:00",
+  "baseline_commit": "7760041a",
+  "current_head": "7760041af8a6d2ea6ed737ddc7a8d86cbfeb305c",
+  "baseline_root": "/tmp/brooks-investigation-20260930/baseline/docs/brooks_walkforward_2026-09-20_2026-09-29",
+  "current_root": "/tmp/brooks-investigation-20260930/current",
+  "current_cycles": 189,
+  "baseline_cycles": 145,
+  "operative_sources": {
+    "condor/brooks/gm.py": "1b192e7dcf00a2c27ef0035d0fd9716d2bfee31403b4e96e4c825c24fc704415",
+    "condor/brooks/adapters.py": "36c5d1699e43f888282db3e5ea45d50ff3cbdc3198fb9c6a130bb536d469581b",
+    "condor/brooks/position_watcher.py": "98894fba3b0bd958d69411214b4fdf928fc888e670485d9f20abf5ee8b081f50",
+    "condor/brooks/supervisor.py": "96c12e67106c91fec4267f03d6ff39ef6c92a90e405968020afbb9eac460d5a5",
+    "condor/brooks/trader.py": "b3f437a9c0f5d35f249d08956afc6af0ba9d79f04d36bc5b74e05da497d16d67",
+    "condor/brooks/agent_runner.py": "a7098cb50d148af8c1da85c33c90616699d753a861fbf954783beaecf1209fce",
+    "condor/brooks/contracts.py": "9fa63db97f6c7546cb30dde17333330425732fe40a30774dcc89901c98dd44b6",
+    "condor/brooks/pm.py": "3dc6ebda31e78b9ba23123da37b0ba13ab561e4867d52ed82f8e55d2ee8619f4",
+    "condor/brooks/market_tools.py": "f80c0a96145fdaff4b10ee866e9c2e807297ceecb5ee431cb2185155cfc8fa01",
+    "condor/acp/pydantic_ai_client.py": "99e09b95ee48f2aeadf11580fad56919aa3214dea35888bdecf3aec17075ee95",
+    "scripts/brooks_walkforward.py": "0884cce8b4d2c170ea6138678f65f59c838ae0968c68db7fb1002510d1321f30",
+    "scripts/brooks_walkforward_simulation.py": "96ee61c2514c28157fec57d5c19adf5a12faf0c01a809beaaa89315d33a22e11"
+  },
+  "operative_diff_a83_to_776": [
+    "scripts/brooks_walkforward_report.py"
+  ],
+  "basis_notes": "Replay manifest source HEAD a83fb54; code and prompts unchanged through7760041a. Only scripts/brooks_walkforward_report.py changed; reports are secondary evidence. Counts from frozen cycles/events/captures.",
+  "baseline_artifact_sha256": {
+    "cycles.jsonl": "59d4eb55b4512a07e552827eef4d92ba8261d606b246387ef3fd15170cc0489f",
+    "events.jsonl": "a148d41641ce2bc2e1511d60be9aa2eb9a8100ea6943d1e43b68bb2dffa69918",
+    "run_manifest.json": "d23ffc0f2ca0a41b5e9346a6fcd03af6dea5f58b52b067a3d0270e349fa2b303",
+    "simulation/fills.jsonl": "92077384df6acd7565c5299fe1fef0155a10e7023281bead5b3b4554fe45518d",
+    "simulation/trades.jsonl": "725a408d6eaf27917a21823f8ed08149b6508aa4a0b357435e865351e4f744b3",
+    "trade_state/ETH-USDT-1h-1789876799999/binding.json": "3ed2d13ab61a3ccff965c59f1bc22f469189681e4cd31a04e4cef8df70b1b22c"
+  },
+  "posterior_artifact_sha256": {
+    "cycles.jsonl": "72ab956dba14dc926b31944eb406eafbd6f26760db6cbe5816596006a3338453",
+    "events.jsonl": "ad71d6a1565b98623f0f7b6ee623dbae58adeb3d8a1a588e68b7970745ab92da",
+    "run_manifest.json": "156c4a41390566cf10edf72e6ab7427548650943de7eaac80a38f0f7d0ebcf13",
+    "simulation/fills.jsonl": "92077384df6acd7565c5299fe1fef0155a10e7023281bead5b3b4554fe45518d",
+    "simulation/trades.jsonl": "725a408d6eaf27917a21823f8ed08149b6508aa4a0b357435e865351e4f744b3",
+    "trade_state/ETH-USDT-1h-1789876799999/binding.json": "3ed2d13ab61a3ccff965c59f1bc22f469189681e4cd31a04e4cef8df70b1b22c"
+  }
+}

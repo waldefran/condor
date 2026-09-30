@@ -1,0 +1,133 @@
+[
+  {
+    "round_id": "clock-1h-1789876799999-7",
+    "capture": "captures/clock-1h-1789876799999-7-1-31b6e86d.json",
+    "classification": "broken_range_not_reclaimed",
+    "decision_time_ms": 1789876799999,
+    "input_M15_indices": {
+      "115": {
+        "close": "2573.13",
+        "close_time_ms": 1789873199999,
+        "high": "2606.04",
+        "low": "2571",
+        "open": "2603.75",
+        "open_time_ms": 1789872300000,
+        "volume": "917804.613"
+      },
+      "116": {
+        "close": "2579.45",
+        "close_time_ms": 1789874099999,
+        "high": "2594.57",
+        "low": "2570.27",
+        "open": "2572.94",
+        "open_time_ms": 1789873200000,
+        "volume": "354898.193"
+      },
+      "117": {
+        "close": "2584",
+        "close_time_ms": 1789874999999,
+        "high": "2594.57",
+        "low": "2569.8",
+        "open": "2584.02",
+        "open_time_ms": 1789874100000,
+        "volume": "741209.057"
+      },
+      "118": {
+        "close": "2580.81",
+        "close_time_ms": 1789875899999,
+        "high": "2587.03",
+        "low": "2578.29",
+        "open": "2584",
+        "open_time_ms": 1789875000000,
+        "volume": "519159.928"
+      },
+      "119": {
+        "close": "2586.68",
+        "close_time_ms": 1789876799999,
+        "high": "2586.69",
+        "low": "2579.19",
+        "open": "2580.72",
+        "open_time_ms": 1789875900000,
+        "volume": "454332.901"
+      }
+    },
+    "model_evidence_for": [
+      "M15 bar 115 (open_time_ms 1789872300000, close_time_ms 1789873199999) is a 35.04-point bear bar: open 2603.75, high 2606.04, low 2571, close 2573.13, closing 2.13 above its low and breaking the 2604.75 low of the prior tight range; its M15 volume 917804.613 is the largest of the last 30 M15 bars.",
+      "Raw H4 bar 1789862400000-1789876799999 (open 2632.98, high 2633.05, low 2569.8, close 2586.68) closes below the H4 seven-bar range low 2604.75, ending the H4 higher-low chain 2370.54 -> 2435.71 -> 2486.12 -> 2604.75; the stale H4 analyst context was replaced with this successful raw 120-bar read.",
+      "M15 bars 116-119 overlap only 2569.8-2594.57 with declining highs 2594.57 (bar 116), 2594.57 (bar 117), 2587.03 (bar 118), 2586.69 (bar 119) - a bear flag holding below the broken 2604.75 rather than reclaiming it.",
+      "H1 bar open_time_ms 1789869600000 (open 2617.83, high 2622.64, low 2571, close 2573.13, volume 2568125.853) is the widest H1 range of the drop and closes near its low, and the current D1 context shows the 2700.00 high (bar 1789776000000) rejected with a ~67-point upper tail after the earlier 2680.00 rejection (bar 1789084800000)."
+    ],
+    "model_evidence_against": [
+      "D1 context (current) is bull-trend/breakout-spike with Always-In long and the window's highest close 2632.98 (bar 1789776000000); the short is counter to that, and 2586.68 is only ~59 points below the middle of the large D1 2357.18-2700.00 range, where Brooks expects two-sided trade and weaker follow-through.",
+      "Follow-through on the breakdown was weak: the bar immediately after the breakout bar (M15 bar 116, open 2572.94, high 2594.57, low 2570.27, close 2579.45) closed back up inside the broken range, and the last bar (M15 bar 119, open 2580.72, high 2586.69, low 2579.19, close 2586.68) closed at its high, showing buyers at the breakdown level.",
+      "Failed strong bars are a feature of this window: H4 bar 1789128000000 (open 2457.12, high 2680.00, close 2555.52) gave its entire 235.81-point range back, so the current H4 bear bar may be an overreaction inside a bull leg with the 2486.12/2537.57 zone likely to attract buyers."
+    ],
+    "ex_ante_only": true
+  },
+  {
+    "round_id": "clock-1h-1790398799999-195",
+    "capture": "captures/clock-1h-1790398799999-195-1-0d81d9ed.json",
+    "classification": "final_M15_is_index115_not119",
+    "decision_time_ms": 1790398799999,
+    "input_M15_indices": {
+      "115": {
+        "close": "2686.84",
+        "close_time_ms": 1790395199999,
+        "high": "2687.34",
+        "low": "2686.61",
+        "open": "2687.24",
+        "open_time_ms": 1790394300000,
+        "volume": "48047.797"
+      },
+      "116": {
+        "close": "2688.36",
+        "close_time_ms": 1790396099999,
+        "high": "2689.63",
+        "low": "2686.61",
+        "open": "2686.84",
+        "open_time_ms": 1790395200000,
+        "volume": "222924.482"
+      },
+      "117": {
+        "close": "2685.01",
+        "close_time_ms": 1790396999999,
+        "high": "2689.99",
+        "low": "2685.01",
+        "open": "2688.37",
+        "open_time_ms": 1790396100000,
+        "volume": "145203.354"
+      },
+      "118": {
+        "close": "2687.52",
+        "close_time_ms": 1790397899999,
+        "high": "2687.52",
+        "low": "2685",
+        "open": "2685.01",
+        "open_time_ms": 1790397000000,
+        "volume": "115586.915"
+      },
+      "119": {
+        "close": "2688.33",
+        "close_time_ms": 1790398799999,
+        "high": "2688.9",
+        "low": "2687.34",
+        "open": "2687.52",
+        "open_time_ms": 1790397900000,
+        "volume": "186667.416"
+      }
+    },
+    "model_evidence_for": [
+      "M15 closes since 1790380800000 fold inside a 2685.04-2694.22 band with heavy overlap: bar 1790380800000 (open 2690.56, high 2692.8, low 2680, close 2686.74), bar 1790382600000 (low 2680, close 2685.04), bar 1790388000000 (high 2694.24, close 2694.22), bar 1790391600000 (low 2685.7, close 2685.72) and bar 1790394300000 (high 2687.34, low 2686.61, close 2686.84). No bar closes beyond the band, so no breakout or breakout-pullback trigger exists on the decision timeframe.",
+      "H1 bars are equally compressed and show falling highs, not a resumable bull swing: high 2740.42 (bar 1790334000000), then 2721.75 (1790341200000), 2696.09 (1790359200000), 2694.43 (1790384400000) and 2689.99 on the final H1 bar (1790395200000, open 2686.84, high 2689.99, low 2685, close 2688.33).",
+      "The final H1 bar (open 2686.84, high 2689.99, low 2685, close 2688.33, range 4.99) and the final M15 bar (open 2687.24, high 2687.34, low 2686.61, close 2686.84, range 0.73) are doji inside the range, which is the middle of two-sided action with no edge to trade from.",
+      "H4 context is current and describes the same problem: post-2850 two-sided range 2633.31-2804.59 with lower highs 2804.59, 2786.81, 2740.42, and every bear close in that stretch followed by a higher close, so neither a clean continuation nor a reversal is established.",
+      "D1 context is also current and describes a four-bar pause 2633.31-2786.81 under the 2850 high with small ranges (60.17, 145.44, 66.08, 73.20) versus the 208.30 spike bar, i.e. a bull trend that is not currently pressing higher."
+    ],
+    "model_evidence_against": [
+      "Strongest opposite case for abstaining: D1 is Always-In Long with breakout_mode true and rising swing lows (1905.63, 2111, 2325.31, 2357.18, 2358.62), and H4 counts a bull leg 2358.62 to 2850 with a higher-low structure, so the pause can be read as a bull flag that resolves up. A long would need acceptance above the 2694.43 M15 high (bar 1790388000000) and the 2699.53 H1 high (bar 1790302400000).",
+      "Bull counter-evidence inside the window: H1 bars 1790323200000-1790334000000 rose from 2671.44 to a 2740.42 high with closes 2677.55, 2693.77, 2712.07, 2715.9, and the M15 sequence 1790324100000-1790334900000 closed 2693.77, 2710.52, 2738.74, showing buyers can still produce trend bars.",
+      "The 2669.67-2685.70 shelf has held repeatedly (H1 lows 2669.67 at 1790348400000 and 2673.05 at 1790350200000; M15 lows 2680 at 1790380800000 and 2680 at 1790382600000), so a bear entry here also lacks a fresh boundary break to trade against."
+    ],
+    "ex_ante_only": true
+  }
+]

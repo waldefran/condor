@@ -1,0 +1,366 @@
+{
+  "baseline": {
+    "cycles": 145,
+    "duplicate_cycles": 0,
+    "frozen_hash_errors": [],
+    "future_records": [],
+    "closed_bars_checked": 34800,
+    "max_concurrent_captured_turns": 1,
+    "retries": [
+      {
+        "round_id": "clock-1h-1789934399999-27",
+        "attempts": 2,
+        "same_first_user": true
+      },
+      {
+        "round_id": "clock-1h-1789955999999-36",
+        "attempts": 2,
+        "same_first_user": true
+      },
+      {
+        "round_id": "clock-1h-1790081999999-81",
+        "attempts": 2,
+        "same_first_user": true
+      }
+    ],
+    "stale_h4_entry_checks": [
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789919999999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789934399999",
+        "freshness": "stale",
+        "successful_h4_reads": 2,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          },
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 2
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789991999999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790009999999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790035199999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790164799999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      }
+    ],
+    "unique_intent_event_ids": 120,
+    "accepted_intents": 120
+  },
+  "posterior": {
+    "cycles": 189,
+    "duplicate_cycles": 0,
+    "frozen_hash_errors": [],
+    "future_records": [],
+    "closed_bars_checked": 45360,
+    "max_concurrent_captured_turns": 1,
+    "retries": [
+      {
+        "round_id": "clock-1h-1789934399999-27",
+        "attempts": 2,
+        "same_first_user": true
+      },
+      {
+        "round_id": "clock-1h-1789955999999-36",
+        "attempts": 2,
+        "same_first_user": true
+      },
+      {
+        "round_id": "clock-1h-1790081999999-81",
+        "attempts": 2,
+        "same_first_user": true
+      }
+    ],
+    "stale_h4_entry_checks": [
+      {
+        "correlation_id": "ETH-USDT-1h-1789876799999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789919999999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789934399999",
+        "freshness": "stale",
+        "successful_h4_reads": 2,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          },
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 2
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1789991999999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790009999999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790035199999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790164799999",
+        "freshness": "stale",
+        "successful_h4_reads": 1,
+        "audit": [
+          {
+            "role": "TRADER",
+            "tool": "get_closed_candles",
+            "arguments": {
+              "symbol": "ETH-USDT",
+              "timeframe": "4h",
+              "limit": 120
+            },
+            "status": "completed",
+            "result_type": "list",
+            "result_count": 120,
+            "attempt": 1
+          }
+        ]
+      }
+    ],
+    "unique_intent_event_ids": 159,
+    "accepted_intents": 159
+  }
+}

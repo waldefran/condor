@@ -1,0 +1,179 @@
+{
+  "baseline": {
+    "cycles": 145,
+    "cycle_status": {
+      "completed": 120,
+      "failed": 25
+    },
+    "decisions": {
+      "NO_TRADE": 97,
+      "ENTER_SHORT": 3,
+      "ENTER_LONG": 20
+    },
+    "wire_request_count": 331,
+    "wire_keys": {
+      "messages": 331,
+      "model": 331,
+      "stream": 331
+    },
+    "wire_native_tools": 0,
+    "wire_response_format": 0,
+    "wire_model": {
+      "deepseek-v4.1-flash": 331
+    },
+    "tool_calls": {
+      "get_closed_candles": 32,
+      "read_brooks_reference": 5,
+      "get_recent_structure": 5
+    },
+    "reference_resources": {
+      "trade_entry.entry_evidence": 5
+    },
+    "first_user_chars": {
+      "min": 55491,
+      "median": 57850.0,
+      "max": 60039
+    },
+    "system_chars": {
+      "min": 7042,
+      "median": 7042.0,
+      "max": 7042
+    },
+    "call_latency_sec": {
+      "min": 11.892,
+      "median": 108.994,
+      "max": 285.572
+    },
+    "macro_freshness": {
+      "D1": {
+        "stale": 7,
+        "current": 138
+      },
+      "H4": {
+        "stale": 43,
+        "current": 102
+      }
+    },
+    "no_trade_reasons": {
+      "poor_location": 69,
+      "balanced_context": 20,
+      "no_trigger": 4,
+      "weak_signal": 3,
+      "timeframe_conflict": 1
+    },
+    "mechanisms": {
+      "breakout_pullback": 15,
+      "continuation": 4,
+      "reversal": 2,
+      "breakout": 2
+    },
+    "CONTEXT_ANALYST": {
+      "status": {
+        "completed": 43,
+        "running": 1,
+        "failed": 2
+      },
+      "tools": {
+        "get_recent_structure": 1,
+        "read_brooks_reference": 1
+      }
+    },
+    "POSITION_MANAGER": {
+      "status": {
+        "completed": 40,
+        "failed": 7
+      },
+      "tools": {
+        "get_candles": 41
+      }
+    }
+  },
+  "posterior": {
+    "cycles": 189,
+    "cycle_status": {
+      "completed": 159,
+      "failed": 30
+    },
+    "decisions": {
+      "NO_TRADE": 134,
+      "ENTER_SHORT": 3,
+      "ENTER_LONG": 22
+    },
+    "wire_request_count": 400,
+    "wire_keys": {
+      "messages": 400,
+      "model": 400,
+      "stream": 400
+    },
+    "wire_native_tools": 0,
+    "wire_response_format": 0,
+    "wire_model": {
+      "deepseek-v4.1-flash": 400
+    },
+    "tool_calls": {
+      "get_closed_candles": 40,
+      "get_recent_structure": 7,
+      "read_brooks_reference": 7
+    },
+    "reference_resources": {
+      "trade_entry.entry_evidence": 7
+    },
+    "first_user_chars": {
+      "min": 55491,
+      "median": 57248.0,
+      "max": 60039
+    },
+    "system_chars": {
+      "min": 7042,
+      "median": 7042.0,
+      "max": 7042
+    },
+    "call_latency_sec": {
+      "min": 11.892,
+      "median": 98.749,
+      "max": 285.572
+    },
+    "macro_freshness": {
+      "D1": {
+        "stale": 8,
+        "current": 181
+      },
+      "H4": {
+        "stale": 54,
+        "current": 135
+      }
+    },
+    "no_trade_reasons": {
+      "poor_location": 93,
+      "balanced_context": 31,
+      "no_trigger": 6,
+      "weak_signal": 3,
+      "timeframe_conflict": 1
+    },
+    "mechanisms": {
+      "breakout_pullback": 15,
+      "continuation": 4,
+      "reversal": 3,
+      "breakout": 3
+    },
+    "CONTEXT_ANALYST": {
+      "status": {
+        "completed": 57,
+        "failed": 2
+      },
+      "tools": {
+        "get_recent_structure": 1,
+        "read_brooks_reference": 1
+      }
+    },
+    "POSITION_MANAGER": {
+      "status": {
+        "completed": 40,
+        "failed": 7
+      },
+      "tools": {
+        "get_candles": 41
+      }
+    }
+  }
+}
