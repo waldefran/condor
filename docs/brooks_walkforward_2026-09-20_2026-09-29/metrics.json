@@ -1,0 +1,85 @@
+{
+  "data_quality": {
+    "hash_mismatches": [],
+    "missing_sources": [
+      "cycles.jsonl",
+      "role_runs/",
+      "simulation/trades.jsonl",
+      "simulation/fills.jsonl",
+      "simulation/equity.jsonl"
+    ],
+    "read_errors": [
+      "cycles.jsonl: arquivo ausente"
+    ]
+  },
+  "decisions": {
+    "ENTER": 0,
+    "NO_TRADE": 0,
+    "other_actions": 0,
+    "rounds_with_failure": 0,
+    "without_decision": 0
+  },
+  "generated_at_utc": "2026-09-30T01:59:19Z",
+  "host": {
+    "acceptance_by_round": 0,
+    "gm_outcomes": {},
+    "rounds_with_acceptance": 0
+  },
+  "method": {
+    "assumptions": [],
+    "classification": "replay retrospectivo de barras históricas",
+    "model": null,
+    "scope": "observa decisões e resultados da simulação gravados; não valida edge prospectivo",
+    "symbol": null,
+    "timeframe": "H1",
+    "venue": null
+  },
+  "role_runs": {
+    "by_role": {},
+    "context_calls_in_rounds": 0,
+    "position_manager_calls_in_rounds": 0
+  },
+  "rounds": [],
+  "run": {
+    "declared_status": "running",
+    "end_ms": null,
+    "expected_rounds": null,
+    "recorded_rounds": 0,
+    "remaining_rounds": null,
+    "start_ms": null,
+    "status": "not_started"
+  },
+  "schema": "brooks.walkforward-report.v1",
+  "simulation": {
+    "by_regime": {},
+    "costs": {
+      "fee_event_count": 0,
+      "fee_source": "trades",
+      "fees_by_currency": {},
+      "funding_cost_total": null,
+      "funding_event_count": 0
+    },
+    "drawdown": {
+      "basis": null,
+      "max_drawdown_abs": null,
+      "max_drawdown_pct": null
+    },
+    "equity_point_count": 0,
+    "fill_count": 0,
+    "trade_record_count": 0,
+    "trades": {
+      "avg_mae": null,
+      "avg_mfe": null,
+      "avg_r_multiple": null,
+      "closed_trade_count": 0,
+      "closed_trades_with_pnl_count": 0,
+      "expectancy_net_pnl": null,
+      "gross_loss_abs": null,
+      "gross_profit": null,
+      "net_pnl_sum": null,
+      "open_trade_count": 0,
+      "profit_factor": null,
+      "win_rate": null
+    }
+  }
+}
