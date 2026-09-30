@@ -42,6 +42,6 @@
     "venue_rules": "simulation assumptions: ETH step/min 0.001, minimum notional 5, leverage 5",
     "evaluation": "retrospective replay, not a prospective out-forward; no parameter optimization"
   },
-  "simulation_time_ms": 1789963200000,
-  "updated_at_ms": 1790741735414
+  "simulation_time_ms": 1790092879737,
+  "updated_at_ms": 1790749569029
 }
