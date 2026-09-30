@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import asyncio
 import logging
+from dataclasses import dataclass, field
 from typing import Any
 from uuid import uuid4
+
+from pydantic import ValidationError
 
 from condor.brooks.agent_runner import bind_symbol_tools, run_role
 from condor.brooks.contracts import MarketContextV1, MarketContextV2
@@ -35,6 +38,12 @@ class ContextAnalystConsumer:
     backend_key: str | None = None
     max_role_attempts: int = 2
     retry_backoff_sec: float = 5
+    _identity_locks: dict[tuple[str, str, int], asyncio.Lock] = field(
+        default_factory=dict, init=False, repr=False, compare=False
+    )
+    _identity_lock_users: dict[tuple[str, str, int], int] = field(
+        default_factory=dict, init=False, repr=False, compare=False
+    )
 
     @property
     def canonical_timeframe(self) -> str:
@@ -63,10 +72,49 @@ class ContextAnalystConsumer:
             or decision_time_ms < 0
         ):
             raise ValueError("D1 event requires nonnegative decision_time_ms")
+        timeframe = self.canonical_timeframe
+        identity = (event.symbol, timeframe, decision_time_ms)
+        lock = self._identity_locks.get(identity)
+        if lock is None:
+            lock = asyncio.Lock()
+            self._identity_locks[identity] = lock
+        self._identity_lock_users[identity] = (
+            self._identity_lock_users.get(identity, 0) + 1
+        )
+        try:
+            async with lock:
+                return await self._handle_locked(event, timeframe, decision_time_ms)
+        finally:
+            remaining = self._identity_lock_users[identity] - 1
+            if remaining:
+                self._identity_lock_users[identity] = remaining
+            else:
+                self._identity_lock_users.pop(identity, None)
+                self._identity_locks.pop(identity, None)
+
+    async def _handle_locked(
+        self, event: BrooksEvent, timeframe: str, decision_time_ms: int
+    ) -> MarketContextV2:
+        cached_raw = self.store.read_market_context(
+            timeframe, symbol=event.symbol
+        )
+        if cached_raw is not None:
+            try:
+                cached = MarketContextV2.model_validate(cached_raw)
+            except ValidationError:
+                cached = None
+            if (
+                cached is not None
+                and cached.symbol == event.symbol
+                and cached.timeframe == self.context_timeframe
+                and cached.decision_time_ms == decision_time_ms
+                and cached.window_bars == 120
+            ):
+                return cached
+
         market_tools = HTFMarketTools(
             source=self.source, decision_time_ms=decision_time_ms
         )
-        timeframe = self.canonical_timeframe
         bars = await market_tools.get_closed_candles(event.symbol, timeframe, 120)
         if bars[-1]["close_time_ms"] != decision_time_ms:
             raise ValueError(f"{self.context_timeframe} close event lacks its closed decision bar")

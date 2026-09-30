@@ -202,6 +202,97 @@ async def test_context_analyst_uses_exactly_120_closed_bars(
     assert sink.published[-1].type == EventType.MARKET_CONTEXT_UPDATED
 
 
+@pytest.mark.parametrize(
+    ("timeframe", "event_type", "interval", "label"),
+    [
+        ("1d", EventType.D1_BAR_CLOSED, D1, "D1"),
+        ("4h", EventType.H4_BAR_CLOSED, H4, "H4"),
+    ],
+)
+@pytest.mark.asyncio
+async def test_context_analyst_deduplicates_concurrent_and_persisted_decision(
+    timeframe, event_type, interval, label, monkeypatch, tmp_path
+):
+    from condor.brooks import htf_analyst
+
+    decision = 122 * interval - 1
+    source = _Source({timeframe: _bars(interval, decision, 120)})
+    store = BrooksStore(tmp_path)
+    sink = _EventSink()
+    output = _context(label, decision)
+    role_calls = 0
+    role_started = asyncio.Event()
+    finish_role = asyncio.Event()
+
+    async def fake_role(role, prompt, output_model, market_tools, **kwargs):
+        nonlocal role_calls
+        role_calls += 1
+        role_started.set()
+        await finish_role.wait()
+        return output
+
+    monkeypatch.setattr(htf_analyst, "run_coordinated_role", fake_role)
+    consumer = htf_analyst.ContextAnalystConsumer(
+        "openai:test", source, store, sink, timeframe=timeframe
+    )
+    event = BrooksEvent(event_type, SYMBOL, {"decision_time_ms": decision})
+
+    first = asyncio.create_task(consumer.handle(event))
+    await role_started.wait()
+    second_started = asyncio.Event()
+
+    async def duplicate():
+        second_started.set()
+        return await consumer.handle(
+            BrooksEvent(event_type, SYMBOL, {"decision_time_ms": decision})
+        )
+
+    second = asyncio.create_task(duplicate())
+    await second_started.wait()
+    await asyncio.sleep(0)
+    finish_role.set()
+    first_result, second_result = await asyncio.gather(first, second)
+
+    assert first_result == second_result == output
+    assert role_calls == 1
+    assert source.calls == [(SYMBOL, timeframe, 121)]
+    assert [event.type for event in sink.published] == [
+        EventType.MARKET_CONTEXT_UPDATED
+    ]
+    history = store.root / "context" / label.lower() / "history.jsonl"
+    assert len(BrooksStore.read_jsonl(history)) == 1
+
+    # A new consumer instance simulates process restart; the durable exact
+    # decision must suppress candle reads, inference, and another update event.
+    reopened = BrooksStore(tmp_path)
+    restarted = htf_analyst.ContextAnalystConsumer(
+        "openai:test", source, reopened, sink, timeframe=timeframe
+    )
+    persisted_result = await restarted.handle(
+        BrooksEvent(event_type, SYMBOL, {"decision_time_ms": decision})
+    )
+    assert persisted_result == output
+    assert role_calls == 1
+    assert source.calls == [(SYMBOL, timeframe, 121)]
+    assert len(sink.published) == 1
+
+    # A newer stored context is not a cache hit for an older event.
+    newer_store = BrooksStore(tmp_path / "newer")
+    newer_store.save_market_context(_context(label, decision + interval))
+    older_source = _Source({timeframe: _bars(interval, decision, 120)})
+    older_consumer = htf_analyst.ContextAnalystConsumer(
+        "openai:test",
+        older_source,
+        newer_store,
+        _EventSink(),
+        timeframe=timeframe,
+    )
+    older_result = await older_consumer.handle(event)
+    assert older_result.decision_time_ms == decision
+    assert role_calls == 2
+    assert older_source.calls == [(SYMBOL, timeframe, 121)]
+
+
 @pytest.mark.parametrize("forming", [False, True])
 @pytest.mark.asyncio
 async def test_context_analyst_rejects_future_only_or_forming_window(
