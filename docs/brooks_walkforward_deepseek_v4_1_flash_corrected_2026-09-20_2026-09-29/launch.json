@@ -1,0 +1,35 @@
+{
+  "pid": 1372876,
+  "launched_at_utc": "2026-09-30T18:26:43.402607+00:00",
+  "source_head": "f12078916a5d2db27158ace222800bd803be4695",
+  "source_snapshot": "/tmp/brooks-walkforward-deepseek-v4-1-flash-f1207891-source",
+  "state": "/tmp/brooks-walkforward-deepseek-v4-1-flash-corrected-20260930-state",
+  "output": "/home/valdemaster/brooks-condor/condor/docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29",
+  "log": "/tmp/brooks-walkforward-deepseek-v4-1-flash-corrected-20260930-state/runner.log",
+  "command": [
+    "/home/valdemaster/brooks-condor/condor/.venv/bin/python",
+    "-u",
+    "/tmp/brooks-walkforward-deepseek-v4-1-flash-f1207891-source/scripts/brooks_walkforward.py",
+    "--dataset",
+    "/tmp/brooks-walkforward-10d-data",
+    "--output",
+    "/home/valdemaster/brooks-condor/condor/docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29",
+    "--state",
+    "/tmp/brooks-walkforward-deepseek-v4-1-flash-corrected-20260930-state",
+    "--agent-key",
+    "custom@opencode-go:deepseek-v4.1-flash",
+    "--start",
+    "2026-09-20T00:00:00Z",
+    "--end",
+    "2026-09-30T00:00:00Z",
+    "--git-head",
+    "f12078916a5d2db27158ace222800bd803be4695"
+  ],
+  "client": "PydanticAIClient",
+  "preflight": {
+    "model": "deepseek-v4.1-flash",
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "response": "{\"ok\":true}"
+  },
+  "status": "launched"
+}

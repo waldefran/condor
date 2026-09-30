@@ -1,0 +1,45 @@
+{
+  "status": "running",
+  "symbol": "ETH-USDT",
+  "model": "custom@opencode-go:deepseek-v4.1-flash",
+  "start_ms": 1789862400000,
+  "end_ms": 1790726400000,
+  "start_utc": "2026-09-20T00:00:00Z",
+  "end_exclusive_utc": "2026-09-30T00:00:00Z",
+  "expected_trader_cycles": 240,
+  "started_at_ms": 1790792805343,
+  "git_head": "f12078916a5d2db27158ace222800bd803be4695",
+  "script_sha256": {
+    "brooks_walkforward.py": "248126a7acae9eefea4f4647e12b0ec1f70bd93d4f39275d28517575718538bf",
+    "brooks_walkforward_data.py": "6a4a1bd3ab96a2160f81da1f9fd12882b912bdac8072b5896aeca27820246ce8",
+    "brooks_walkforward_simulation.py": "d5cbe601d44116cd4ebe55f5b5e0d83c8639e1004239ed687bc59d9616c9555b",
+    "brooks_walkforward_report.py": "d31022c8471dccb18b98a9d5f353de82747ee0bfd528144f19c1e38e5010254a"
+  },
+  "method": "historical replay with actual production consumers and real PydanticAI API",
+  "assumptions": {
+    "initial_equity_usdt": "10000",
+    "taker_fee_rate": "0.0004",
+    "adverse_slippage_bps": "1",
+    "funding": "not modeled (zero); net results exclude funding",
+    "execution": "accepted entries use existing GM/ExecutionPort MARKET semantics at latest known M1 close plus adverse slippage; pending stop entries are rejected before write, not filled as MARKET or submitted as resting stops",
+    "barriers": "subsequent full M1 bars; stop first if both barriers touched; partial entry minute excluded",
+    "latency": "actual model response elapsed time advances simulation; raw role inputs remain frozen",
+    "risk_policy": {
+      "risk_per_trade_pct": "0.0005",
+      "max_positions": "1",
+      "max_gross_exposure_pct": "1",
+      "leverage": "5",
+      "take_profit_r": "2",
+      "time_limit_sec": "86400",
+      "max_trigger_drift_pct": "0.02",
+      "max_snapshot_age_ms": "60000",
+      "max_intent_age_ms": "7200000"
+    },
+    "pm_interval_sec": 900,
+    "pm_timeout_sec": 60,
+    "trader_timeout_sec": 360,
+    "context_timeout_sec": 300,
+    "venue_rules": "simulation assumptions: ETH step/min 0.001, minimum notional 5, leverage 5",
+    "evaluation": "retrospective replay, not a prospective out-forward; no parameter optimization"
+  }
+}
