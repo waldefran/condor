@@ -42,3 +42,14 @@ Snapshot inicial em 30/09/2026 08:28 UTC (05:28 BRT). Validação no mesmo minut
 - Contextos: 32 sessões concluídas, 2 falhas. PM permanece em 40 sessões concluídas e 7 falhas.
 - 24.480 barras validadas em 102 packets; nenhum dado futuro, hash divergente ou ciclo duplicado. Concorrência máxima observada: 1. Os três retries registrados preservam a mensagem inicial.
 - Prova: [assessment_6h_validation.json](assessment_6h_validation.json). A versão e a estratégia medidas continuam sem alterações.
+
+## Quarta avaliação — após mais duas horas sem consultas periódicas
+
+Snapshot em 30/09/2026 10:30 UTC (07:30 BRT): 145 ciclos. A validação começou segundos antes e abrange 144 packets.
+
+- 145/240 ciclos, até 25/09/2026 23:59:59.999 UTC: 120 concluídos e 25 falhos.
+- Intents aceitos: 97 NO_TRADE, 20 ENTER_LONG e 3 ENTER_SHORT. GM: 1 entrada aprovada e 22 rejeitadas; nenhuma nova operação após o bloqueio de ownership.
+- Falhas H1 acumuladas: 11 fontes fora de M15, 8 JSON inválido, 4 schema inválido e 2 referências OHLC sem correspondência.
+- Contextos: 43 sessões concluídas e 2 falhas. PM permanece em 40 concluídas e 7 falhas. Resultado do único trade permanece -6,232807 USDT / -1,247784 R.
+- Validação: 34.560 barras em 144 packets, zero dados futuros, hashes divergentes ou ciclos duplicados; concorrência máxima 1; três retries com mensagem inicial idêntica.
+- Evidências: [assessment_8h_snapshot.json](assessment_8h_snapshot.json) e [assessment_8h_validation.json](assessment_8h_validation.json). Processo ativo; versão e política de execução preservadas.

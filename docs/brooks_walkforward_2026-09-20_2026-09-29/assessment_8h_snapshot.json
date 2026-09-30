@@ -1,0 +1,33 @@
+{
+  "now": "2026-09-30T10:30:06.350655+00:00",
+  "pid_alive": true,
+  "manifest_status": "running",
+  "cycles": 145,
+  "last_decision_utc": "2026-09-25T23:59:59.999000+00:00",
+  "statuses": {
+    "completed": 120,
+    "failed": 25
+  },
+  "decisions": {
+    "NO_TRADE": 97,
+    "ENTER_SHORT": 3,
+    "ENTER_LONG": 20
+  },
+  "gm": {
+    "GM_ENTRY_APPROVED": 1,
+    "GM_ENTRY_REJECTED": 22
+  },
+  "failures": {
+    "Brooks role output failed schema validation": 4,
+    "production entry trigger and invalidation must cite M15 bars": 11,
+    "Brooks role returned invalid JSON": 8,
+    "entry reference does not match any supplied closed bar": 2
+  },
+  "roles": {
+    "('TRADER', 'completed')": 148,
+    "('CONTEXT_ANALYST', 'completed')": 43,
+    "('POSITION_MANAGER', 'completed')": 40,
+    "('POSITION_MANAGER', 'failed')": 7,
+    "('CONTEXT_ANALYST', 'failed')": 2
+  }
+}
