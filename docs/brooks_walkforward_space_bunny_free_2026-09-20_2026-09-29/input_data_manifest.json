@@ -1,0 +1,400 @@
+{
+  "created_at_utc": "2026-09-30T01:48:42.143000Z",
+  "schema_version": "brooks.walkforward.candles.v1",
+  "source": {
+    "client_method": "client.market_data.get_historical_candles",
+    "connector": "binance_perpetual_demo",
+    "endpoint": "POST /market-data/historical-candles",
+    "read_only": true,
+    "request_time_unit": "Unix seconds",
+    "row_timestamp_interpreted_as": "candle open time",
+    "service": "Hummingbot API",
+    "symbol": "ETH-USDT"
+  },
+  "timeframes": {
+    "15m": {
+      "actual": {
+        "evaluation_bars": 960,
+        "first_close_utc": "2026-09-18T17:44:59.999000Z",
+        "first_open_utc": "2026-09-18T17:30:00Z",
+        "last_close_utc": "2026-09-29T23:59:59.999000Z",
+        "last_open_utc": "2026-09-29T23:45:00Z",
+        "total_bars": 1082,
+        "warmup_bars": 122
+      },
+      "contiguous": true,
+      "data_file": "/tmp/brooks-walkforward-10d-data/ETH_USDT_15m.jsonl",
+      "data_sha256": "9d8528eb0d8152a5e8f3a300ec311ae7e62f7dfeaccfff56ac0d63d77a05cd16",
+      "errors": [],
+      "expected": {
+        "evaluation_bars": 960,
+        "evaluation_end_exclusive_utc": "2026-09-30T00:00:00Z",
+        "evaluation_start_utc": "2026-09-20T00:00:00Z",
+        "first_open_utc": "2026-09-18T17:30:00Z",
+        "total_bars": 1082,
+        "warmup_bars": 122
+      },
+      "first_decision_bootstrap": {
+        "complete": true,
+        "decision_time_utc": "2026-09-19T23:59:59.999000Z",
+        "latest_returned_close_utc": "2026-09-19T23:59:59.999000Z",
+        "oldest_returned_open_utc": "2026-09-18T18:00:00Z",
+        "requested_closed_bars": 120,
+        "returned_closed_bars": 120
+      },
+      "interval_ms": 900000,
+      "missing_count": 0,
+      "missing_open_times_utc": [],
+      "pages": [
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_15m_1789752600000_1790652600000.json",
+          "cache_sha256": "64e6e0c78df96de96cb3c8fb0f529119799fff3d45a4488abe2859843db34ee3",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-29T03:30:00Z",
+          "retrieved_at_utc": "2026-09-30T01:45:12.772000Z",
+          "start_utc": "2026-09-18T17:30:00Z",
+          "status": "cached"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_15m_1790652600000_1790726400000.json",
+          "cache_sha256": "b25114fcb46906960a5ecfcc4fa1ba09b48f1108d45fbf5f33af6cb59e93cdc3",
+          "count": 82,
+          "end_exclusive_utc": "2026-09-30T00:00:00Z",
+          "retrieved_at_utc": "2026-09-30T01:45:13.342000Z",
+          "start_utc": "2026-09-29T03:30:00Z",
+          "status": "cached"
+        }
+      ],
+      "timeframe": "15m",
+      "unexpected_count": 0
+    },
+    "1d": {
+      "actual": {
+        "evaluation_bars": 10,
+        "first_close_utc": "2026-05-21T23:59:59.999000Z",
+        "first_open_utc": "2026-05-21T00:00:00Z",
+        "last_close_utc": "2026-09-29T23:59:59.999000Z",
+        "last_open_utc": "2026-09-29T00:00:00Z",
+        "total_bars": 132,
+        "warmup_bars": 122
+      },
+      "contiguous": true,
+      "data_file": "/tmp/brooks-walkforward-10d-data/ETH_USDT_1d.jsonl",
+      "data_sha256": "816b13f504b6dd6b946e44e5580974bbd57d5df919aaafdb8079059c1856f996",
+      "errors": [],
+      "expected": {
+        "evaluation_bars": 10,
+        "evaluation_end_exclusive_utc": "2026-09-30T00:00:00Z",
+        "evaluation_start_utc": "2026-09-20T00:00:00Z",
+        "first_open_utc": "2026-05-21T00:00:00Z",
+        "total_bars": 132,
+        "warmup_bars": 122
+      },
+      "first_decision_bootstrap": {
+        "complete": true,
+        "decision_time_utc": "2026-09-18T23:59:59.999000Z",
+        "latest_returned_close_utc": "2026-09-18T23:59:59.999000Z",
+        "oldest_returned_open_utc": "2026-05-22T00:00:00Z",
+        "requested_closed_bars": 120,
+        "returned_closed_bars": 120
+      },
+      "interval_ms": 86400000,
+      "missing_count": 0,
+      "missing_open_times_utc": [],
+      "pages": [
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1d_1779321600000_1790726400000.json",
+          "cache_sha256": "3cdf2d201d5961aba9acb09444443866fb13ffb193d45cc6d6868e9937be35a4",
+          "count": 132,
+          "end_exclusive_utc": "2026-09-30T00:00:00Z",
+          "retrieved_at_utc": "2026-09-30T01:45:15.100000Z",
+          "start_utc": "2026-05-21T00:00:00Z",
+          "status": "cached"
+        }
+      ],
+      "timeframe": "1d",
+      "unexpected_count": 0
+    },
+    "1h": {
+      "actual": {
+        "evaluation_bars": 240,
+        "first_close_utc": "2026-09-14T22:59:59.999000Z",
+        "first_open_utc": "2026-09-14T22:00:00Z",
+        "last_close_utc": "2026-09-29T23:59:59.999000Z",
+        "last_open_utc": "2026-09-29T23:00:00Z",
+        "total_bars": 362,
+        "warmup_bars": 122
+      },
+      "contiguous": true,
+      "data_file": "/tmp/brooks-walkforward-10d-data/ETH_USDT_1h.jsonl",
+      "data_sha256": "e1cf0f5967837173e4923b3c01b0672fb85904b5f9fa4c8b03af5f16f91a601c",
+      "errors": [],
+      "expected": {
+        "evaluation_bars": 240,
+        "evaluation_end_exclusive_utc": "2026-09-30T00:00:00Z",
+        "evaluation_start_utc": "2026-09-20T00:00:00Z",
+        "first_open_utc": "2026-09-14T22:00:00Z",
+        "total_bars": 362,
+        "warmup_bars": 122
+      },
+      "first_decision_bootstrap": {
+        "complete": true,
+        "decision_time_utc": "2026-09-19T23:59:59.999000Z",
+        "latest_returned_close_utc": "2026-09-19T23:59:59.999000Z",
+        "oldest_returned_open_utc": "2026-09-15T00:00:00Z",
+        "requested_closed_bars": 120,
+        "returned_closed_bars": 120
+      },
+      "interval_ms": 3600000,
+      "missing_count": 0,
+      "missing_open_times_utc": [],
+      "pages": [
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1h_1789423200000_1790726400000.json",
+          "cache_sha256": "1ed0b82f56f429e4d76a0beb508d2b5253bc8fb4b1bb19a8c4884bb66c972573",
+          "count": 362,
+          "end_exclusive_utc": "2026-09-30T00:00:00Z",
+          "retrieved_at_utc": "2026-09-30T01:45:13.955000Z",
+          "start_utc": "2026-09-14T22:00:00Z",
+          "status": "cached"
+        }
+      ],
+      "timeframe": "1h",
+      "unexpected_count": 0
+    },
+    "1m": {
+      "actual": {
+        "evaluation_bars": 14400,
+        "first_close_utc": "2026-09-19T21:50:59.999000Z",
+        "first_open_utc": "2026-09-19T21:50:00Z",
+        "last_close_utc": "2026-09-29T23:59:59.999000Z",
+        "last_open_utc": "2026-09-29T23:59:00Z",
+        "total_bars": 14530,
+        "warmup_bars": 130
+      },
+      "contiguous": true,
+      "data_file": "/tmp/brooks-walkforward-10d-data/ETH_USDT_1m.jsonl",
+      "data_sha256": "85f747f1383ff6621d0cbb3983d858400ffd7c29ad88799b2e353b72a612c8ff",
+      "errors": [],
+      "expected": {
+        "evaluation_bars": 14400,
+        "evaluation_end_exclusive_utc": "2026-09-30T00:00:00Z",
+        "evaluation_start_utc": "2026-09-20T00:00:00Z",
+        "first_open_utc": "2026-09-19T21:50:00Z",
+        "total_bars": 14530,
+        "warmup_bars": 130
+      },
+      "first_decision_bootstrap": {
+        "complete": true,
+        "decision_time_utc": "2026-09-19T23:50:00Z",
+        "latest_returned_close_utc": "2026-09-19T23:49:59.999000Z",
+        "oldest_returned_open_utc": "2026-09-19T21:50:00Z",
+        "requested_closed_bars": 120,
+        "returned_closed_bars": 120
+      },
+      "interval_ms": 60000,
+      "missing_count": 0,
+      "missing_open_times_utc": [],
+      "pages": [
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1789854600000_1789914600000.json",
+          "cache_sha256": "529f05b321c64ccdb19d0ce50e66c3d804c62c21421a881ef538f941584c72d9",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-20T14:30:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:31.626000Z",
+          "start_utc": "2026-09-19T21:50:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1789914600000_1789974600000.json",
+          "cache_sha256": "9614d1d96f6523c6f60609aab5130f8e3d0e84f4c4461a4293613acd1a035065",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-21T07:10:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:32.343000Z",
+          "start_utc": "2026-09-20T14:30:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1789974600000_1790034600000.json",
+          "cache_sha256": "cf5be79b7cd874fffe998031f255f79f15bf7302caba072f2cf3372b69fdf3d9",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-21T23:50:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:33.047000Z",
+          "start_utc": "2026-09-21T07:10:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790034600000_1790094600000.json",
+          "cache_sha256": "267c6626347ba5f8cdf7a967681df7a6d19bf7f5c0c5eb42fce4eb00498f8e68",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-22T16:30:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:33.768000Z",
+          "start_utc": "2026-09-21T23:50:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790094600000_1790154600000.json",
+          "cache_sha256": "cf05036544442d791f22d1da4b28960dbd2eaa2b4b7e4d3e1ee2c2bb38dbaacb",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-23T09:10:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:34.452000Z",
+          "start_utc": "2026-09-22T16:30:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790154600000_1790214600000.json",
+          "cache_sha256": "f481df636dc5d9ed86af48b0c69308cd04a3266eb145f8cc48449f9a0bda9419",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-24T01:50:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:35.132000Z",
+          "start_utc": "2026-09-23T09:10:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790214600000_1790274600000.json",
+          "cache_sha256": "824bf9d7acf31b84d07175d4d6c2cbf5cb497a6554dc6221ae4efc1036fec40e",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-24T18:30:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:35.846000Z",
+          "start_utc": "2026-09-24T01:50:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790274600000_1790334600000.json",
+          "cache_sha256": "b5aed67c7245d98742b6ae6b3a90cf5988a92eef795d7e8214fc31e08a81a703",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-25T11:10:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:36.552000Z",
+          "start_utc": "2026-09-24T18:30:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790334600000_1790394600000.json",
+          "cache_sha256": "2dda1fb1e521900164e409ba52ef00395d3dfd9599d5822e9368113b19d89706",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-26T03:50:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:37.298000Z",
+          "start_utc": "2026-09-25T11:10:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790394600000_1790454600000.json",
+          "cache_sha256": "315fd8d05c611adaff18ff0e3391b9835b7712e1ec1dd584c6e333ecbfea8eba",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-26T20:30:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:38.012000Z",
+          "start_utc": "2026-09-26T03:50:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790454600000_1790514600000.json",
+          "cache_sha256": "344ef8073b55f1d7a524e9d9ab072ff2657e3cc0f23c0f6378cb4dea5b4a2d0b",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-27T13:10:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:38.739000Z",
+          "start_utc": "2026-09-26T20:30:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790514600000_1790574600000.json",
+          "cache_sha256": "3601b8f27ce36a28e2886410074b2e0039be0ed9ff5a38e9c386d5a1f24f205a",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-28T05:50:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:39.946000Z",
+          "start_utc": "2026-09-27T13:10:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790574600000_1790634600000.json",
+          "cache_sha256": "ecf82763745ee4089e6f3d3698f310f8e00789d942a933bb1658cedf29c653a5",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-28T22:30:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:40.657000Z",
+          "start_utc": "2026-09-28T05:50:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790634600000_1790694600000.json",
+          "cache_sha256": "efb21bacd9a2eef5f2adc8751560cc9434a8e69b05a25ea0771b8b681685207c",
+          "count": 1000,
+          "end_exclusive_utc": "2026-09-29T15:10:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:41.329000Z",
+          "start_utc": "2026-09-28T22:30:00Z",
+          "status": "fetched"
+        },
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_1m_1790694600000_1790726400000.json",
+          "cache_sha256": "bf8f98c0871fe2843d16f5d38a5e6c6e988f25c29af8695388503f7423759458",
+          "count": 530,
+          "end_exclusive_utc": "2026-09-30T00:00:00Z",
+          "retrieved_at_utc": "2026-09-30T01:48:41.979000Z",
+          "start_utc": "2026-09-29T15:10:00Z",
+          "status": "fetched"
+        }
+      ],
+      "timeframe": "1m",
+      "unexpected_count": 0
+    },
+    "4h": {
+      "actual": {
+        "evaluation_bars": 60,
+        "first_close_utc": "2026-08-30T19:59:59.999000Z",
+        "first_open_utc": "2026-08-30T16:00:00Z",
+        "last_close_utc": "2026-09-29T23:59:59.999000Z",
+        "last_open_utc": "2026-09-29T20:00:00Z",
+        "total_bars": 182,
+        "warmup_bars": 122
+      },
+      "contiguous": true,
+      "data_file": "/tmp/brooks-walkforward-10d-data/ETH_USDT_4h.jsonl",
+      "data_sha256": "a59fb913b7d7a3cfa95bcf0c288a03bd45895df4eaddfeabe622c7aacd597891",
+      "errors": [],
+      "expected": {
+        "evaluation_bars": 60,
+        "evaluation_end_exclusive_utc": "2026-09-30T00:00:00Z",
+        "evaluation_start_utc": "2026-09-20T00:00:00Z",
+        "first_open_utc": "2026-08-30T16:00:00Z",
+        "total_bars": 182,
+        "warmup_bars": 122
+      },
+      "first_decision_bootstrap": {
+        "complete": true,
+        "decision_time_utc": "2026-09-19T19:59:59.999000Z",
+        "latest_returned_close_utc": "2026-09-19T19:59:59.999000Z",
+        "oldest_returned_open_utc": "2026-08-30T20:00:00Z",
+        "requested_closed_bars": 120,
+        "returned_closed_bars": 120
+      },
+      "interval_ms": 14400000,
+      "missing_count": 0,
+      "missing_open_times_utc": [],
+      "pages": [
+        {
+          "cache": "/tmp/brooks-walkforward-10d-data/pages/ETH_USDT_4h_1788105600000_1790726400000.json",
+          "cache_sha256": "0b3a7fd2abc6bc95d6ab8a8d868ccf2ddd52735a4b6443cc3a95185b0ed56a57",
+          "count": 182,
+          "end_exclusive_utc": "2026-09-30T00:00:00Z",
+          "retrieved_at_utc": "2026-09-30T01:45:14.532000Z",
+          "start_utc": "2026-08-30T16:00:00Z",
+          "status": "cached"
+        }
+      ],
+      "timeframe": "4h",
+      "unexpected_count": 0
+    }
+  },
+  "window": {
+    "as_of_utc": "2026-09-30T01:48:42.143000Z",
+    "evaluation_days": 10,
+    "evaluation_end_exclusive_utc": "2026-09-30T00:00:00Z",
+    "evaluation_start_utc": "2026-09-20T00:00:00Z",
+    "pagination_max_bars": 1000,
+    "warmup_bars_per_timeframe": {
+      "15m": 122,
+      "1d": 122,
+      "1h": 122,
+      "1m": 130,
+      "4h": 122
+    }
+  }
+}
