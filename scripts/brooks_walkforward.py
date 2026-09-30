@@ -221,7 +221,7 @@ class WalkForward:
             "method": "historical replay with actual production consumers and real PydanticAI API",
             "assumptions": {"initial_equity_usdt": str(args.initial_equity), "taker_fee_rate": args.fee_rate,
                 "adverse_slippage_bps": args.slippage_bps, "funding": "not modeled (zero); net results exclude funding",
-                "execution": "existing GM/ExecutionPort MARKET semantics at latest known M1 close plus adverse slippage; pending signal is not a resting stop order",
+                "execution": "accepted entries use existing GM/ExecutionPort MARKET semantics at latest known M1 close plus adverse slippage; pending stop entries are rejected before write, not filled as MARKET or submitted as resting stops",
                 "barriers": "subsequent full M1 bars; stop first if both barriers touched; partial entry minute excluded",
                 "latency": "actual model response elapsed time advances simulation; raw role inputs remain frozen",
                 "risk_policy": {k: str(v) for k,v in vars(self.policy).items()},
@@ -479,7 +479,7 @@ def main():
     parser.add_argument("--symbol", default="ETH-USDT")
     parser.add_argument("--start", default="2026-09-20T00:00:00Z")
     parser.add_argument("--end", default="2026-09-30T00:00:00Z")
-    parser.add_argument("--agent-key", default="custom@opencode-go:deepseek-v4.1-flash")
+    parser.add_argument("--agent-key", default="custom@opencode-go:space-bunny-free")
     parser.add_argument("--initial-equity", default="10000")
     parser.add_argument("--fee-rate", default="0.0004")
     parser.add_argument("--slippage-bps", default="1")
