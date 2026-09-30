@@ -6,3 +6,4 @@
 {"round_id": "timer-pm-1789906500000-359", "simulation_time_ms": 1789906504405, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role returned invalid JSON"}}
 {"round_id": "timer-pm-1789916400000-370", "simulation_time_ms": 1789916460118, "status": "failed", "accepted": false, "error": {"type": "TimeoutError", "message": ""}}
 {"round_id": "clock-4h-1790006399999-54", "simulation_time_ms": 1790006618522, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role output failed schema validation"}}
+{"round_id": "clock-4h-1790121599999-95", "simulation_time_ms": 1790121920658, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role output failed schema validation"}}

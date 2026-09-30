@@ -31,3 +31,14 @@ Snapshot inicial em 30/09/2026 06:21 UTC (03:21 BRT). A validação em 06:26 UTC
 - Três ciclos com retry conservaram a mesma mensagem inicial congelada. Prova: [assessment_4h_validation.json](assessment_4h_validation.json).
 
 A versão medida permanece fixa. As falhas de saída do modelo e o bloqueio operacional continuam explícitos no relatório; este lote ainda não permite concluir se há edge. Nenhum ajuste de estratégia, GM, PM, hedge ou timeout foi aplicado durante a execução.
+
+## Terceira avaliação — após mais duas horas sem consultas periódicas
+
+Snapshot inicial em 30/09/2026 08:28 UTC (05:28 BRT). Validação no mesmo minuto: 102 packets, pois o lote continua enquanto o relatório é produzido.
+
+- 101/240 ciclos no snapshot: 80 concluídos e 21 falhos. Intents aceitos: 60 NO_TRADE, 18 ENTER_LONG e 2 ENTER_SHORT.
+- GM: 1 entrada aprovada e 19 rejeitadas; permanece o bloqueio de ownership já documentado. Um único trade encerrado, -6,232807 USDT / -1,247784 R.
+- Falhas H1 acumuladas: 10 fontes fora de M15, 6 JSON inválido, 3 schema inválido e 2 referências OHLC sem correspondência.
+- Contextos: 32 sessões concluídas, 2 falhas. PM permanece em 40 sessões concluídas e 7 falhas.
+- 24.480 barras validadas em 102 packets; nenhum dado futuro, hash divergente ou ciclo duplicado. Concorrência máxima observada: 1. Os três retries registrados preservam a mensagem inicial.
+- Prova: [assessment_6h_validation.json](assessment_6h_validation.json). A versão e a estratégia medidas continuam sem alterações.
