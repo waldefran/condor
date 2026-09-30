@@ -1,0 +1,23 @@
+{
+  "evaluated_at_utc": "2026-09-30T04:18:03.203488+00:00",
+  "cycles_checked": 28,
+  "future_bars_or_macro_contexts": 0,
+  "packet_hash_errors": 0,
+  "duplicate_cycles": 0,
+  "raw_bars_checked": 6720,
+  "max_concurrent_model_turns": 1,
+  "retry_checks": [
+    {
+      "round_id": "clock-1h-1789934399999-27",
+      "attempts": 2,
+      "same_first_user_message": true,
+      "first_user_sha256": "a59bdd8ff98c691e7c61e23aa928e941225ed541b0358b0d0478de62f9f000a9"
+    },
+    {
+      "round_id": "clock-1h-1789955999999-36",
+      "attempts": 2,
+      "same_first_user_message": true,
+      "first_user_sha256": "18e5704d58c5d266a2cbf3351972801ffbbfededc25a86c2e2ea98f632758d5e"
+    }
+  ]
+}

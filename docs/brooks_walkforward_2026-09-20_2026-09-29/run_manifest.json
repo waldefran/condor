@@ -1,0 +1,47 @@
+{
+  "status": "running",
+  "symbol": "ETH-USDT",
+  "model": "custom@opencode-go:deepseek-v4.1-flash",
+  "start_ms": 1789862400000,
+  "end_ms": 1790726400000,
+  "start_utc": "2026-09-20T00:00:00Z",
+  "end_exclusive_utc": "2026-09-30T00:00:00Z",
+  "expected_trader_cycles": 240,
+  "started_at_ms": 1790733740985,
+  "git_head": "a83fb54cf2a770be73119190a6b31d27f73f3f21",
+  "script_sha256": {
+    "brooks_walkforward.py": "0884cce8b4d2c170ea6138678f65f59c838ae0968c68db7fb1002510d1321f30",
+    "brooks_walkforward_data.py": "6a4a1bd3ab96a2160f81da1f9fd12882b912bdac8072b5896aeca27820246ce8",
+    "brooks_walkforward_simulation.py": "96ee61c2514c28157fec57d5c19adf5a12faf0c01a809beaaa89315d33a22e11",
+    "brooks_walkforward_report.py": "4384b2da63dc3556dde235e226ccbe666813532884427f8a5d4d9e7872d0636c"
+  },
+  "method": "historical replay with actual production consumers and real PydanticAI API",
+  "assumptions": {
+    "initial_equity_usdt": "10000",
+    "taker_fee_rate": "0.0004",
+    "adverse_slippage_bps": "1",
+    "funding": "not modeled (zero); net results exclude funding",
+    "execution": "existing GM/ExecutionPort MARKET semantics at latest known M1 close plus adverse slippage; pending signal is not a resting stop order",
+    "barriers": "subsequent full M1 bars; stop first if both barriers touched; partial entry minute excluded",
+    "latency": "actual model response elapsed time advances simulation; raw role inputs remain frozen",
+    "risk_policy": {
+      "risk_per_trade_pct": "0.0005",
+      "max_positions": "1",
+      "max_gross_exposure_pct": "1",
+      "leverage": "5",
+      "take_profit_r": "2",
+      "time_limit_sec": "86400",
+      "max_trigger_drift_pct": "0.02",
+      "max_snapshot_age_ms": "60000",
+      "max_intent_age_ms": "7200000"
+    },
+    "pm_interval_sec": 900,
+    "pm_timeout_sec": 60,
+    "trader_timeout_sec": 360,
+    "context_timeout_sec": 300,
+    "venue_rules": "simulation assumptions: ETH step/min 0.001, minimum notional 5, leverage 5",
+    "evaluation": "retrospective replay, not a prospective out-forward; no parameter optimization"
+  },
+  "simulation_time_ms": 1789963200000,
+  "updated_at_ms": 1790741735414
+}

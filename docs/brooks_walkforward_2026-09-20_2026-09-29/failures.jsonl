@@ -1,0 +1,7 @@
+{"round_id": "timer-pm-1789879500000-329", "simulation_time_ms": 1789879504406, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role returned invalid JSON"}}
+{"round_id": "timer-pm-1789884000000-334", "simulation_time_ms": 1789884007034, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role returned invalid JSON"}}
+{"round_id": "timer-pm-1789886700000-337", "simulation_time_ms": 1789886707017, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role returned invalid JSON"}}
+{"round_id": "timer-pm-1789892100000-343", "simulation_time_ms": 1789892107016, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role returned invalid JSON"}}
+{"round_id": "timer-pm-1789902900000-355", "simulation_time_ms": 1789902940404, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role returned invalid JSON"}}
+{"round_id": "timer-pm-1789906500000-359", "simulation_time_ms": 1789906504405, "status": "failed", "accepted": false, "error": {"type": "RoleRunError", "message": "Brooks role returned invalid JSON"}}
+{"round_id": "timer-pm-1789916400000-370", "simulation_time_ms": 1789916460118, "status": "failed", "accepted": false, "error": {"type": "TimeoutError", "message": ""}}
