@@ -394,6 +394,36 @@ def _status_text(value: Any) -> str:
     return str(value) if value is not None else "sem registro"
 
 
+def _metadata_from_first_input(run: Mapping[str, Any]) -> dict[str, Any]:
+    """Read only linkage fields from the literal input sent to the role."""
+    calls = run.get("calls")
+    if not isinstance(calls, list) or not calls or not isinstance(calls[0], Mapping):
+        return {}
+    message = calls[0].get("user_message")
+    if not isinstance(message, str) or "\nInput: " not in message:
+        return {}
+    try:
+        payload = json.loads(message.split("\nInput: ", 1)[1].strip())
+    except json.JSONDecodeError:
+        return {}
+    found: dict[str, Any] = {}
+
+    def visit(value: Any) -> None:
+        if isinstance(value, Mapping):
+            for key in ("correlation_id", "decision_time_ms", "timeframe"):
+                if key in value and value[key] is not None and key not in found:
+                    found[key] = value[key]
+            for child in value.values():
+                if isinstance(child, (Mapping, list)):
+                    visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(payload)
+    return found
+
+
 def _role_runs_for_record(
     record: Mapping[str, Any], root: Path, all_runs: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
@@ -402,6 +432,13 @@ def _role_runs_for_record(
         refs = []
     attached: list[dict[str, Any]] = []
     record_id = _get(record, "round_id", "cycle_id")
+    cycle = record.get("cycle") if isinstance(record.get("cycle"), Mapping) else {}
+    target_correlation = _get(record, "correlation_id", default=_get(cycle, "correlation_id"))
+    if target_correlation is None:
+        symbol = _get(record, "symbol", default=_get(cycle, "symbol"))
+        decision_ms = _time_ms(_get(record, "decision_time_ms", default=_get(cycle, "decision_time_ms")))
+        if symbol is not None and decision_ms is not None:
+            target_correlation = f"{symbol}-1h-{decision_ms}"
     by_path = {row.get("_path"): row for row in all_runs if row.get("_path")}
     by_id = {str(row.get("run_id")): row for row in all_runs if row.get("run_id") is not None}
     for ref in refs:
@@ -426,6 +463,15 @@ def _role_runs_for_record(
             attached.append(row)
     if not attached:
         attached = [row for row in all_runs if str(row.get("round_id")) == str(record_id)]
+    if target_correlation is not None:
+        # Explicit cycle refs link the Trader record. PM files have a separate
+        # scope label, so attach them through correlation_id from literal Input.
+        for row in all_runs:
+            if str(_get(row, "role", default="")).upper() not in {"POSITION_MANAGER", "PM"}:
+                continue
+            metadata = row.get("_prompt_metadata") if isinstance(row.get("_prompt_metadata"), Mapping) else {}
+            if str(metadata.get("correlation_id")) == str(target_correlation):
+                attached.append(row)
     # Keep unique run records without erasing distinct retry attempts.
     unique: dict[str, dict[str, Any]] = {}
     for row in attached:
@@ -448,6 +494,7 @@ def _load_role_runs(root: Path) -> tuple[list[dict[str, Any]], list[str]]:
             value = dict(value)
             value["_path"] = str(path.resolve())
             value["_sha256"] = _sha256_bytes(path.read_bytes())
+            value["_prompt_metadata"] = _metadata_from_first_input(value)
             rows.append(value)
         else:
             errors.append(f"{_relative_or_name(path, root)}: registro precisa ser objeto JSON")
