@@ -479,7 +479,7 @@ def main():
     parser.add_argument("--symbol", default="ETH-USDT")
     parser.add_argument("--start", default="2026-09-20T00:00:00Z")
     parser.add_argument("--end", default="2026-09-30T00:00:00Z")
-    parser.add_argument("--agent-key", default="custom@opencode-go:space-bunny-free")
+    parser.add_argument("--agent-key", default="custom@opencode-go:deepseek-v4.1-flash")
     parser.add_argument("--initial-equity", default="10000")
     parser.add_argument("--fee-rate", default="0.0004")
     parser.add_argument("--slippage-bps", default="1")
