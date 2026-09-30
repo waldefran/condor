@@ -853,7 +853,7 @@ def _costs(trades: list[dict[str, Any]], fills: list[dict[str, Any]]) -> dict[st
 def _regime_groups(computed: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for trade in computed:
-        regime = _get(trade, "regime", "primary_regime", "entry_regime", "market_regime", default="não informado")
+        regime = _get(trade, "regime", "primary_regime", "entry_regime", "market_regime", default=trade.get("_derived_regime", "não informado"))
         groups[str(regime)].append(trade)
     result: dict[str, dict[str, Any]] = {}
     for regime, rows in sorted(groups.items()):
@@ -1280,10 +1280,25 @@ def render_report(root: Path) -> dict[str, Any]:
     for kind, errors in sim_errors.items():
         read_errors.extend(f"simulation/{kind}: {error}" for error in errors)
     _attach_simulation_events(rounds, simulation["fills"], simulation["trades"])
+    round_by_correlation = {str(row["correlation_id"]): row for row in rounds if row.get("correlation_id") is not None}
+    for trade in simulation["trades"]:
+        if _get(trade, "regime", "primary_regime", "entry_regime", "market_regime") is not None:
+            continue
+        correlation = _get(trade, "correlation_id")
+        round_row = round_by_correlation.get(str(correlation)) if correlation is not None else None
+        if round_row:
+            intent_context = _get(round_row.get("intent"), "market_context")
+            macro_h4 = next((item for item in round_row.get("macro_contexts", []) if item.get("timeframe") == "H4"), {})
+            trade["_derived_regime"] = _get(intent_context, "primary_regime", "regime", default=macro_h4.get("primary_regime", "não informado"))
     decisions = _decision_counts(rounds)
     trade_metrics, computed_trades = _trade_metrics(simulation["trades"])
     drawdown = _drawdown(simulation["equity"])
     costs = _costs(simulation["trades"], simulation["fills"])
+    assumptions = _get(manifest, "assumptions", default={})
+    funding_assumption = _get(assumptions, "funding")
+    if isinstance(funding_assumption, str) and "not modeled" in funding_assumption.lower() and "zero" in funding_assumption.lower():
+        costs["funding_cost_total"] = 0.0
+        costs["funding_basis"] = f"assumption explícita do manifest: {funding_assumption}"
     groups = _regime_groups(computed_trades)
     role_totals, bootstrap_contexts = _role_metrics(role_runs, root)
     host_accept = sum(1 for row in rounds if row.get("host_acceptance", "").lower() in {"accepted", "aceito", "success", "completed"})
@@ -1302,7 +1317,7 @@ def render_report(root: Path) -> dict[str, Any]:
             "timeframe": _get(manifest, "timeframe", default="H1"),
             "model": _get(manifest, "model", "model_id"),
             "venue": _get(manifest, "venue", "connector"),
-            "assumptions": _get(manifest, "assumptions", default=[]),
+        "assumptions": assumptions,
         },
         "decisions": decisions,
         "role_runs": {**role_totals, "context_calls_in_rounds": sum(row["context_run_count"] for row in rounds), "position_manager_calls_in_rounds": sum(row["pm_run_count"] for row in rounds)},
@@ -1342,6 +1357,7 @@ def _render_markdown(metrics: Mapping[str, Any], root: Path) -> str:
     sim = metrics["simulation"]
     trades = sim["trades"]
     costs = sim["costs"]
+    funding_note = f" ({costs['funding_basis']})" if costs.get("funding_basis") else ""
     drawdown = sim["drawdown"]
     method = metrics["method"]
     output: list[str] = [
@@ -1394,11 +1410,11 @@ def _render_markdown(metrics: Mapping[str, Any], root: Path) -> str:
             f"Trades fechados: **{trades['closed_trade_count']}** ({trades['closed_trades_with_pnl_count']} com PnL disponível); win rate: **{_metric_or_na(trades['win_rate'], percent=True)}**; expectancy líquida por trade: **{_metric_or_na(trades['expectancy_net_pnl'])}**; profit factor: **{_metric_or_na(trades['profit_factor'])}**."
         )
         output.append(
-            f"PnL líquido total: **{_metric_or_na(trades['net_pnl_sum'])}**; MFE médio: **{_metric_or_na(trades['avg_mfe'])}**; MAE médio: **{_metric_or_na(trades['avg_mae'])}**; R médio: **{_metric_or_na(trades['avg_r_multiple'])}**."
+            f"PnL líquido total: **{_metric_or_na(trades['net_pnl_sum'])}**; MFE médio (R): **{_metric_or_na(trades['avg_mfe'])}**; MAE médio (R): **{_metric_or_na(trades['avg_mae'])}**; R realizado médio: **{_metric_or_na(trades['avg_r_multiple'])}**."
         )
     output += [
         f"Drawdown máximo: **{_metric_or_na(drawdown['max_drawdown_abs'])}** ({_metric_or_na(drawdown['max_drawdown_pct'], percent=True)}); base: {drawdown.get('basis') or 'série de equity ausente' }.",
-        f"Custos: taxas por moeda `{json.dumps(costs['fees_by_currency'], ensure_ascii=False, sort_keys=True)}` (fonte: {costs['fee_source']}; eventos: {costs['fee_event_count']}); funding total: **{_metric_or_na(costs['funding_cost_total'])}**.",
+        f"Custos: taxas por moeda `{json.dumps(costs['fees_by_currency'], ensure_ascii=False, sort_keys=True)}` (fonte: {costs['fee_source']}; eventos: {costs['fee_event_count']}); funding total: **{_metric_or_na(costs['funding_cost_total'])}**{funding_note}.",
         f"Fills simulados: **{sim['fill_count']}**; trades registrados: **{sim['trade_record_count']}**; pontos de equity: **{sim['equity_point_count']}**.",
         "",
         "### Resultado por regime",
