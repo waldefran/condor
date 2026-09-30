@@ -161,6 +161,42 @@ def test_bad_stop_and_no_trade_do_not_open(tmp_path):
     assert reader.calls == 0 and port.calls == []
 
 
+def test_pending_stop_is_rejected_without_market_write_or_replay_approval(tmp_path):
+    gate, reader, port = gm(tmp_path)
+    triggered = intent()
+    triggered["trigger"].update(kind="stop")
+    triggered["setup"] = {"trigger_status": "triggered"}
+    compile_main(triggered, snapshot(), policy())
+
+    pending = intent()
+    pending["trigger"].update(kind="stop")
+    pending["setup"] = {"trigger_status": "pending"}
+    with pytest.raises(GMRejected, match="pending stop entry.*MARKET-only"):
+        compile_main(pending, snapshot(), policy())
+
+    with pytest.raises(GMRejected, match="pending stop entry.*MARKET-only"):
+        asyncio.run(gate.execute_entry(pending, correlation_id="pending-stop"))
+    assert reader.calls == 0 and port.calls == []
+    assert not (tmp_path / "trades/pending-stop").exists()
+
+    emitted = []
+    consumer = GMConsumer(gm_factory=lambda _symbol: gate, publish=emitted.append)
+    replayed = asyncio.run(
+        consumer.handle(
+            BrooksEvent(
+                type=EventType.TRADER_INTENT_CREATED,
+                symbol="BTC-USDT",
+                correlation_id="pending-stop-replay",
+                payload={"intent": pending},
+            )
+        )
+    )
+    assert replayed["type"] == EventType.GM_ENTRY_REJECTED.value
+    assert "pending stop entry" in replayed["payload"]["reason"]
+    assert reader.calls == 0 and port.calls == []
+    assert not (tmp_path / "trades/pending-stop-replay").exists()
+
+
 def test_entry_persists_original_intent_and_binding_before_write(tmp_path):
     gate, reader, port = gm(tmp_path)
     original = intent()

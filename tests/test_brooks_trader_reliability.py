@@ -167,6 +167,8 @@ def _entry(symbol: str, decision_time_ms: int, m15: list[dict]):
 def test_entry_references_must_both_cite_closed_m15(
     trigger_timeframe, invalidation_timeframe, accepted
 ):
+    from pydantic import ValidationError
+
     from condor.brooks.contracts import TradeIntentV2
     from condor.brooks.trader import _validate_references
 
@@ -186,13 +188,13 @@ def test_entry_references_must_both_cite_closed_m15(
             "close_time_ms": bar["close_time_ms"],
         }
         payload[field]["price"] = bar[payload[field]["price_field"]]
-    intent = TradeIntentV2.model_validate(payload)
     windows = {label: {"bars": window} for label, window in bars.items()}
     if accepted:
+        intent = TradeIntentV2.model_validate(payload)
         _validate_references(intent, windows)
     else:
-        with pytest.raises(ValueError, match="must cite M15"):
-            _validate_references(intent, windows)
+        with pytest.raises(ValidationError):
+            TradeIntentV2.model_validate(payload)
 
 
 def test_no_trade_keeps_null_references_and_forming_m15_cannot_support_entry():

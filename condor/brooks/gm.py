@@ -133,6 +133,11 @@ class AccountSnapshot:
     hedge_mark_price: Decimal | None = None
     pending_orders: bool = False
     filled_quantity: str | Decimal | None = None
+    # Evidence from the same complete venue read; None means unknown, never flat.
+    main_executor_status: str | None = None
+    hedge_executor_status: str | None = None
+    active_executor_ids: tuple[str, ...] | None = None
+    position_details: dict[str, dict[str, Any]] | None = None
 
 
 class AccountStateReader(Protocol):
@@ -193,6 +198,22 @@ class MainPlan:
     time_limit_sec: int
 
 
+def _reject_pending_stop_market_entry(trade: dict[str, Any]) -> None:
+    """Fail closed when an untriggered stop would otherwise become MARKET."""
+    setup = trade.get("setup")
+    trigger = trade.get("trigger")
+    if (
+        isinstance(setup, dict)
+        and setup.get("trigger_status") == "pending"
+        and isinstance(trigger, dict)
+        and trigger.get("kind") == "stop"
+    ):
+        raise GMRejected(
+            "pending stop entry is unsupported by MARKET-only execution; "
+            "no order was submitted"
+        )
+
+
 def compile_main(
     intent: Any,
     snapshot: AccountSnapshot,
@@ -207,6 +228,7 @@ def compile_main(
     decision = trade.get("decision")
     if decision not in ("ENTER_LONG", "ENTER_SHORT"):
         raise GMRejected("intent is not an entry")
+    _reject_pending_stop_market_entry(trade)
     symbol = trade.get("symbol")
     if not isinstance(symbol, str) or not symbol.strip():
         raise GMRejected("symbol is required")
@@ -382,7 +404,7 @@ class BrooksGM:
                 binding.get("account_name") == self.account_name
                 and binding.get("connector_name") == self.connector_name
                 and binding.get("symbol") == symbol
-                and binding.get("status") in ("submitting", "submitted")
+                and binding.get("status") in ("submitting", "submitted", "main_closed")
             ):
                 return True
         return False
@@ -425,6 +447,7 @@ class BrooksGM:
             trade["intent"].get("shadow_mode", False)
         ):
             return None
+        _reject_pending_stop_market_entry(trade)
         symbol = trade.get("symbol")
         if not isinstance(symbol, str) or not symbol:
             raise GMRejected("symbol is required")
@@ -506,6 +529,231 @@ class BrooksGM:
             binding["main_position_id"] = position_id
             binding["status"] = "reconciled"
             self._replace(binding_path, binding)
+
+    async def reconcile_lifecycle(
+        self, correlation_id: str, *, shadow_mode: bool = False
+    ) -> dict[str, Any]:
+        """Corroborate terminal venue truth, including a first poll after restart.
+
+        A receipt is not closure. Two complete fresh reads must agree, bound
+        executors must have settled, and unknown exposure never releases ownership.
+        An orphan cleanup is persisted before its sole reduce-only write; an
+        ambiguous receipt is never retried automatically.
+        """
+        trade_dir = self._trade_dir(correlation_id)
+        path = trade_dir / "binding.json"
+        binding = json.loads(path.read_text(encoding="utf-8"))
+        symbol = binding.get("symbol")
+        if not isinstance(symbol, str) or not symbol:
+            raise GMRejected("binding symbol is missing")
+        lock, fd = await self._locked(symbol)
+        try:
+            binding = json.loads(path.read_text(encoding="utf-8"))
+            if (
+                binding.get("account_name") != self.account_name
+                or binding.get("connector_name") != self.connector_name
+                or binding.get("controller_id") != self.execution.controller_id
+            ):
+                raise GMRejected("binding belongs to another account or controller")
+            if binding.get("status") in ("closed", "expired"):
+                return binding
+            if binding.get("status") not in ("submitted", "reconciled", "main_closed"):
+                return binding
+            opening_unresolved = binding.get(
+                "status"
+            ) == "submitted" and not binding.get("main_position_id")
+            if (
+                binding.get("schema") != "condor.brooks.trade-binding.v1"
+                or (not binding.get("main_position_id") and not opening_unresolved)
+                or not binding.get("main_executor_id")
+                or binding.get("main_side") not in ("LONG", "SHORT")
+            ):
+                raise GMRejected("lifecycle MAIN binding identity is incomplete")
+            if self._pending_hedge_records(trade_dir, None):
+                return binding
+            for record_path in (trade_dir / "management").glob("*.json"):
+                record = json.loads(record_path.read_text(encoding="utf-8"))
+                if (
+                    record.get("action")
+                    in ("HEDGE", "INCREASE_HEDGE", "REDUCE_HEDGE", "REMOVE_HEDGE")
+                    and record.get("status") in ("submitting", "submitted")
+                    and record.get("assessment") != "confirmed"
+                ):
+                    return binding
+            settled = {
+                "CLOSED",
+                "TERMINATED",
+                "COMPLETED",
+                "FAILED",
+                "CANCELLED",
+                "CANCELED",
+                "MISSING",
+            }
+
+            async def read_pair() -> tuple[AccountSnapshot, AccountSnapshot]:
+                readings = []
+                for _ in range(2):
+                    s = await self.reader.read(
+                        account_name=self.account_name,
+                        connector_name=self.connector_name,
+                        symbol=symbol,
+                    )
+                    now = int(time.time() * 1000)
+                    terminal_before_position_observed = (
+                        opening_unresolved
+                        and s.open_positions == 0
+                        and s.main_quantity == 0
+                        and s.main_executor_status in settled - {"MISSING"}
+                    )
+                    if (
+                        s.as_of_ms > now
+                        or now - s.as_of_ms > self.policy.max_snapshot_age_ms
+                        or s.pending_orders
+                        or s.active_executor_ids is None
+                        or s.structure_status
+                        in ("multiple_bindings", "unbound_venue_positions")
+                        or (
+                            s.structure_status == "main_unresolved"
+                            and not terminal_before_position_observed
+                        )
+                        or s.main_position_id != binding.get("main_position_id")
+                        or s.main_executor_id != binding.get("main_executor_id")
+                        or s.hedge_position_id != binding.get("hedge_position_id")
+                        or s.hedge_executor_id != binding.get("hedge_executor_id")
+                    ):
+                        raise GMRejected(
+                            "lifecycle venue evidence is incomplete or unresolved"
+                        )
+                    readings.append(s)
+                a, b = readings
+                facts = lambda s: (
+                    s.open_positions,
+                    s.main_quantity,
+                    s.hedge_quantity,
+                    s.main_side,
+                    s.hedge_side,
+                    s.main_executor_status,
+                    s.hedge_executor_status,
+                    s.active_executor_ids,
+                )
+                if facts(a) != facts(b):
+                    raise GMRejected("lifecycle venue reads disagree")
+                return a, b
+
+            _, state = await read_pair()
+            if state.main_quantity > 0 or state.main_executor_status not in settled:
+                return binding
+            if state.active_executor_ids:
+                return binding
+            if state.hedge_quantity > 0:
+                expected_side = (
+                    "SHORT" if binding.get("main_side") == "LONG" else "LONG"
+                )
+                legs = list(state.positions or ())
+                if (
+                    state.position_mode != "HEDGE"
+                    or state.open_positions != 1
+                    or len(legs) != 1
+                    or legs[0].ownership_role != "HEDGE"
+                    or legs[0].position_id != binding.get("hedge_position_id")
+                    or legs[0].side != expected_side
+                    or state.hedge_side != expected_side
+                    or _decimal(legs[0].quantity, "hedge quantity")
+                    != state.hedge_quantity
+                    or not binding.get("hedge_executor_id")
+                    or state.hedge_executor_status not in settled
+                ):
+                    raise GMRejected("orphan HEDGE ownership is unresolved")
+                if binding.get("status") != "main_closed":
+                    binding.update(
+                        status="main_closed", main_closed_at_ms=state.as_of_ms
+                    )
+                    self._replace(path, binding)
+                    self._append_execution(
+                        trade_dir / "executions.jsonl",
+                        {
+                            "type": "MAIN_CLOSED",
+                            "as_of_ms": state.as_of_ms,
+                            "correlation_id": correlation_id,
+                        },
+                    )
+                cleanup_path = trade_dir / "lifecycle_cleanup.json"
+                if shadow_mode or cleanup_path.exists():
+                    return binding
+                quantity = _decimal(state.hedge_quantity, "orphan hedge quantity")
+                if quantity % _decimal(state.rules.amount_step, "amount_step"):
+                    raise GMRejected("orphan quantity is not a venue amount step")
+                record = {
+                    "schema": "condor.brooks.lifecycle-cleanup.v1",
+                    "correlation_id": correlation_id,
+                    "status": "submitting",
+                    "hedge_position_id": state.hedge_position_id,
+                    "quantity": str(quantity),
+                    "created_at_ms": state.as_of_ms,
+                }
+                self._write_new(cleanup_path, record)
+                try:
+                    executor_id = await self.execution.execute_hedge(
+                        symbol=symbol,
+                        side="BUY" if expected_side == "SHORT" else "SELL",
+                        quantity=quantity,
+                        position_action="CLOSE",
+                        leverage=self.policy.leverage,
+                    )
+                except Exception as exc:
+                    record.update(
+                        status="reconciliation_required",
+                        error_type=type(exc).__name__,
+                        error=str(exc),
+                    )
+                    self._replace(cleanup_path, record)
+                    self._append_execution(trade_dir / "executions.jsonl", record)
+                    raise
+                record.update(status="submitted", executor_id=executor_id)
+                self._replace(cleanup_path, record)
+                self._append_execution(trade_dir / "executions.jsonl", record)
+                _, state = await read_pair()
+            if (
+                state.open_positions != 0
+                or state.main_quantity != 0
+                or state.hedge_quantity != 0
+                or state.active_executor_ids
+                or state.main_executor_status not in settled
+                or (
+                    binding.get("hedge_executor_id")
+                    and state.hedge_executor_status not in settled
+                )
+            ):
+                return binding
+            for name in (
+                "main_position_id",
+                "main_executor_id",
+                "executor_id",
+                "hedge_position_id",
+                "hedge_executor_id",
+            ):
+                if binding.get(name):
+                    binding["closed_" + name] = binding[name]
+                binding[name] = None
+            binding.update(status="closed", closed_at_ms=state.as_of_ms)
+            self._replace(path, binding)
+            cleanup_path = trade_dir / "lifecycle_cleanup.json"
+            if cleanup_path.exists():
+                record = json.loads(cleanup_path.read_text(encoding="utf-8"))
+                record.update(status="confirmed", confirmed_at_ms=state.as_of_ms)
+                self._replace(cleanup_path, record)
+            self._append_execution(
+                trade_dir / "executions.jsonl",
+                {
+                    "type": "BINDING_CLOSED",
+                    "correlation_id": correlation_id,
+                    "as_of_ms": state.as_of_ms,
+                    "binding": binding,
+                },
+            )
+            return binding
+        finally:
+            self._unlock(lock, fd)
 
     async def reconcile_main(self, correlation_id: str) -> dict[str, Any]:
         """Retry MAIN reconciliation for a submitted binding.

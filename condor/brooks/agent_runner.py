@@ -15,7 +15,7 @@ from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any, Literal, TypeVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from condor.brooks.llm_coordination import backend_call_slot, backend_resource_key
 from condor.brooks.market_tools import make_brooks_reference_tool
@@ -156,7 +156,6 @@ def _is_forbidden_key(key: Any) -> bool:
     return False
 
 
-
 def bind_symbol_tools(
     symbol: str,
     tools: Mapping[str, Callable[..., Any]],
@@ -228,7 +227,9 @@ def _has_successful_h4_raw_read(
     return False
 
 
-def _json_object(answer: str) -> dict[str, Any]:
+def _json_object(answer: Any) -> dict[str, Any]:
+    if not isinstance(answer, str):
+        raise RoleRunError("Brooks role returned invalid JSON")
     text = answer.strip()
     if text.startswith("```json") and text.endswith("```"):
         text = text[7:-3].strip()
@@ -239,6 +240,24 @@ def _json_object(answer: str) -> dict[str, Any]:
     if not isinstance(obj, dict):
         raise RoleRunError("Brooks role must return one JSON object")
     return obj
+
+
+def _private_output_violation(error: BaseException, role: Role) -> bool:
+    """Keep account/private-field failures outside the schema-repair path."""
+    if role not in {"TRADER", "CONTEXT_ANALYST", "HTF_ANALYST"}:
+        return False
+    if isinstance(error, ValidationError):
+        for issue in error.errors(include_input=False):
+            if "private or future market field:" in str(issue.get("msg", "")).lower():
+                return True
+            if any(_is_forbidden_key(part) for part in issue.get("loc", ())):
+                return True
+    message = str(error).lower()
+    return (
+        "private or future market field:" in message
+        or "private account or position fields" in message
+        or "permission boundary" in message
+    )
 
 
 async def _deny_native_tool(_call: dict, _options: list[dict]) -> dict:
@@ -256,6 +275,7 @@ async def run_role(
     max_tool_calls: int = 8,
     user_id: int | None = None,
     tool_audit: list[dict[str, Any]] | None = None,
+    output_validator: Callable[[OutputT], None] | None = None,
     backend_key: str | None = None,
     priority: int = 20,
 ) -> OutputT:
@@ -352,15 +372,79 @@ async def run_role(
                     turn = first_prompt
                     tool_calls = 0
                     coverage_repair_used = False
+                    contract_repair_used = False
+
+                    def contract_repair(
+                        error: BaseException,
+                        *,
+                        stage: str,
+                        raw_answer: Any,
+                    ) -> None:
+                        nonlocal contract_repair_used, turn
+                        if _private_output_violation(error, role):
+                            raise RoleRunError(
+                                "Brooks role output violated the private-data boundary"
+                            ) from error
+                        repair_attempt = 1 if not contract_repair_used else 2
+                        summary = " ".join(str(error).split())[:500]
+                        record = {
+                            "role": role,
+                            "type": "contract_repair",
+                            "stage": stage,
+                            "repair_attempt": repair_attempt,
+                            "status": (
+                                "requested" if repair_attempt == 1 else "rejected"
+                            ),
+                            "error_type": type(error).__name__,
+                            "error": summary or type(error).__name__,
+                        }
+                        audit.append(record)
+                        if tool_audit is not None:
+                            tool_audit.append(record)
+                        if contract_repair_used:
+                            raise error
+                        contract_repair_used = True
+
+                        repair_text = (
+                            "Your previous reply failed the host output contract. "
+                            f"Issue: {summary or type(error).__name__}. "
+                            "Return exactly one valid JSON object: either one allowed "
+                            "read-tool request or one final object matching the supplied "
+                            "schema. Use the same frozen input and host-returned tool "
+                            "results; do not invent or change market evidence."
+                        )
+                        if keeps_history:
+                            turn = repair_text
+                        else:
+                            previous = (
+                                raw_answer
+                                if isinstance(raw_answer, str)
+                                else str(raw_answer)
+                            )
+                            turn = (
+                                f"{turn}\nAssistant previous reply: {previous[:4000]}\n"
+                                f"{repair_text}"
+                            )
+
                     while True:
-                        response = _json_object(await client.prompt(turn))
+                        raw_answer = await client.prompt(turn)
+                        try:
+                            response = _json_object(raw_answer)
+                        except RoleRunError as exc:
+                            contract_repair(
+                                exc, stage="json_protocol", raw_answer=raw_answer
+                            )
+                            continue
                         if "tool" not in response:
                             try:
                                 output = output_model.model_validate(response)
-                            except Exception as exc:
-                                raise RoleRunError(
-                                    "Brooks role output failed schema validation"
-                                ) from exc
+                            except ValidationError as exc:
+                                contract_repair(
+                                    exc,
+                                    stage="schema_validation",
+                                    raw_answer=raw_answer,
+                                )
+                                continue
                             decision = getattr(output, "decision", None)
                             used = getattr(output, "context_timeframes_used", None)
                             if role == "TRADER" and used is not None:
@@ -403,6 +487,16 @@ async def run_role(
                                     "entry requires a successful same-run raw H4 candle read "
                                     "when H4 context is stale or missing"
                                 )
+                            if output_validator is not None:
+                                try:
+                                    output_validator(output)
+                                except ValueError as exc:
+                                    contract_repair(
+                                        exc,
+                                        stage="output_validation",
+                                        raw_answer=raw_answer,
+                                    )
+                                    continue
                             return output
                         if tool_calls >= max_tool_calls:
                             raise RoleRunError("Brooks role exceeded read tool budget")

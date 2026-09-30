@@ -92,13 +92,21 @@ class _Trading:
         connector_names=None,
         trading_pairs=None,
         status=None,
+        start_time=None,
+        end_time=None,
         limit=50,
     ) -> dict:
         self._outer.search_calls.append(
-            {"trading_pairs": trading_pairs, "status": status}
+            {
+                "trading_pairs": trading_pairs,
+                "status": status,
+                "start_time": start_time,
+                "end_time": end_time,
+                "limit": limit,
+            }
         )
         rows = [dict(row) for row in self._outer.fills]
-        return {"data": rows, "pagination": {"next_cursor": self._outer.fills_cursor}}
+        return {"data": rows, "pagination": {"cursor": self._outer.fills_cursor}}
 
 
 class _Executors:

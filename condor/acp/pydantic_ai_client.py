@@ -16,6 +16,7 @@ import logging
 import os
 import time
 import uuid
+from contextvars import ContextVar
 from typing import Any, AsyncIterator, Iterator
 from urllib.parse import urlparse
 
@@ -32,6 +33,10 @@ from .client import (
 from .usage import TokenUsage
 
 log = logging.getLogger(__name__)
+
+_PROMPT_ERROR_SINK: ContextVar[list[BaseException] | None] = ContextVar(
+    "pydantic_ai_prompt_error_sink", default=None
+)
 
 
 # Model prefix → pydantic-ai model string mapping
@@ -1042,9 +1047,26 @@ class PydanticAIClient:
     async def prompt(self, text: str) -> str:
         """One-shot prompt: send text, return response."""
         chunks: list[str] = []
-        async for event in self.prompt_stream(text):
-            if isinstance(event, TextChunk):
-                chunks.append(event.text)
+        errors: list[BaseException] = []
+        token = _PROMPT_ERROR_SINK.set(errors)
+        try:
+            async for event in self.prompt_stream(text):
+                if isinstance(event, TextChunk):
+                    chunks.append(event.text)
+                elif isinstance(event, PromptDone) and event.stop_reason in {
+                    "timeout",
+                    "error",
+                }:
+                    if errors:
+                        # Preserve the provider exception and its cause so callers
+                        # can classify transient transport failures without parsing
+                        # the display-only error text emitted by prompt_stream().
+                        raise errors[-1]
+                    if event.stop_reason == "timeout":
+                        raise TimeoutError("Pydantic AI prompt timed out")
+                    raise RuntimeError("Pydantic AI prompt failed")
+        finally:
+            _PROMPT_ERROR_SINK.reset(token)
         return "".join(chunks)
 
     async def abort_prompt(self) -> None:
@@ -1060,6 +1082,19 @@ class PydanticAIClient:
 
     async def prompt_stream(
         self, text: str, *, images: list | None = None
+    ) -> AsyncIterator[ACPEvent]:
+        """Send a prompt and yield its ACP events without changing stream errors."""
+        async for event in self._prompt_stream(
+            text, images=images, error_sink=_PROMPT_ERROR_SINK.get()
+        ):
+            yield event
+
+    async def _prompt_stream(
+        self,
+        text: str,
+        *,
+        images: list | None = None,
+        error_sink: list[BaseException] | None = None,
     ) -> AsyncIterator[ACPEvent]:
         """Send a prompt and yield ACPEvents as they arrive.
 
@@ -1139,9 +1174,13 @@ class PydanticAIClient:
 
                 yield PromptDone(stop_reason="cancelled" if aborted else "end_turn")
 
-            except asyncio.TimeoutError:
+            except asyncio.TimeoutError as exc:
+                if error_sink is not None:
+                    error_sink.append(exc)
                 yield PromptDone(stop_reason="timeout")
             except Exception as e:
+                if error_sink is not None:
+                    error_sink.append(e)
                 log.exception("PydanticAI prompt error: %s", e)
                 self._mark_dead_if_transport_closed(e)
                 yield TextChunk(text=self._format_error(e))

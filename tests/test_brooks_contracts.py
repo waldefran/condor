@@ -13,17 +13,41 @@ from condor.brooks.contracts import (
 
 
 def intent() -> dict:
-    source = {"timeframe": "H1", "bar_index": 0, "open_time_ms": 0, "close_time_ms": 3_599_999}
+    source = {
+        "timeframe": "M15",
+        "bar_index": 0,
+        "open_time_ms": 0,
+        "close_time_ms": 899_999,
+    }
     return {
-        "schema": "brooks.trade-intent.v2", "role": "TRADER", "decision": "ENTER_LONG",
-        "symbol": "BTC-USDT", "decision_time_ms": 3_599_999,
-        "market_context": {"trend": "up"}, "setup": {"trigger_status": "present"},
-        "decision_timeframe": "H1", "context_timeframes_used": ["H1"],
+        "schema": "brooks.trade-intent.v2",
+        "role": "TRADER",
+        "decision": "ENTER_LONG",
+        "symbol": "BTC-USDT",
+        "decision_time_ms": 3_599_999,
+        "market_context": {"trend": "up"},
+        "setup": {"trigger_status": "present"},
+        "decision_timeframe": "M15",
+        "context_timeframes_used": ["H1", "M15"],
         "entry_mechanism": "breakout",
-        "trigger": {"kind": "stop", "direction": "above", "reference": "bar high", "price_field": "high", "price": "101", "source": source},
-        "invalidation": {"reference": "bar low", "price_field": "low", "price": "99", "source": source},
-        "evidence_for": ["breakout"], "evidence_against": ["near resistance"],
-        "qualitative_confidence": "medium", "uncertainty": ["follow through"],
+        "trigger": {
+            "kind": "stop",
+            "direction": "above",
+            "reference": "bar high",
+            "price_field": "high",
+            "price": "101",
+            "source": source,
+        },
+        "invalidation": {
+            "reference": "bar low",
+            "price_field": "low",
+            "price": "99",
+            "source": source,
+        },
+        "evidence_for": ["breakout"],
+        "evidence_against": ["near resistance"],
+        "qualitative_confidence": "medium",
+        "uncertainty": ["follow through"],
         "conditions_that_change_market_read": ["breakout fails"],
     }
 
@@ -156,4 +180,3 @@ def test_management_reduce_fraction_validation():
     bad_hedge.update(action="HEDGE", hedge_plan=hedge_plan(), reduce_fraction="0.50")
     with pytest.raises(ValidationError):
         ManagementDecisionV2.model_validate(bad_hedge)
-

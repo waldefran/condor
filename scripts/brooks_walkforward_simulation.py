@@ -176,14 +176,21 @@ class _Trading:
         connector_names=None,
         trading_pairs=None,
         status=None,
+        start_time=None,
+        end_time=None,
         limit=50,
     ) -> dict:
         rows = self._owner.fills
         if trading_pairs:
             rows = [row for row in rows if row.get("trading_pair") in trading_pairs]
         if status:
-            wanted = {str(value).upper() for value in status}
+            values = [status] if isinstance(status, str) else status
+            wanted = {str(value).upper() for value in values}
             rows = [row for row in rows if str(row.get("status", "")).upper() in wanted]
+        if start_time is not None:
+            rows = [row for row in rows if row["timestamp_ms"] >= start_time * 1000]
+        if end_time is not None:
+            rows = [row for row in rows if row["timestamp_ms"] // 1000 <= end_time]
         return {"data": [dict(row) for row in rows[-limit:]]}
 
 
@@ -332,11 +339,23 @@ class WalkForwardExecutionPort:
         )
         owner._positions[pos_id] = pos
         owner._add_executor(exec_id, symbol, status="RUNNING", position_id=pos_id)
+        owner.executor_rows[-1]["config"] = {
+            "stop_price": str(stop_price),
+            "target_price": str(target_price),
+        }
         owner._add_hold(exec_id, symbol, side, quantity)
         owner._charge_fee(entry_fee)
         owner._slippage += slip_cost
         owner._record_fill(
-            exec_id, symbol, side, "OPEN", quantity, fill, "MAIN_OPEN", correlation_id
+            exec_id,
+            symbol,
+            side,
+            "OPEN",
+            quantity,
+            fill,
+            "MAIN_OPEN",
+            correlation_id,
+            position_id=pos_id,
         )
         trade = _Trade(
             correlation_id=correlation_id,
@@ -465,7 +484,11 @@ class WalkForwardExecutionPort:
                 hedge.original_quantity += quantity
                 hedge.entry_fees += fee
                 hedge.slippage_cost += slip
-            owner._add_executor(exec_id, symbol, status="RUNNING", position_id=hedge.position_id)
+            # A filled order executor is terminal; unlike a MAIN position
+            # executor it does not manage an ongoing triple barrier.
+            owner._add_executor(
+                exec_id, symbol, status="TERMINATED", position_id=hedge.position_id
+            )
             owner._add_hold(exec_id, symbol, hedge.side, quantity)
             owner._charge_fee(fee)
             owner._slippage += slip
@@ -474,8 +497,15 @@ class WalkForwardExecutionPort:
                 trade.fees += fee
                 trade.slippage_cost += slip
             owner._record_fill(
-                exec_id, symbol, hedge_side, "OPEN", quantity, fill,
-                "HEDGE_OPEN", owner.active_correlation_id
+                exec_id,
+                symbol,
+                hedge_side,
+                "OPEN",
+                quantity,
+                fill,
+                "HEDGE_OPEN",
+                owner.active_correlation_id,
+                position_id=hedge.position_id,
             )
             owner._attribute_management(
                 "INCREASE_HEDGE" if hedge.quantity != quantity else "HEDGE",
@@ -775,17 +805,22 @@ class WalkForwardVenueAdapter:
         correlation_id: str | None,
         *,
         reason: str | None = None,
+        position_id: str | None = None,
     ) -> None:
         row = {
             "client_order_id": f"wf-fill-{len(self.fills) + 1}",
             "order_id": f"wf-fill-{len(self.fills) + 1}",
             "executor_id": executor_id,
+            "position_id": position_id,
             "trading_pair": symbol,
-            "trade_type": "BUY" if (side == "LONG") == (position_action == "OPEN") else "SELL",
+            "trade_type": (
+                "BUY" if (side == "LONG") == (position_action == "OPEN") else "SELL"
+            ),
             "position_action": position_action,
             "status": "FILLED",
             "filled_amount": str(quantity),
             "price": str(price),
+            "fee": str(abs(price * quantity) * self.taker_fee_rate),
             "timestamp_ms": self.now_ms,
             "action": action,
             "correlation_id": correlation_id,
@@ -899,6 +934,7 @@ class WalkForwardVenueAdapter:
             reason,
             pos.correlation_id,
             reason=reason,
+            position_id=pos.position_id,
         )
         if pos.quantity == 0:
             self._set_executor_status(pos.executor_id, "CLOSED")

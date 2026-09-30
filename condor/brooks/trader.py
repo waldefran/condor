@@ -14,7 +14,7 @@ from typing import Any, Callable, Mapping
 from uuid import NAMESPACE_URL, uuid5
 
 from condor.brooks.agent_runner import bind_symbol_tools, run_role
-from condor.brooks.contracts import MarketContextV2, TradeIntentV2
+from condor.brooks.contracts import MarketContextV2, TradeIntentV2, _decimal
 from condor.brooks.decision_cycles import (
     DecisionCycleStore,
     MemoryDecisionCycleStore,
@@ -105,14 +105,26 @@ def _validate_references(
             if (
                 bar.get("open_time_ms") == reference.source.open_time_ms
                 and bar.get("close_time_ms") == reference.source.close_time_ms
-                and bar.get("close_time_ms") == bar.get("open_time_ms", -1) + _INTERVAL_MS["M15"] - 1
-                and bar.get("close_time_ms", intent.decision_time_ms + 1) <= intent.decision_time_ms
+                and bar.get("close_time_ms")
+                == bar.get("open_time_ms", -1) + _INTERVAL_MS["M15"] - 1
+                and bar.get("close_time_ms", intent.decision_time_ms + 1)
+                <= intent.decision_time_ms
                 and bar.get("closed") is not False
-                and bar.get(reference.price_field) == reference.price
+                and _same_decimal_price(bar.get(reference.price_field), reference.price)
             ):
                 break
         else:
             raise ValueError("entry reference does not match any supplied closed bar")
+
+
+def _same_decimal_price(observed: Any, cited: str) -> bool:
+    """Compare canonical decimal text by exact numeric value, never by tolerance."""
+    if not isinstance(observed, str):
+        return False
+    try:
+        return _decimal(observed) == _decimal(cited)
+    except ValueError:
+        return False
 
 
 def _latest_closed_time(decision_time_ms: int, timeframe: str) -> int:
@@ -596,6 +608,9 @@ class TraderConsumer:
                             timeout_sec=self.timeout_sec,
                             user_id=self.user_id,
                             tool_audit=durable_audit,
+                            output_validator=lambda candidate: _validate_references(
+                                candidate, observed_windows
+                            ),
                         )
                         durable_audit.persist()
                         if intent.symbol != event.symbol or intent.decision_time_ms != decision_time_ms:
@@ -696,7 +711,7 @@ class TraderConsumer:
                         value = await value
                     cache[cache_key] = deepcopy(value)
                 timeframe = _timeframe_name(kwargs.get("timeframe"))
-                if _name == "get_closed_candles" and timeframe in {"H4", "D1"}:
+                if _name == "get_closed_candles" and timeframe in {"M15", "H4", "D1"}:
                     bars = value if isinstance(value, list) else []
                     observed_windows.setdefault(timeframe, []).append(bars)
                     if (

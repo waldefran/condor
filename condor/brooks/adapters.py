@@ -24,6 +24,7 @@ import json
 import logging
 import time
 from dataclasses import dataclass
+from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Awaitable, Callable, Mapping, Sequence
@@ -61,6 +62,90 @@ def _is_executor_identity(value: Any) -> bool:
 
 def _executor_identity(executor_id: str) -> str:
     return f"{_EXECUTOR_IDENTITY_PREFIX}{executor_id}"
+
+
+_TERMINAL_EXECUTOR_STATUSES = frozenset(
+    {"CLOSED", "TERMINATED", "COMPLETED", "FAILED", "CANCELLED", "CANCELED"}
+)
+
+
+def _has_more_pages(result: Mapping[str, Any]) -> bool:
+    pagination = result.get("pagination")
+    return bool(
+        result.get("next_cursor")
+        or (isinstance(pagination, Mapping) and pagination.get("next_cursor"))
+    )
+
+
+def _executor_status(row: Mapping[str, Any]) -> str | None:
+    value = row.get("status")
+    # Hummingbot RunnableStatus: 3 is SHUTTING_DOWN, 4 is TERMINATED.
+    if isinstance(value, int) and not isinstance(value, bool):
+        return {
+            1: "NOT_STARTED",
+            2: "RUNNING",
+            3: "SHUTTING_DOWN",
+            4: "TERMINATED",
+        }.get(value)
+    if isinstance(value, str) and value.strip():
+        return value.strip().upper()
+    return None
+
+
+async def _bound_executor_status(
+    client: Any,
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    executor_id: str | None,
+    account_name: str,
+    connector_name: str,
+    controller_id: str,
+    symbol: str,
+) -> str | None:
+    if not executor_id:
+        return None
+    matches = [
+        r for r in rows if str(r.get("executor_id") or r.get("id") or "") == executor_id
+    ]
+    if len(matches) > 1:
+        return None
+    if matches and (
+        matches[0].get("account_name") not in (None, "", account_name)
+        or matches[0].get("connector_name") not in (None, "", connector_name)
+        or matches[0].get("controller_id") not in (None, "", controller_id)
+        or (matches[0].get("trading_pair") or matches[0].get("symbol"))
+        not in (None, "", symbol)
+    ):
+        return None
+    fetch = getattr(client.executors, "get_executor", None)
+    if fetch is not None:
+        try:
+            row = await fetch(executor_id=executor_id)
+        except Exception as exc:
+            code = getattr(exc, "status_code", None) or getattr(
+                getattr(exc, "response", None), "status_code", None
+            )
+            if code != 404:
+                return _executor_status(matches[0]) if matches else None
+            row = None
+        if isinstance(row, Mapping):
+            if (
+                str(row.get("executor_id") or row.get("id") or "") != executor_id
+                or row.get("account_name") not in (None, "", account_name)
+                or row.get("connector_name") not in (None, "", connector_name)
+                or row.get("controller_id") not in (None, "", controller_id)
+                or (row.get("trading_pair") or row.get("symbol"))
+                not in (None, "", symbol)
+            ):
+                return None
+            return _executor_status(row)
+        if row is not None:
+            return None
+    if matches:
+        return _executor_status(matches[0])
+    # Only a complete search (validated by the caller) plus an absent direct
+    # result can establish missing. Two independent reads corroborate closure.
+    return "MISSING"
 
 
 async def _confirmed_executor(
@@ -315,6 +400,7 @@ def read_bindings(
             "submitting",
             "submitted",
             "reconciled",
+            "main_closed",
             "reconciliation_required",
         ):
             continue
@@ -339,7 +425,10 @@ def _position_symbol(row: Mapping[str, Any]) -> str:
 def _position_amount(row: Mapping[str, Any]) -> Decimal:
     for key in ("net_amount_base", "amount", "quantity", "size"):
         if row.get(key) is not None:
-            return abs(Decimal(str(row[key])))
+            value = Decimal(str(row[key]))
+            if isinstance(row[key], bool) or not value.is_finite():
+                raise ValueError("venue position amount is invalid")
+            return abs(value)
     raise ValueError("venue position row has no amount")
 
 
@@ -441,15 +530,30 @@ class HummingbotAccountReader:
         if (
             len(positions_result["data"]) >= 1000
             or len(executors_result["data"]) >= 1000
-            or positions_result.get("next_cursor")
-            or executors_result.get("next_cursor")
+            or _has_more_pages(positions_result)
+            or _has_more_pages(executors_result)
         ):
             raise GMRejected("state read is truncated")
-        venue_positions = [
-            row
-            for row in _venue_rows(positions_result)
-            if _position_symbol(row) == symbol
-        ]
+        if any(
+            not isinstance(row, dict)
+            for row in positions_result["data"] + executors_result["data"]
+        ):
+            raise GMRejected("state rows are unreadable")
+        if any(
+            not _position_symbol(row)
+            or row.get("account_name") not in (None, "", account_name)
+            or row.get("connector_name") not in (None, "", connector_name)
+            for row in positions_result["data"]
+        ):
+            raise GMRejected("position scope is unreadable or foreign")
+        try:
+            venue_positions = [
+                row
+                for row in _venue_rows(positions_result)
+                if _position_symbol(row) == symbol and _position_amount(row) > 0
+            ]
+        except (InvalidOperation, ValueError, TypeError) as exc:
+            raise GMRejected("positions read is unreadable") from exc
         mark_price = await self._mark_price(connector_name, symbol)
         equity, available_margin = await self._collateral(account_name, connector_name)
         rules = await self._rules(connector_name, symbol)
@@ -570,6 +674,33 @@ class HummingbotAccountReader:
         pending_orders = await self._has_open_orders(
             account_name, connector_name, symbol
         )
+        executor_rows = _venue_rows(executors_result)
+        status_args = dict(
+            account_name=account_name,
+            connector_name=connector_name,
+            controller_id=self._controller_id,
+            symbol=symbol,
+        )
+        main_status = await _bound_executor_status(
+            self._client, executor_rows, executor_id=main_executor, **status_args
+        )
+        hedge_status = await _bound_executor_status(
+            self._client, executor_rows, executor_id=hedge_executor, **status_args
+        )
+        active = tuple(
+            sorted(
+                str(r.get("executor_id") or r.get("id") or "")
+                for r in executor_rows
+                if _executor_status(r) not in _TERMINAL_EXECUTOR_STATUSES
+            )
+        )
+        position_details: dict[str, dict[str, Any]] = {}
+        for leg in legs:
+            row = _find_position(
+                venue_positions, leg.position_id, symbol=symbol, side=leg.side
+            )
+            if row is not None:
+                position_details[leg.position_id] = dict(row)
         return AccountSnapshot(
             as_of_ms=now_ms,
             equity=equity,
@@ -590,6 +721,10 @@ class HummingbotAccountReader:
             hedge_side=hedge_side,
             hedge_quantity=hedge_quantity,
             pending_orders=pending_orders,
+            main_executor_status=main_status,
+            hedge_executor_status=hedge_status,
+            active_executor_ids=active,
+            position_details=position_details,
         )
 
     async def _mark_price(self, connector_name: str, symbol: str) -> Decimal:
@@ -656,15 +791,14 @@ class HummingbotAccountReader:
             or not expected_main
         ):
             return empty
-        if not await _confirmed_executor(
+        main_confirmed = await _confirmed_executor(
             self._client,
             account_name=account_name,
             connector_name=connector_name,
             controller_id=self._controller_id,
             symbol=symbol,
             executor_id=main_executor,
-        ):
-            return empty
+        )
         same: list[Decimal] = []
         other: list[tuple[str, Decimal]] = []
         for row in venue_positions:
@@ -681,21 +815,25 @@ class HummingbotAccountReader:
                 same.append(quantity)
             else:
                 other.append((side, quantity))
-        if not same:
-            return ("main_binding_without_venue_position",) + empty[1:]
-        if len(same) != 1:
+        if len(same) > 1:
             return empty
-        main_quantity = same[0]
-        legs: list[Any] = [
-            PositionLeg(
-                position_id=main_tag,
-                symbol=symbol,
-                side=expected_main,
-                quantity=format(main_quantity, "f"),
-                mark_price=format(mark_price, "f"),
-                ownership_role="MAIN",
-            )
-        ]
+        if same and not main_confirmed:
+            return empty
+        main_quantity = same[0] if same else Decimal(0)
+        legs: list[Any] = (
+            [
+                PositionLeg(
+                    position_id=main_tag,
+                    symbol=symbol,
+                    side=expected_main,
+                    quantity=format(main_quantity, "f"),
+                    mark_price=format(mark_price, "f"),
+                    ownership_role="MAIN",
+                )
+            ]
+            if same
+            else []
+        )
         hedge_side: str | None = None
         hedge_quantity = Decimal(0)
         hedge_tag = binding.get("hedge_position_id")
@@ -730,8 +868,8 @@ class HummingbotAccountReader:
                     )
                 )
         return (
-            "single_main",
-            expected_main,
+            "single_main" if same else "main_binding_without_venue_position",
+            expected_main if same else None,
             main_quantity,
             hedge_side,
             hedge_quantity,
@@ -879,6 +1017,14 @@ class HummingbotAccountReader:
             )
         except Exception as exc:
             raise GMRejected(f"open orders read failed: {exc}") from exc
+        if (
+            not isinstance(result, dict)
+            or not isinstance(result.get("data"), list)
+            or len(result["data"]) >= 50
+            or _has_more_pages(result)
+            or any(not isinstance(row, dict) for row in result["data"])
+        ):
+            raise GMRejected("open orders read is incomplete or truncated")
         return bool(_venue_rows(result))
 
 
@@ -1370,6 +1516,21 @@ def build_watcher_provider(
             executors_result.get("data"), list
         ):
             return []
+        if (
+            not isinstance(orders_result, dict)
+            or not isinstance(orders_result.get("data"), list)
+            or any(
+                _has_more_pages(result)
+                or len(result["data"]) >= limit
+                or any(not isinstance(row, dict) for row in result["data"])
+                for result, limit in (
+                    (positions_result, 1000),
+                    (executors_result, 1000),
+                    (orders_result, 200),
+                )
+            )
+        ):
+            return []
         positions_by_symbol: dict[str, list[dict[str, Any]]] = {}
         for row in _venue_rows(positions_result):
             positions_by_symbol.setdefault(_position_symbol(row), []).append(row)
@@ -1824,12 +1985,37 @@ async def _pm_snapshot(
         return None
     if len(executors_result["data"]) >= 1000 or executors_result.get("next_cursor"):
         return None
-    bound_executors = [
-        sanitized
-        for row in executors_result["data"]
-        if isinstance(row, dict)
-        and (sanitized := _pm_sanitize_executor(row)) is not None
-    ]
+    bound_executor_ids = {
+        str(value)
+        for value in (
+            binding.get("main_executor_id") or binding.get("executor_id"),
+            binding.get("hedge_executor_id"),
+        )
+        if isinstance(value, str) and value.strip()
+    }
+    executor_rows: dict[str, dict[str, Any]] = {}
+    for row in executors_result["data"]:
+        if not isinstance(row, dict):
+            continue
+        executor_id = str(row.get("executor_id") or row.get("id") or "")
+        if executor_id not in bound_executor_ids:
+            continue
+        if (
+            row.get("account_name") not in (None, account_name)
+            or row.get("connector_name") not in (None, connector_name)
+            or row.get("trading_pair", row.get("symbol")) not in (None, symbol)
+            or row.get("controller_id") not in (None, controller_id)
+            or (
+                isinstance(row.get("controller_ids"), list)
+                and controller_id not in row["controller_ids"]
+            )
+        ):
+            return None
+        sanitized = _pm_sanitize_executor(row)
+        if sanitized is None or executor_id in executor_rows:
+            return None
+        executor_rows[executor_id] = sanitized
+    bound_executors = list(executor_rows.values())
     # Open orders are protection-relevant: any unscoped or unidentifiable row
     # fails the whole snapshot closed instead of hiding an order.
     orders_result = await client.trading.get_active_orders(
@@ -1852,6 +2038,178 @@ async def _pm_snapshot(
         if sanitized is None:
             return None
         open_orders.append(sanitized)
+
+    # AccountSnapshot retains raw position details only for the same IDs the
+    # reader resolved as owned legs. Do not issue a second venue read or expose
+    # additional same-symbol positions here.
+    details = getattr(snapshot, "position_details", None)
+    position_facts = (
+        {
+            position_id: row
+            for position_id, row in details.items()
+            if position_id in {leg.position_id for leg in legs}
+            and isinstance(row, Mapping)
+        }
+        if isinstance(details, Mapping)
+        else {}
+    )
+
+    # Use the same filled-order source as the existing watcher. Only orders
+    # tied by a bound executor id or already-resolved position id enter PM
+    # state; account-level rows without an ownership link are never guessed.
+    search_orders = getattr(client.trading, "search_orders", None)
+    last_event_ms = max(
+        (
+            value
+            for row in history_rows
+            if isinstance(row, dict)
+            for value in [row.get("decision_time_ms", row.get("at_ms"))]
+            if isinstance(value, int)
+            and not isinstance(value, bool)
+            and 0 <= value <= now_ms
+        ),
+        default=None,
+    )
+    fills_available = callable(search_orders)
+    fills_result = None
+    if fills_available:
+        try:
+            fills_result = await search_orders(
+                account_names=[account_name],
+                connector_names=[connector_name],
+                trading_pairs=[symbol],
+                status="FILLED",
+                # recent_fills includes earlier owned fills; the separate
+                # fills_since_last_event list is filtered locally below.
+                start_time=None,
+                end_time=now_ms // 1000,
+                limit=1000,
+            )
+        except Exception:
+            fills_available = False
+    if fills_available and (
+        not isinstance(fills_result, dict)
+        or not isinstance(fills_result.get("data"), list)
+        or len(fills_result["data"]) >= 1000
+        or fills_result.get("next_cursor")
+        or (
+            isinstance(fills_result.get("pagination"), dict)
+            and fills_result["pagination"].get("next_cursor")
+        )
+        or any(not isinstance(row, dict) for row in fills_result["data"])
+    ):
+        fills_available = False
+    if not fills_available:
+        fills_result = {"data": []}
+        log.warning(
+            "Brooks PM FILLED orders read unavailable or incomplete; "
+            "snapshot carries no fills"
+        )
+    leg_by_executor: dict[str, Any] = {}
+    main_executor_id = binding.get("main_executor_id") or binding.get("executor_id")
+    if isinstance(main_executor_id, str) and main_executor_id:
+        leg_by_executor[main_executor_id] = main_legs[0]
+    if hedge_position_id is not None:
+        hedge_legs = [leg for leg in legs if leg.position_id == hedge_position_id]
+        hedge_executor_id = binding.get("hedge_executor_id")
+        if (
+            isinstance(hedge_executor_id, str)
+            and hedge_executor_id
+            and len(hedge_legs) == 1
+        ):
+            leg_by_executor[hedge_executor_id] = hedge_legs[0]
+    leg_by_position_id = {leg.position_id: leg for leg in legs}
+    sanitized_fills: list[dict[str, Any]] = []
+    fills_since_last_event: list[dict[str, Any]] = []
+    for row in fills_result["data"]:
+        if not isinstance(row, dict):
+            return None
+        if str(row.get("status") or "").upper() != "FILLED":
+            continue
+        if str(row.get("trading_pair") or row.get("symbol") or "") != symbol:
+            continue
+        row_position_id = str(row.get("position_id") or "")
+        executor_id = str(row.get("executor_id") or "")
+        leg = leg_by_executor.get(executor_id)
+        if leg is None and row_position_id:
+            # Some order rows omit executor_id but carry the venue position id
+            # already resolved by the account reader. That explicit identity is
+            # sufficient to associate the fill without guessing ownership.
+            leg = leg_by_position_id.get(row_position_id)
+        if leg is None:
+            continue
+        if row_position_id and row_position_id != leg.position_id:
+            continue
+        order_id = row.get("client_order_id") or row.get("order_id") or row.get("id")
+        if order_id is None or not str(order_id).strip():
+            continue
+        fill: dict[str, Any] = {
+            "fill_id": str(row.get("fill_id") or row.get("trade_id") or order_id),
+            "order_id": str(order_id),
+            "position_id": leg.position_id,
+            "symbol": symbol,
+            "side": leg.side,
+            "status": "FILLED",
+        }
+        for source_keys, target, positive in (
+            (
+                ("filled_amount", "filled_quantity", "executed_amount_base"),
+                "quantity",
+                True,
+            ),
+            (
+                ("average_executed_price", "average_price", "fill_price", "price"),
+                "price",
+                True,
+            ),
+            (("fee", "fee_paid", "fee_quote"), "fee", False),
+            (("funding", "funding_fee", "funding_paid"), "funding", False),
+        ):
+            value = next(
+                (row[key] for key in source_keys if row.get(key) is not None), None
+            )
+            text_value = _pm_decimal_text(value, positive=positive)
+            if text_value is not None:
+                fill[target] = text_value
+        timestamp_key = next(
+            (
+                key
+                for key in (
+                    "filled_at_ms",
+                    "fill_timestamp_ms",
+                    "trade_timestamp_ms",
+                    "timestamp_ms",
+                    "filled_at",
+                    "fill_timestamp",
+                    "trade_timestamp",
+                )
+                if row.get(key) is not None
+            ),
+            None,
+        )
+        filled_at_ms = (
+            _pm_timestamp_ms(row[timestamp_key], milliseconds=True)
+            if timestamp_key is not None and timestamp_key.endswith("_ms")
+            else (
+                _pm_timestamp_ms(row[timestamp_key])
+                if timestamp_key is not None
+                else None
+            )
+        )
+        if filled_at_ms is not None and filled_at_ms > now_ms:
+            continue
+        if filled_at_ms is not None:
+            fill["filled_at_ms"] = filled_at_ms
+        sanitized_fills.append(fill)
+        if (
+            last_event_ms is not None
+            and filled_at_ms is not None
+            and last_event_ms < filled_at_ms <= now_ms
+        ):
+            fills_since_last_event.append(fill)
+    sanitized_fills = sanitized_fills[-20:]
+    fills_since_last_event = fills_since_last_event[-20:]
+
     management_policy = ManagementPolicyContext.model_validate(
         {
             "policy_id": f"brooks-pm-v1:{controller_id}",
@@ -1873,15 +2231,39 @@ async def _pm_snapshot(
     )
     quote = symbol.rsplit("-", 1)[-1].rsplit("/", 1)[-1].strip() or symbol
     main_leg = main_legs[0]
-    main_position = {
-        "position_id": main_leg.position_id,
-        "symbol": main_leg.symbol,
-        "side": main_leg.side,
-        "quantity": main_leg.quantity,
-        "mark_price": main_leg.mark_price,
-        "ownership_role": main_leg.ownership_role,
-        "as_of_ms": now_ms,
-    }
+    def position_record(leg: Any) -> dict[str, Any]:
+        result: dict[str, Any] = {
+            "position_id": leg.position_id,
+            "symbol": leg.symbol,
+            "side": leg.side,
+            "quantity": leg.quantity,
+            "mark_price": leg.mark_price,
+            "ownership_role": leg.ownership_role,
+            "as_of_ms": now_ms,
+        }
+        row = position_facts.get(leg.position_id)
+        if row is not None:
+            for source_keys, target, positive in (
+                (
+                    ("entry_price", "entryPrice", "average_entry_price"),
+                    "entry_price",
+                    True,
+                ),
+                (
+                    ("unrealized_pnl", "unrealized_pnl_quote", "position_pnl_quote"),
+                    "unrealized_pnl",
+                    False,
+                ),
+            ):
+                value = next(
+                    (row[key] for key in source_keys if row.get(key) is not None), None
+                )
+                text_value = _pm_decimal_text(value, positive=positive)
+                if text_value is not None:
+                    result[target] = text_value
+        return result
+
+    main_position = position_record(main_leg)
     return {
         "correlation_id": correlation_id,
         "symbol": symbol,
@@ -1893,27 +2275,17 @@ async def _pm_snapshot(
             "position_mode": snapshot.position_mode,
             "as_of_ms": now_ms,
         },
-        "positions": [
-            {
-                "position_id": leg.position_id,
-                "symbol": leg.symbol,
-                "side": leg.side,
-                "quantity": leg.quantity,
-                "mark_price": leg.mark_price,
-                "ownership_role": leg.ownership_role,
-                "as_of_ms": now_ms,
-            }
-            for leg in legs
-        ],
+        "positions": [position_record(leg) for leg in legs],
         "position": main_position,
         "executor_state": {
             "as_of_ms": now_ms,
             "controller_id": controller_id,
+            "fills_read_status": "available" if fills_available else "unavailable",
             "executors": bound_executors,
         },
         "open_orders": open_orders,
-        "recent_fills": [],
-        "fills_since_last_event": [],
+        "recent_fills": sanitized_fills,
+        "fills_since_last_event": fills_since_last_event,
         "original_trade_intent": original_intent,
         "latest_trader_intent": latest_trader,
         "latest_market_context": latest_market,
@@ -1929,7 +2301,7 @@ def _pm_latest_intent(root: Path, role: str, symbol: str) -> dict[str, Any] | No
     """Latest ambient TraderIntent for this symbol; ``None`` when not usable."""
     from condor.brooks.contracts import TradeIntentV2
 
-    raw = _pm_read_json(root / "brooks_state" / role / "latest.json")
+    raw = _pm_read_json(_pm_ambient_root(root) / role / "latest.json")
     if not isinstance(raw, dict):
         return None
     try:
@@ -1944,7 +2316,8 @@ def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
     from condor.brooks.contracts import MarketContextV1, MarketContextV2
     from condor.brooks.store import BrooksStore
 
-    raw = _pm_read_json(root / "brooks_state" / "htf" / "latest.json")
+    ambient_root = _pm_ambient_root(root)
+    raw = _pm_read_json(ambient_root / "htf" / "latest.json")
     legacy = None
     try:
         if isinstance(raw, dict):
@@ -1958,7 +2331,9 @@ def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
     # this read boundary so PM does not silently lose its macro input when the
     # production analyst starts writing context/d1 instead of htf/latest.
     try:
-        raw_v2 = BrooksStore(root).read_market_context("D1", symbol=symbol)
+        raw_v2 = BrooksStore(ambient_root.parent).read_market_context(
+            "D1", symbol=symbol
+        )
         v2 = MarketContextV2.model_validate(raw_v2) if raw_v2 else None
     except Exception:
         v2 = None
@@ -1979,6 +2354,50 @@ def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
     return MarketContextV1.model_validate(bridged).model_dump(mode="json")
 
 
+def _pm_ambient_root(root: Path | str) -> Path:
+    """Resolve latest context paths from either strategy_home or store.root."""
+    path = Path(root)
+    return path if path.name == "brooks_state" else path / "brooks_state"
+
+
+def _pm_decimal_text(value: Any, *, positive: bool = False) -> str | None:
+    if isinstance(value, bool) or value is None:
+        return None
+    try:
+        number = Decimal(str(value))
+    except (InvalidOperation, ValueError, TypeError):
+        return None
+    if not number.is_finite() or (number <= 0 if positive else False):
+        return None
+    return format(number, "f")
+
+
+def _pm_timestamp_ms(value: Any, *, milliseconds: bool = False) -> int | None:
+    if isinstance(value, bool) or value is None:
+        return None
+    if isinstance(value, (int, float)):
+        number = float(value)
+        if (
+            not number >= 0
+            or number != number
+            or number in (float("inf"), float("-inf"))
+        ):
+            return None
+        return int(number if milliseconds or number >= 1e12 else number * 1000)
+    if isinstance(value, str):
+        if value.isdecimal():
+            number = int(value)
+            return number if milliseconds or number >= 1e12 else number * 1000
+        try:
+            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+        if parsed.tzinfo is None:
+            return None
+        return int(parsed.timestamp() * 1000)
+    return None
+
+
 def _pm_sanitize_executor(row: Mapping[str, Any]) -> dict[str, Any] | None:
     """Best-effort executor status; rows without an identity are skipped."""
     executor_id = row.get("executor_id") or row.get("id")
@@ -1986,11 +2405,68 @@ def _pm_sanitize_executor(row: Mapping[str, Any]) -> dict[str, Any] | None:
         return None
     sanitized: dict[str, Any] = {
         "executor_id": str(executor_id),
-        "status": str(row.get("status") or "UNKNOWN").upper(),
+        "status": _executor_status(row) or "UNKNOWN",
     }
-    for key in ("trading_pair", "symbol", "controller_id", "controller_ids"):
-        if row.get(key) is not None:
-            sanitized[key] = row[key]
+    for key in ("trading_pair", "symbol", "controller_id", "position_id"):
+        value = row.get(key)
+        if isinstance(value, str) and value.strip():
+            sanitized[key] = value
+    controller_ids = row.get("controller_ids")
+    if isinstance(controller_ids, list) and all(
+        isinstance(value, str) and value.strip() for value in controller_ids
+    ):
+        sanitized["controller_ids"] = controller_ids
+
+    # Preserve only known quote-PnL/fee values and execution barriers from the
+    # executor API's config/custom_info; never pass its arbitrary payload.
+    financial_keys = (
+        "net_pnl_quote",
+        "net_pnl_pct",
+        "realized_pnl_quote",
+        "position_pnl_quote",
+        "cum_fees_quote",
+    )
+    barrier_keys = (
+        "stop_loss",
+        "take_profit",
+        "stop_loss_pct",
+        "take_profit_pct",
+        "stop_price",
+        "target_price",
+        "stop_loss_price",
+        "take_profit_price",
+    )
+    for key in financial_keys:
+        value = _pm_decimal_text(row.get(key))
+        if value is not None:
+            sanitized[key] = value
+    for key in barrier_keys:
+        value = _pm_decimal_text(row.get(key), positive=True)
+        if value is not None:
+            sanitized[key] = value
+    for container_key in ("config", "custom_info"):
+        container = row.get(container_key)
+        if not isinstance(container, Mapping):
+            continue
+        allowed = (
+            barrier_keys
+            if container_key == "config"
+            else (*barrier_keys, *financial_keys)
+        )
+        values = {
+            key: text_value
+            for key in allowed
+            if (
+                (
+                    text_value := _pm_decimal_text(
+                        container.get(key), positive=key not in financial_keys
+                    )
+                )
+                is not None
+            )
+        }
+        if values:
+            sanitized[container_key] = values
     return sanitized
 
 

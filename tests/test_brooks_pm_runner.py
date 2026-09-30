@@ -227,6 +227,11 @@ class FakeTrading:
             raise ConnectionError("venue down")
         return {"data": [dict(row) for row in self._outer.orders]}
 
+    async def search_orders(self, **kwargs):
+        if self._outer.fail_venue:
+            raise ConnectionError("venue down")
+        return {"data": []}
+
     async def get_position_mode(self, account_name, connector_name):
         return {"position_mode": "HEDGE"}
 

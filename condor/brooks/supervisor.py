@@ -56,6 +56,7 @@ import logging
 import time
 from collections.abc import Awaitable, Callable, Iterable, Mapping
 from dataclasses import asdict, is_dataclass
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -151,11 +152,50 @@ class GMConsumer:
         self.raise_boundary_errors = raise_boundary_errors
         self._latest_analysis: dict[str, Any] = {}
 
+    async def reconcile_bound_snapshot(
+        self, snapshot: Mapping[str, Any], *, shadow_mode: bool = False
+    ) -> None:
+        """Use watcher hints to request fresh GM proof, never as write authority."""
+        if (
+            self.gm_factory is None
+            or Decimal(str(snapshot.get("main", {}).get("qty", 0))) > 0
+        ):
+            return
+        symbol, correlation = snapshot.get("symbol"), snapshot.get("correlation_id")
+        if not symbol or not correlation:
+            return
+        gm = self.gm_factory(symbol)
+        if inspect.isawaitable(gm):
+            gm = await gm
+        reconcile = getattr(gm, "reconcile_lifecycle", None)
+        if reconcile is None:
+            return
+        try:
+            path = gm._trade_dir(correlation) / "binding.json"
+            before = json.loads(path.read_text(encoding="utf-8")).get("status")
+            result = await reconcile(correlation, shadow_mode=shadow_mode)
+            if result.get("status") == "closed" and before != "closed":
+                await self._emit(
+                    EventType.BINDING_CLOSED,
+                    symbol,
+                    correlation,
+                    None,
+                    {"binding": result},
+                )
+        except Exception:
+            # Venue failures cannot fabricate closure or kill the supervisor.
+            log.warning(
+                "Brooks lifecycle reconciliation deferred for %s",
+                correlation,
+                exc_info=True,
+            )
+
     def _build_default_analyst_runner(
         self, symbol: str
     ) -> Callable[[Any], Awaitable[Any]]:
         async def _run(clean_req: Any) -> Any:
             from .agent_runner import run_role
+            from .agent_runner import bind_symbol_tools
             from .contracts import TradeIntentV2
             from .market_analysis import filter_read_only_tools
             from .market_tools import TraderMarketTools
@@ -167,8 +207,13 @@ class GMConsumer:
                 source=self.candle_source,
                 decision_time_ms=decision_time,
             )
-            safe_tools = filter_read_only_tools(market_tools.as_tools())
-            named = {t.__name__: t for t in safe_tools}
+            role_tools = {
+                "get_closed_candles": market_tools.get_closed_candles,
+                "get_recent_structure": market_tools.get_recent_structure,
+                "get_volatility": market_tools.get_volatility,
+            }
+            safe_tools = filter_read_only_tools(list(role_tools.values()))
+            named = {tool.__name__: tool for tool in safe_tools}
             prompt = (
                 clean_req.model_dump()
                 if hasattr(clean_req, "model_dump")
@@ -179,7 +224,7 @@ class GMConsumer:
                 agent_key=self.agent_key,
                 prompt=prompt,
                 output_model=TradeIntentV2,
-                market_tools=named,
+                market_tools=bind_symbol_tools(symbol, named),
                 user_id=self.user_id,
             )
 
@@ -694,6 +739,9 @@ class BrooksSupervisor:
         self._watcher = PositionWatcher(
             self._watcher_snapshots or (lambda: []),
             self.events,
+            on_snapshot=lambda snapshot: self._gm.reconcile_bound_snapshot(
+                snapshot, shadow_mode=self._shadow_mode
+            ),
         )
         self._pm = self._build_pm()
         self._gm = GMConsumer(

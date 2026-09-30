@@ -179,9 +179,11 @@ class PositionWatcher:
         publish: Any,
         *,
         initial_snapshots: Iterable[Mapping[str, Any]] = (),
+        on_snapshot: Callable[[Mapping[str, Any]], Any] | None = None,
     ) -> None:
         self.get_bound_snapshots = get_bound_snapshots
         self.publish = publish
+        self.on_snapshot = on_snapshot
         self._previous: dict[str, dict[str, Any]] = {}
         self._fingerprints: dict[str, str] = {}
         for snapshot in initial_snapshots:
@@ -202,6 +204,12 @@ class PositionWatcher:
             if key in seen:
                 raise ValueError(f"duplicate Brooks binding: {key}")
             seen.add(key)
+            # Lifecycle reconciliation must also run for an unchanged first
+            # flat snapshot after restart; transitions alone cannot recover it.
+            if self.on_snapshot is not None:
+                result = self.on_snapshot(snapshot)
+                if inspect.isawaitable(result):
+                    await result
             fingerprint = position_fingerprint(snapshot)
             if self._fingerprints.get(key) == fingerprint:
                 continue

@@ -6,6 +6,7 @@ Account data is deliberately absent from market-only contracts.
 
 from __future__ import annotations
 
+import re
 from decimal import Decimal
 from typing import Any, Literal
 
@@ -51,24 +52,57 @@ _PRIVATE_KEYS = frozenset({
 })
 
 
-def _check_public(value: Any) -> None:
+_MARKET_RANGE_POSITION = re.compile(
+    r"(?:lower|middle|upper) (?:quarter|half) of the (?:tight |trading )?range"
+    r"(?:; (?:0|[1-9]\d*)(?:\.\d+)? (?:above|below) the range (?:low|high))?",
+    re.IGNORECASE,
+)
+
+
+def _check_public(
+    value: Any,
+    *,
+    allow_m15_price_location: bool = False,
+    path: tuple[str, ...] = (),
+) -> None:
     if isinstance(value, dict):
         for key, child in value.items():
-            if str(key).lower() in _PRIVATE_KEYS:
+            normalized_key = str(key).lower()
+            safe_price_location = (
+                allow_m15_price_location
+                and path == ("m15_facts",)
+                and normalized_key == "position"
+                and isinstance(child, str)
+                and _MARKET_RANGE_POSITION.fullmatch(child) is not None
+            )
+            if normalized_key in _PRIVATE_KEYS and not safe_price_location:
                 raise ValueError(f"private or future market field: {key}")
-            _check_public(child)
+            _check_public(
+                child,
+                allow_m15_price_location=allow_m15_price_location,
+                path=(*path, normalized_key),
+            )
     elif isinstance(value, list):
         for child in value:
-            _check_public(child)
+            _check_public(
+                child,
+                allow_m15_price_location=allow_m15_price_location,
+                path=(*path, "[]"),
+            )
 
 
 class TriggerSource(Contract):
-    timeframe: NonEmpty
+    timeframe: Literal["M15"]
     bar_index: StrictInt = Field(ge=0)
     open_time_ms: Timestamp = Field(ge=0)
     close_time_ms: Timestamp = Field(ge=0)
 
-    _name = field_validator("timeframe")(_nonempty)
+    @field_validator("timeframe", mode="before")
+    @classmethod
+    def canonical_timeframe(cls, value: Any) -> Any:
+        # The candle tool exposes this same interval as `15m`; source labels
+        # always serialize as the contract's canonical `M15` value.
+        return "M15" if value == "15m" else value
 
 
 class PriceReference(Contract):
@@ -107,7 +141,7 @@ class TradeIntentV2(Contract):
     decision_time_ms: Timestamp = Field(ge=0)
     market_context: dict[str, Any] | None
     setup: Setup | None
-    decision_timeframe: StrictStr | None
+    decision_timeframe: Literal["M15"] | None
     context_timeframes_used: list[NonEmpty]
     entry_mechanism: Literal["continuation", "breakout", "breakout_pullback", "reversal", "none", "unclear"]
     trigger: Trigger | None
@@ -118,10 +152,15 @@ class TradeIntentV2(Contract):
     uncertainty: list[NonEmpty] = Field(min_length=1)
     conditions_that_change_market_read: list[NonEmpty] = Field(min_length=1)
 
-    @field_validator("symbol", "decision_timeframe")
+    @field_validator("symbol")
     @classmethod
-    def nonempty_if_present(cls, value: str | None) -> str | None:
-        return _nonempty(value) if value is not None else value
+    def nonempty_if_present(cls, value: str) -> str:
+        return _nonempty(value)
+
+    @field_validator("decision_timeframe", mode="before")
+    @classmethod
+    def canonical_decision_timeframe(cls, value: Any) -> Any:
+        return "M15" if value == "15m" else value
 
     @field_validator("context_timeframes_used", "evidence_for", "evidence_against", "uncertainty", "conditions_that_change_market_read")
     @classmethod
@@ -132,7 +171,7 @@ class TradeIntentV2(Contract):
 
     @model_validator(mode="after")
     def semantics(self) -> TradeIntentV2:
-        _check_public(self.market_context)
+        _check_public(self.market_context, allow_m15_price_location=True)
         if self.decision == "NO_TRADE":
             if self.decision_timeframe is not None or self.trigger is not None or self.invalidation is not None:
                 raise ValueError("NO_TRADE cannot include decision timeframe, trigger or invalidation")

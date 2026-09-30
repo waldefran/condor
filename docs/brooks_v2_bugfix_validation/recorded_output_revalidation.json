@@ -1,0 +1,183 @@
+{
+  "scope": "Offline revalidation of unchanged real baseline responses against current market contract and initial observed OHLC only. No model call, no repair response, no GM/venue execution. Coverage/freshness gates remain separately tested.",
+  "results": [
+    {
+      "round_id": "clock-1h-1789869599999-5",
+      "original_category": "pydantic_schema_validation",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1789869599999-5-1-71be0235.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1789873199999-6",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1789873199999-6-1-66c39a10.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "ValueError",
+      "error": "pending trigger has invalid stop direction"
+    },
+    {
+      "round_id": "clock-1h-1789891199999-12",
+      "original_category": "invalid_json_or_tool_protocol",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1789891199999-12-1-5a455463.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "RoleRunError",
+      "error": "Brooks role returned invalid JSON"
+    },
+    {
+      "round_id": "clock-1h-1789923599999-24",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1789923599999-24-1-d40cb9de.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1789927199999-25",
+      "original_category": "exact_ohlc_reference_mismatch",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1789927199999-25-1-217fb766.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "ValueError",
+      "error": "entry reference does not match any supplied closed bar"
+    },
+    {
+      "round_id": "clock-1h-1789952399999-35",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1789952399999-35-1-62966413.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1789981199999-45",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1789981199999-45-1-670f52c2.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1790002799999-52",
+      "original_category": "invalid_json_or_tool_protocol",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790002799999-52-1-25ff5646.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "RoleRunError",
+      "error": "Brooks role returned invalid JSON"
+    },
+    {
+      "round_id": "clock-1h-1790013599999-56",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790013599999-56-1-e46693b7.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1790017199999-57",
+      "original_category": "invalid_json_or_tool_protocol",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790017199999-57-1-855abf89.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "RoleRunError",
+      "error": "Brooks role returned invalid JSON"
+    },
+    {
+      "round_id": "clock-1h-1790020799999-58",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790020799999-58-1-5c87b911.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1790024399999-60",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790024399999-60-1-268f2397.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1790031599999-62",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790031599999-62-1-d3cf5843.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1790049599999-69",
+      "original_category": "invalid_json_or_tool_protocol",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790049599999-69-1-42f5f2a5.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "RoleRunError",
+      "error": "Brooks role returned invalid JSON"
+    },
+    {
+      "round_id": "clock-1h-1790056799999-72",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790056799999-72-1-ec267b07.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1790067599999-76",
+      "original_category": "pydantic_schema_validation",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790067599999-76-1-24b85c47.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "ValidationError",
+      "error": "1 validation error for TradeIntentV2\nevidence_against\n  Input should be a valid list [type=list_type, input_value='Strongest opposite case:... no follow-through yet.', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/list_type"
+    },
+    {
+      "round_id": "clock-1h-1790071199999-77",
+      "original_category": "pydantic_schema_validation",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790071199999-77-1-85d78842.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "ValidationError",
+      "error": "1 validation error for TradeIntentV2\nevidence_against\n  Input should be a valid list [type=list_type, input_value='[TRIMMED]', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/list_type"
+    },
+    {
+      "round_id": "clock-1h-1790078399999-79",
+      "original_category": "invalid_json_or_tool_protocol",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790078399999-79-1-ca288775.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "RoleRunError",
+      "error": "Brooks role returned invalid JSON"
+    },
+    {
+      "round_id": "clock-1h-1790107199999-89",
+      "original_category": "invalid_json_or_tool_protocol",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790107199999-89-1-d537ee75.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "RoleRunError",
+      "error": "Brooks role returned invalid JSON"
+    },
+    {
+      "round_id": "clock-1h-1790200799999-123",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790200799999-123-1-9184c2a3.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1790207999999-125",
+      "original_category": "exact_ohlc_reference_mismatch",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790207999999-125-1-6a1dedf1.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "ValueError",
+      "error": "entry reference does not match any supplied closed bar"
+    },
+    {
+      "round_id": "clock-1h-1790233199999-135",
+      "original_category": "pydantic_schema_validation",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790233199999-135-1-48d3450c.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "ValidationError",
+      "error": "2 validation errors for TradeIntentV2\nevidence_against\n  Input should be a valid list [type=list_type, input_value='Strongest opposite case:...n at the pullback edge.', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/list_type\nevidence_against_extra\n  Extra inputs are not permitted [type=extra_forbidden, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden"
+    },
+    {
+      "round_id": "clock-1h-1790236799999-136",
+      "original_category": "invalid_json_or_tool_protocol",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790236799999-136-1-c1179384.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "RoleRunError",
+      "error": "Brooks role returned invalid JSON"
+    },
+    {
+      "round_id": "clock-1h-1790243999999-139",
+      "original_category": "source_timeframe_alias",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790243999999-139-1-7fc00e1a.json",
+      "current_contract_and_initial_ohlc": "pass"
+    },
+    {
+      "round_id": "clock-1h-1790337599999-172",
+      "original_category": "invalid_json_or_tool_protocol",
+      "source": "docs/brooks_v2_investigation_evidence/captures/clock-1h-1790337599999-172-1-38943ef4.json",
+      "current_contract_and_initial_ohlc": "reject",
+      "error_type": "RoleRunError",
+      "error": "Brooks role returned invalid JSON"
+    }
+  ]
+}

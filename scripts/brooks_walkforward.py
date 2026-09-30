@@ -184,9 +184,18 @@ class WalkForward:
         self.pm = PositionManager(load_context=self.venue.pm_load_context, save_decision=self.save_pm,
             publish=self.events, candle_source=self.source, record_market_read=self.record_pm_read,
             list_active_correlations=self.active_correlations, agent_key=args.agent_key)
-        self.watcher = PositionWatcher(build_watcher_provider(self.venue.client,
-            account_name=self.venue.account_name, connector_name=self.venue.connector_name,
-            controller_id=self.venue.controller_id, symbols=[self.symbol], state_root=self.store.root), self.events)
+        self.watcher = PositionWatcher(
+            build_watcher_provider(
+                self.venue.client,
+                account_name=self.venue.account_name,
+                connector_name=self.venue.connector_name,
+                controller_id=self.venue.controller_id,
+                symbols=[self.symbol],
+                state_root=self.store.root,
+            ),
+            self.events,
+            on_snapshot=self.gm_consumer.reconcile_bound_snapshot,
+        )
         self.clock = MarketClock(symbols=[self.symbol], source=self.source, publish=self.events,
             trader=MarketWakeConfig(timeframe="1h", wake_offset_sec=2),
             htf=MarketWakeConfig(timeframe="1d", wake_offset_sec=3),
@@ -229,8 +238,12 @@ class WalkForward:
             self.agenda, self.sequence = state["agenda"], state["sequence"]
             self.manifest = state["manifest"]
             self.venue.load_checkpoint(self.args.state / "venue_checkpoint.json")
-            self.watcher = PositionWatcher(self.watcher.get_bound_snapshots, self.events,
-                                          initial_snapshots=state.get("watcher_snapshots", []))
+            self.watcher = PositionWatcher(
+                self.watcher.get_bound_snapshots,
+                self.events,
+                initial_snapshots=state.get("watcher_snapshots", []),
+                on_snapshot=self.gm_consumer.reconcile_bound_snapshot,
+            )
             self.gm_results = state.get("gm_results", {})
 
     def enqueue(self, due: int, priority: int, kind: str, **fields):
