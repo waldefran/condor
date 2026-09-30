@@ -1,123 +1,128 @@
-# Brooks context evidence model
+# Brooks Context Evidence
 
-Use this reference to resolve ambiguous context. It is a compact operational synthesis, not a replacement for the source material.
+This is a compact operational synthesis of Al Brooks price-action concepts.
+Use it to resolve a structural ambiguity; it is not a mechanical indicator or
+trade plan. Raw closed OHLC bars are the primary evidence for this project
+role.
 
-## Core distinction: regime, phase, breakout mode, Always-In
+## Keep the classification axes separate
 
-These are related but not identical.
+- **Regime** describes whether the supplied structure behaves mainly as a bull
+  trend, bear trend, trading range, or unresolved transition.
+- **Phase** describes breakout spike, channel, range, transition, or unclear
+  structure.
+- **Breakout mode** overlays a range or compact transition where either
+  boundary could break.
+- **Directional pressure** summarizes which side has more observable pressure
+  in the supplied bars, or whether pressure is balanced/unclear.
+- **Always-In** is the current structural direction if one must be chosen;
+  `always_in_relevance` separately captures whether that label is useful in
+  the broader context.
 
-- **Regime** answers whether the current structure behaves primarily like a bull trend, bear trend, trading range, or unresolved transition.
-- **Phase** locates the structure in the market cycle: breakout/spike, channel, range, or transition.
-- **Breakout mode** is an overlay: price is balanced enough that a breakout in either direction can become important.
-- **Always-In** asks which direction is currently easier to justify if forced to choose, and how useful that directional framing is in the present context.
+Do not let one axis dictate the others. A latest leg can have bull pressure
+while the broader regime remains a range, and Always-In can have low relevance
+in two-sided action.
 
-Keeping these axes separate prevents common classification errors.
+## Trend versus trading range
 
-## Regime structure: legs are evidence, not a rule
+### Evidence favoring a trend
 
-For regime work, inspect whether directional progress is repeated: a leg, a
-pullback, and a later leg in the same direction are stronger trend evidence
-than one uninterrupted move. A single strong leg can be a breakout attempt,
-climax, or a move inside a larger range. Deep pullbacks, growing overlap, and
-legs that repeatedly flip direction reduce the trend interpretation and may
-support `transition-unclear` or `trading-range`.
+Weigh a group of aligned observations:
 
-Use leg count as a descriptive aid, not a deterministic threshold. Close
-location, overlap, pullback behavior, breakout acceptance, and the broader
-window can outweigh a nominal count.
+- repeated directional bars and closes near the bar extremes;
+- relatively little overlap during the directional progress;
+- higher highs and higher lows in a bull move, or lower highs and lower lows
+  in a bear move;
+- contained pullbacks followed by renewed movement in the trend direction;
+- breakout acceptance, continuation, or failed countertrend attempts.
 
-## Evidence favoring trend behavior
+A single strong leg may be a spike, a range leg, a climax, or a breakout
+attempt. A later leg after a contained pullback strengthens a trend reading,
+but do not use a fixed leg count. Pullback depth, overlap, acceptance,
+follow-through, and the larger supplied structure matter more than a count.
 
-Weight several aligned observations more than one isolated feature:
+### Evidence favoring a trading range
 
-- repeated directional trend bars or strong closes;
-- successful breakouts with follow-through;
-- relatively limited overlap during the directional move;
-- pullbacks that remain contained and lead to renewed continuation;
-- persistent swing progression in one direction;
-- failed countertrend attempts followed by continuation;
-- price repeatedly accepting beyond prior barriers rather than snapping back.
+Look for two-sided acceptance:
 
-A trend can weaken without instantly becoming a trading range. Reduce confidence when pullbacks deepen, overlap grows, or continuation repeatedly fails.
+- substantial overlap, prominent tails, and repeated reversals;
+- tests of both boundaries and returns toward the middle;
+- alternating legs that fail to continue beyond the range;
+- strong looking bull or bear legs that lack follow-through or promptly return
+  inside the range.
 
-## Evidence favoring trading-range behavior
+A strong range leg is still a range leg while the range continues to explain
+the evidence. Do not promote it to a trend merely because it is large or
+directional. Reassess when closes hold outside a relevant boundary and
+follow-through changes the structure.
 
-Look for two-sided acceptance rather than direction alone:
+## Spike, channel, and transition
 
-- substantial overlap among bars;
-- frequent tails and reversals;
-- repeated tests of upper/lower areas;
-- strong-looking legs that fail to produce sustained breakout follow-through;
-- both bulls and bears obtaining reversals;
-- price returning toward the middle after excursions;
-- alternating directional pressure.
+A spike is a forceful move, often with wide trend bars, strong closes, and
+little overlap. A channel is a weaker trend: opposing bars, tails, overlap,
+and pullbacks become more visible. Channels can broaden and become increasingly
+range-like. Do not claim that every chart passes through these phases in a
+fixed order.
 
-A strong leg inside a mature range is still only evidence for a breakout attempt until acceptance/follow-through changes the structure.
+Use `transition-unclear` when the prior structure is weakening and the new
+structure has not yet established itself. Examples include a trend that gains
+deep overlapping pullbacks, a broken trend line without reversal follow-through,
+or a range breakout without enough acceptance. Name both the old and proposed
+read so `transition-unclear` is not a substitute for analysis.
 
-## Transition evidence
+An `mtr-like` label describes a possible major trend reversal structure. In
+Brooks' terminology, a major trend reversal has opposing trend segments with a
+reversal between them; a minor reversal may be a pullback or countertrend swing
+without changing the dominant trend. Neither a visual reversal pattern nor a
+trend-line break alone confirms a new trend. A candidate may remain a range or
+flag, and the chart may not resolve which it is until more bars form. Require
+structural context and observable follow-through before changing the regime.
 
-Use `transition-unclear` when evidence is genuinely mixed and the old regime is losing explanatory power but a new one has not established itself.
+## Breakout mode and follow-through
 
-Typical evidence:
+Mark recognizable range boundaries and assess balance around them. Breakout
+mode is an overlay, not a replacement for regime. Before confirmation, either
+direction is possible. A strong bar or brief probe outside a boundary is an
+attempt; inspect later closed bars for acceptance, follow-through, or a return
+inside. State what evidence would change the classification without predicting
+which event will occur.
 
-- a formerly clean trend develops deeper, more overlapping pullbacks;
-- trend-line/channel behavior is breached but reversal follow-through is weak;
-- repeated continuation attempts fail while the opposite side also cannot sustain a breakout;
-- a breakout from a range occurs but confirmation is not yet sufficient.
+## Always-In and relevance
 
-Do not use `transition-unclear` as a lazy default. State the competing hypotheses.
+Assess the latest decisive bars separately from the broader regime. Convincing
+directional pressure can make Always-In long or short, even while the window
+still contains a larger range. In a balanced range, use `unclear` when the
+forced choice is not supported and set relevance low. A single strong bar can
+support only a tentative, low-relevance direction while follow-through is
+unknown; it does not establish a trend, high confidence, or an entry.
 
-## Breakout mode
+## Missing facts, uncertainty, and confidence
 
-Breakout mode is most useful when price is balanced around recognizable boundaries and the next successful breakout could establish directional follow-through.
+OHLC bars provide enough evidence for this role to describe bars, swings,
+overlap, range boundaries, and follow-through. Per-bar volume is optional and
+is not required confirmation. Brooks does discuss volume in selected contexts,
+including unusually large volume on daily reversals; when supplied, it can be a
+secondary clue for a particular structure. It is not a universal gate, and its
+absence alone does not lower confidence. Missing DOM, time-and-sales, volume
+profile, footprint, delta, news, indicators, or future bars is not by itself
+missing information or a reason to lower confidence.
 
-Operationally:
+Use `missing_information` only for concrete unavailable or malformed evidence
+that materially affects the requested structural read, such as a missing OHLC
+field, incomplete requested history, or absent bars needed to establish a
+claimed swing or boundary. Do not mark pre-window bars missing when the
+supplied 120-bar window is sufficient for the requested classification. Future
+resolution is inherently uncertain, not a missing fact. Describe that
+uncertainty in the supporting and opposing evidence, then put the observable
+resolution condition in `transition_conditions`. Empty `missing_information`
+is valid.
 
-- mark the relevant boundaries;
-- treat both directions as plausible before confirmation;
-- avoid promoting the first probe beyond a boundary to a new trend automatically;
-- upgrade the breakout case when follow-through/acceptance confirms it;
-- downgrade it when price promptly returns into the prior structure.
-
-## Always-In
-
-Evaluate the most recent decisive directional evidence, especially breakouts and follow-through. Then separately rate relevance.
-
-- **High relevance:** clear directional behavior where trading against the current direction requires strong reversal evidence.
-- **Medium relevance:** direction exists but channel/range effects materially weaken the edge.
-- **Low relevance:** two-sided range behavior makes a single persistent directional label less useful.
-
-Always-In direction can change before the broader chart is visually obvious. Conversely, do not use it to pretend a balanced range has become a clean trend.
-
-Because Always-In is a forced-choice control question, one strong bar closing
-near its extreme can create a low-confidence directional lean when a choice is
-required. That bar alone does not justify high confidence, a mature regime
-label, or an entry. If the window is genuinely balanced, use `unclear`
-rather than manufacturing a direction.
-
-## Entry boundary
-
-Context evidence is a prerequisite for later setup or entry work, not a trade
-instruction. A strong Always-In or trend read can still be a poor entry
-location after an extended move, near opposing structure, or without a
-defensible invalidation. A context classifier should state those limits rather
-than inventing an entry.
-
-## Market-cycle framing
-
-A useful Brooks cycle model is:
-
-```text
-breakout/spike -> channel -> increasingly two-sided trade -> trading range -> next breakout
-```
-
-Real charts can skip, compress, or blur stages. Use the model as a state-transition guide, not a rigid sequence detector.
-
-## Probability discipline
-
-Brooks often teaches memorable probability heuristics (for example, the tendency of trading-range breakout attempts to fail and the inertia of existing behavior). Use these as contextual priors, not as independent numbers to multiply or combine mechanically.
-
-When the actual chart provides strong contrary evidence—especially a breakout with strong follow-through—update the classification from current evidence rather than repeating a memorized percentage.
+Confidence is categorical support for the current structural classification,
+not win odds. Do not emit percentages or probabilities, even when a Brooks
+teaching heuristic uses them. Do not add trade recommendations, targets, or
+stops. The final rationale should show observable facts, the strongest
+alternative, the classification, and change conditions without exposing
+hidden chain-of-thought.
 
 ## Common failure modes
 
@@ -125,20 +130,25 @@ When the actual chart provides strong contrary evidence—especially a breakout 
 
 Bad: decide `bull-trend`, then search for bullish details.
 
-Better: write observable evidence, competing evidence, then classify.
+Better: record visible bar behavior, state the strongest competing read, and
+classify after weighing both.
 
 ### Indicator substitution
 
-A moving average can be supporting context. It does not replace bar structure, breakouts, follow-through, swings, and two-sided behavior.
+A moving average may be present as optional chart context, but it does not
+replace bar structure, swing progression, breakouts, overlap, or follow-through.
+Do not mark its absence as missing data.
 
-### Single-bar regime flips
+### Single-bar regime flip
 
-A large bar is important but is not always enough. Ask what happened before it and whether the market accepted the breakout afterward.
+A large bar matters, but it may be one leg inside a range. Check surrounding
+structure and whether later bars accept the breakout.
 
 ### Range amnesia
 
-Do not forget the broader range because the current leg is emotionally convincing. Strong legs frequently occur within ranges.
+Keep the broader range in view while assessing a forceful leg inside it.
 
 ### False precision
 
-Do not emit `confidence: 0.83` simply because a schema allows a float. Prefer categorical confidence unless a real calibrated model supplies the number.
+Categorical confidence is the contract. Do not convert a teaching heuristic or
+chart impression into numeric odds.

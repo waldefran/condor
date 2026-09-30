@@ -6,18 +6,22 @@ account mutation, or raw provider payload to a Trader or HTF Analyst.
 
 from __future__ import annotations
 
+import inspect
+import json
+import re
 from copy import deepcopy
 from datetime import datetime
 from decimal import Decimal
-import json
-import re
 from pathlib import Path
 from typing import Any, Callable, Mapping, Protocol, Sequence
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 
-from condor.brooks.contracts import MarketContextV1, PositionManagementInputV2, TradeIntentV2
-
+from condor.brooks.contracts import (
+    MarketContextV1,
+    PositionManagementInputV2,
+    TradeIntentV2,
+)
 
 INTERVAL_MS = {"15m": 900_000, "1h": 3_600_000, "4h": 14_400_000, "1d": 86_400_000}
 TIMEFRAME_ALIASES = {"M15": "15m", "H1": "1h", "H4": "4h", "D1": "1d"}
@@ -234,6 +238,13 @@ class CandleSource(Protocol):
 
 class _MarketTools:
     def __init__(self, *, source: CandleSource, decision_time_ms: int, max_candles: int, market_context: MarketContextV1 | None = None):
+        # Resolve statically first so mocks with auto-created attributes remain
+        # ordinary three-argument sources unless they explicitly implement this.
+        binder = inspect.getattr_static(source, "at_decision_time", None)
+        if binder is not None:
+            bind = getattr(source, "at_decision_time", None)
+            if callable(bind):
+                source = bind(decision_time_ms)
         self._source = source
         self._decision_time_ms = decision_time_ms
         self._max_candles = max_candles

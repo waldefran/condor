@@ -125,6 +125,11 @@ class PMReadTools:
         self.context = _as_dict(context)
         self.symbol = str(self.context["symbol"])
         self.decision_time_ms = int(self.context["decision_time_ms"])
+        binder = inspect.getattr_static(candle_source, "at_decision_time", None)
+        if binder is not None:
+            bind = getattr(candle_source, "at_decision_time", None)
+            if callable(bind):
+                candle_source = bind(self.decision_time_ms)
         self._candle_source = candle_source
         self._record_market_read = record_market_read
         self.correlation_id = str(self.context["correlation_id"])

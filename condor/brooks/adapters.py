@@ -219,6 +219,21 @@ class HummingbotCandleSource:
         self._connector = connector_name
         self._now_fn = now_fn or _now_ms
 
+    def at_decision_time(self, decision_time_ms: int) -> "HummingbotCandleSource":
+        """Return a source whose reads cannot advance past a decision boundary."""
+        if (
+            isinstance(decision_time_ms, bool)
+            or not isinstance(decision_time_ms, int)
+            or decision_time_ms < 0
+        ):
+            raise ValueError("decision_time_ms must be a nonnegative integer")
+        parent_now_fn = self._now_fn
+        return HummingbotCandleSource(
+            self._client,
+            self._connector,
+            now_fn=lambda: min(parent_now_fn(), decision_time_ms),
+        )
+
     async def fetch_candles(
         self, symbol: str, timeframe: str, limit: int
     ) -> list[dict[str, Any]]:

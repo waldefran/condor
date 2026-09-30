@@ -63,6 +63,7 @@ async def test_runtime_prompts_have_one_role_specific_final_contract(monkeypatch
         market_tools={},
     )
     trader_system = captured["system_prompt"]
+    assert "Al Brooks" in trader_system
     assert "TradeIntentV2" in trader_system
     assert "ENTER_LONG" in trader_system and "ENTER_SHORT" in trader_system
     assert "NO_TRADE" in trader_system
@@ -88,6 +89,7 @@ async def test_runtime_prompts_have_one_role_specific_final_contract(monkeypatch
         market_tools={},
     )
     context_system = captured["system_prompt"]
+    assert "Al Brooks" in context_system
     assert "MarketContextV2" in context_system
     assert "brooks.market-context.v2" in context_system
     assert "TradeIntentV2" not in context_system

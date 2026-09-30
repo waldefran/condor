@@ -1,59 +1,83 @@
 # Trade-entry evidence map
 
-This is a compact operational synthesis. Use it when the supplied case is
-ambiguous; do not treat any heuristic as a deterministic trading rule.
+Use this compact map when the supplied bars leave a material entry distinction
+unclear. It is an operational synthesis of Al Brooks price action, not a
+deterministic rule set. Start from the bars; pattern names summarize evidence
+and do not replace it.
 
-## Context versus entry
+## Evidence sequence
 
-A trend, an Always-In lean, or a successful breakout describes pressure. An
-entry also needs a current trigger, acceptable location, opposing-pressure
-assessment, and an invalidation that can be stated from supplied structure.
-A strong move can therefore support the direction while still producing
-`no_entry` because the signal is late, climactic, in the middle of a range,
-or too far from a defensible reference.
+1. **Observe.** State what the closed bars show: direction and close location,
+   overlap and tails, swing sequence, pullback depth, attempts beyond a prior
+   boundary, and any follow-through. Cite the actual bar references.
+2. **Locate.** Decide whether surrounding action is behaving like a trend,
+   trading range, or transition. Place the candidate against nearby swing highs
+   and lows, range edges, breakout points, and current supplied D1/H4 context.
+3. **Grade the setup.** Evaluate the signal bar with its left-side context and
+   the available follow-through. A textbook-looking candle cannot repair a
+   poor premise or poor location; a less distinctive bar may be acceptable in
+   strong context. Do not invent follow-through beyond the decision time.
+4. **Challenge it.** Give the strongest opposite case its own evidence. Check
+   failed breakout, trapped traders, deep or persistent pullback, opposing
+   closes, late extension, overlap, and nearby resistance/support.
+5. **Resolve actionability.** Name an exact trigger and structural invalidation
+   from raw M15 OHLC for an entry. An actionable pending stop may qualify before
+   a fill. Keep pending distinct from triggered, and forming distinct from
+   failed. A pattern is failed only after the bars show its failure.
 
-## Breakouts and breakout-pullbacks
+## Trend, range, and location
 
-Inspect the breakout bar and what is already known after it. A close beyond
-a prior boundary is only an attempt until acceptance or follow-through gives
-the move more weight. A pullback that remains shallow and is followed by a
-credible continuation signal can support a candidate. A prompt return into
-the prior structure, strong opposing closes, or no actionable retest is
-evidence against chasing the breakout.
+- In a trend, a pullback can be a flag and the trend may resume. Assess whether
+  the countertrend leg is weak or persistent, whether the resumed direction has
+  a usable signal, and whether price is already extended or facing nearby
+  opposing structure.
+- In a trading range, consider reversals and failed breakouts near the edges.
+  A breakout bar is an attempt; subsequent acceptance or follow-through gives
+  it more weight. A return into the range with opposing pressure can support a
+  failure read, but do not label an untested or still-forming attempt failed.
+- The middle of a range is usually less favorable than an edge. A strong bar
+  can still be a poor entry if price is near resistance/support, late in an
+  extended move, or directly into opposing structure.
+- Make a qualitative Trader's Equation check: does the candidate have an
+  acceptable location and defensible invalidation without being crowded by
+  nearby opposing structure? Do not estimate probabilities, reward/risk
+  multiples, or targets; the host contract has no fields for them.
+- Higher-timeframe disagreement is evidence about location and room for the
+  setup to work. It is not an automatic veto. Explain how it changes the
+  strongest opposing case and choose from the complete evidence.
 
-## Continuation and reversal entries
+## Brooks signal counts and timeframes
 
-For continuation, ask whether the pullback was weak enough to preserve the
-direction and whether the signal/entry bar shows commitment rather than
-indecision. For a reversal, require more than a visually attractive bar:
-look for evidence that the prior side lost control and that the reversal has
-follow-through or a defensible trigger. An early reversal may be a
-`Low / Speculative` candidate or `no_entry`.
+Use full labels `High 1`, `High 2`, `Low 1`, and `Low 2`. In a bull-flag
+pullback, the first bar whose high exceeds the prior bar is a High 1 attempt;
+if price continues sideways or down instead of turning into a bull swing, the
+next occurrence of a bar with a higher high is a High 2 attempt. In a bear-flag
+pullback, the first bar with a lower low is a Low 1 attempt; if price continues
+sideways or up, the next occurrence of a lower low is a Low 2 attempt. These
+are contextual counts, may be nested, and do not by themselves prove the setup
+is good or failed. In this host, `H1` means the one-hour timeframe, so never
+abbreviate a High 1 setup as `H1`.
 
-## Location and invalidation
+## Trigger and failure status
 
-Use only levels present in the prompt or directly represented by supplied
-bars. The middle of a range, a late extension, a nearby opposing swing, and
-an oversized signal with no nearby invalidation all reduce entry quality.
-Describe invalidation as observable behavior (for example, a failure back
-through the signal bar or prior boundary) unless an exact price was supplied.
+- `pending` means a concrete, actionable stop entry is defined but not yet
+  triggered. It does not mean a fill occurred.
+- `triggered` or `present` means the entry condition is active in the supplied
+  closed-bar facts. A candidate does not claim an order was actually filled.
+- `absent` means no actionable trigger is supported. `unknown` means the
+  supplied packet cannot establish its status.
+- `failed` requires price action that shows the attempted setup or breakout
+  failed. `stale` requires evidence that a once-actionable setup is no longer
+  actionable. A trigger that has not fired is not, by itself, failed or stale.
+- Do not force a follow-through bar to exist. A pending stop can be actionable
+  from the signal and its context before later follow-through is available;
+  assess later follow-through only if it is inside the frozen packet.
+- The host accepts trigger and invalidation references only at exact supplied
+  M15 OHLC fields. Do not add/subtract a tick or derive a price. This is a host
+  contract and does not change how Al Brooks describes example stop orders.
 
-## Evidence conflict
+## Source basis
 
-For every proposed side, search for the best opposing case: failed
-follow-through, deep pullback, a strong counter bar, alternating overlap,
-timeframe conflict, or a missing trigger. If the conflict is unresolved,
-reduce confidence or choose `no_entry`.
-
-## No-entry is a valid result
-
-`no_entry` means the current information does not support a technically
-defensible entry candidate. It is not a claim that price cannot move, and it
-is not a profitability label. Do not convert it into a directional forecast.
-
-Source basis:
-- Controlled Brooks trends, ranges and reversals corpus: paraphrased
-  concepts for follow-through, signal/entry bars, pullbacks, breakouts,
-  reversals, and location.
-- Official Brooks Trading Course terminology: corroborating terminology
-  only; no proprietary text or diagrams are reproduced.
+The author and source distinctions are documented in
+[`source-notes.md`](source-notes.md). Use these ideas as evidence questions,
+not as hard-coded scoring rules.

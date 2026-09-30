@@ -1,149 +1,188 @@
 ---
 name: brooks-market-context
-description: Classify Al Brooks price-action market context from a chart, OHLC bars, or a bar-by-bar description. Use when an agent needs to establish trend vs trading-range context, market-cycle phase, breakout-mode status, directional pressure, or Always-In direction/relevance before evaluating Brooks setups, entries, reversals, breakouts, or trade management. Also use when a user asks whether current price action is trending, ranging, transitioning, or in breakout mode. Do not use this Skill alone to decide whether to enter now; entry-quality questions belong to a separate entry operation.
+description: Classify Al Brooks price-action context from closed OHLC structure for the production D1/H4 Context Analyst. Use to distinguish trends, trading ranges, spikes, channels, breakout mode, directional pressure, and structural Always-In relevance. This role describes market context and does not produce a trade decision.
 metadata:
   domain: al-brooks-price-action
   maturity: experimental
 ---
 
-# Brooks Market Context
+# Al Brooks Market Context
 
-Establish context before naming or grading setups. Treat context as multiple axes rather than forcing one overloaded label.
+Use Al Brooks price-action concepts to describe the market before a separate
+role evaluates a setup or entry. Start with the bars and their context, not a
+candlestick name, indicator, or requested direction. The work is a structural
+read of closed price bars. Keep the output concise, inspectable, and limited to
+what the supplied evidence supports.
 
-## Inputs
+## Production profile
 
-Use any reliable combination of:
+The project context analyst reports one D1 or H4 window at a frozen
+`decision_time_ms`, using 120 closed OHLC bars. This timeframe and window size
+belong to the project implementation; Al Brooks' teachings apply across chart
+types and timeframes and do not prescribe this schema or bar count.
 
-- chart/image;
-- ordered OHLC bars;
-- bar-by-bar description;
-- timeframe/session context;
-- higher-timeframe context, when supplied.
+OHLC is sufficient to assess the closed-bar structure. Per-bar volume can be
+used as optional context when supplied, but is not required to confirm a
+structural read. DOM, volume profile, footprint, delta, news, indicators, and
+future bars are not required inputs. Their absence alone is not `missing_information`
+and does not lower confidence. Brooks has described using a 20-bar EMA in his
+day-trading setup; this profile simply does not require indicator data, and an
+indicator must not replace the price-action evidence.
 
-Do not invent missing bars, levels, indicators, or session facts. If evidence is insufficient, lower confidence and state what is missing. Use the complete supplied closed-bar window. For the production profile, compare up to 120 closed H4, H1, and M15 bars and state conflicts between them; do not treat a short local window as equivalent without comparable DEVELOPMENT evidence.
+Use `missing_information` only for a concrete absent or malformed fact that
+materially limits this task: for example, required OHLC is missing, the
+requested history is incomplete, or evidence needed to locate a claimed
+structure is unavailable. Do not list pre-window bars as missing when the
+supplied 120-bar window is sufficient for the requested classification. Do not
+call an unknown future outcome missing data. The next bar has not formed yet;
+describe what remains uncertain and put observable conditions that would
+change the read in `transition_conditions`. An empty `missing_information`
+array is valid.
 
-## Procedure
+## Read the structure
 
-### 1. Build an observation ledger
+Keep the reasoning order clear in the final fields:
 
-Inspect the recent price action before classifying it. Record only observable features first:
+1. **Observed facts:** Record bar direction and close location, ranges, tails,
+   overlap, swing highs and lows, pullback depth, boundary tests, breakouts,
+   and follow-through. Do not put an interpretation in the observation ledger.
+2. **Chart context:** Explain how the recent leg fits the supplied window and
+   any supplied higher-timeframe description. Brooks price action treats a
+   strong bar or leg in context; a bar pattern by itself is not a market read.
+3. **Strongest alternative:** State the best competing interpretation and
+   evidence against the primary read. Avoid counting timeframes or analysts as
+   votes; compare the actual structures.
+4. **Classification and change conditions:** Assign the required structural
+   axes independently, then name specific price action that would materially
+   change the classification.
 
-- directional trend bars and closes;
-- bar overlap and tails;
-- size/depth of pullbacks;
-- swing progression;
-- breakout attempts;
-- follow-through or immediate failure;
-- repeated tests of boundaries;
-- acceleration, climax, or loss of momentum;
-- two-sided trading;
-- distinct directional legs and the depth/quality of intervening pullbacks.
+Keep this rationale concise and evidence-based. Do not provide hidden
+chain-of-thought. The `observations`, `evidence_for`, `evidence_against`, and
+`transition_conditions` fields make the result reviewable.
 
-Read `references/context-evidence.md` when the classification is ambiguous or when you need the Brooks-specific evidence map.
+### Trend, range, and market-cycle phase
 
-### 2. Classify the primary regime
+- **Trend:** Look for repeated directional progress, strong closes, relatively
+  limited overlap, contained pullbacks, swing progression, and continuation
+  after pullbacks or breakouts. A leg and a later leg in the same direction
+  with a contained pullback are stronger trend evidence than a single
+  uninterrupted move, but leg count is not a mechanical rule.
+- **Trading range:** Look for two-sided acceptance: overlapping bars, tails,
+  reversals, repeated tests, failed follow-through, and price returning toward
+  the middle. Strong bull and bear legs can occur inside a mature range; they
+  remain range legs or breakout attempts until price accepts beyond the range
+  and follow-through supports a changed structure.
+- **Spike and channel:** A spike is a forceful directional phase, often with
+  large trend bars, strong closes, and little overlap. A channel is a weaker
+  trend with more two-sided trading, pullbacks, tails, and overlap. A spike
+  can begin a trend, but one strong leg alone does not establish a sustained
+  trend. A channel that broadens and becomes more two-sided can become
+  range-like.
+- **Transition:** Use this when the prior structure is losing explanatory
+  power but the opposing regime has not established itself. State both
+  hypotheses rather than using transition as a default for uncertain cases.
+- **Breakout mode:** Treat this as an overlay on a range or compact transition,
+  not a mutually exclusive regime. Before confirmation, either direction may
+  break out. A probe or strong bar alone is not successful breakout
+  follow-through.
 
-Choose one:
+An `mtr-like` structure is a descriptive candidate for a major trend reversal
+pattern, not proof or a forecast of a reversal. Brooks distinguishes a major
+trend reversal, with opposing trend segments and a reversal between them, from
+a minor reversal that may be only a pullback or countertrend swing. A pattern
+or trend-line break alone does not confirm that the dominant trend changed;
+the candidate may remain a range or flag. Require evidence from the surrounding
+structure and subsequent follow-through before saying the market has reversed.
+The market-cycle shorthand of spike, channel, increasingly two-sided trade,
+range, and next breakout is a guide to describing transitions, not a required
+sequence.
 
-- `bull-trend`
-- `bear-trend`
-- `trading-range`
-- `transition-unclear`
+### Directional pressure and Always-In
 
-Do not make `breakout-mode` a mutually exclusive regime. A trading range or compact transition can be in breakout mode. A single directional leg, even
-if visually strong, is evidence of a breakout attempt or transition rather
-than proof of a mature trend; require the surrounding structure and any
-follow-through before upgrading the regime.
+Report `directional_pressure` and `always_in` separately from the primary
+regime and phase. Always-In is a structural, bar-by-bar direction assessment;
+it is not an entry instruction or preference. A directional leg can coexist
+with a broader trading range. Set `always_in_relevance` low when two-sided
+range behavior makes a single persistent direction less useful. Use `unclear`
+where the supplied bars do not support a choice; do not manufacture a lean to
+complete a narrative.
 
-### 3. Classify market-cycle phase
+### Confidence and probabilities
 
-Choose the best current phase:
+`confidence` is `high`, `medium`, or `low` and describes how consistently the
+observed structure supports the classification. It is not a win rate, trade
+quality score, or probability of a future event. Use lower confidence when
+required price evidence is sparse, internally conflicting, or does not cover
+the structure relevant to the task. Do not downgrade confidence merely because
+future bars or optional data are unavailable. Brooks' heuristic percentages
+are teaching context; do not emit numerical odds or probabilities.
 
-- `breakout-spike`
-- `channel`
-- `range`
-- `transition`
-- `unclear`
+## Role boundaries
 
-Use the most recent structure that matters to the user's task. Mention broader context separately when it conflicts.
+This is a market-context role only. Do not emit a trade action, entry, side
+recommendation, target, stop, position, sizing, account data, or a forecast.
+The `always_in` and `directional_pressure` fields are structural descriptions,
+not trade instructions. Do not import or merge the Trader output contract.
 
-### 4. Evaluate breakout mode
+## Output contract: MarketContextV2
 
-Set `breakout_mode` to `true`, `false`, or `unclear`.
+Return exactly one JSON object matching the supplied `MarketContextV2`
+(`brooks.market-context.v2`) schema with role `CONTEXT_ANALYST`, no wrapper, and
+no extra keys. This is the only contract for this skill. The project schema
+requires these fields:
 
-Use `true` when price is balanced/compressed around defined boundaries and a breakout in either direction could plausibly produce follow-through. Do not treat every strong bar inside a range as a successful breakout.
+- Identity: `schema`, `role`, `symbol`, `timeframe` (`D1` or `H4`),
+  `decision_time_ms`, and `window_bars` (production: `120`).
+- Classification: `primary_regime` (`bull-trend`, `bear-trend`,
+  `trading-range`, `transition-unclear`), `phase` (`breakout-spike`, `channel`,
+  `range`, `transition`, `unclear`), `breakout_mode` (boolean or `unclear`),
+  `directional_pressure` (`bull`, `bear`, `balanced`, `unclear`), `always_in`
+  (`long`, `short`, `unclear`), `always_in_relevance` (`high`, `medium`,
+  `low`), and `confidence` (`high`, `medium`, `low`).
+- Evidence: `observations`, `evidence_for`, `evidence_against`,
+  `transition_conditions`, and `missing_information` as arrays of strings.
+  Each of the first four arrays must contain at least one item;
+  `missing_information` may be empty.
+- Structures: `structures` is an array of objects with `kind` (`range`,
+  `channel`, `breakout`, `mtr-like`, `climax`, `two-sided`, `swing`, or
+  `other`), `description`, nullable `start_time_ms` and `end_time_ms`, and
+  nullable `upper_boundary` and `lower_boundary`.
 
-### 5. Evaluate Always-In separately
-
-Choose `long`, `short`, or `unclear`, then assign `always_in_relevance` as `high`, `medium`, or `low`.
-
-A strong breakout with convincing follow-through can change the Always-In assessment quickly. In two-sided trading ranges, an intrarange directional leg can coexist with low usefulness of the Always-In concept for the broader context.
-Always-In is a forced-choice bar-by-bar control question, not the same as
-regime classification or an entry recommendation. A single strong bar that
-closes near its extreme may justify a low-relevance directional lean while
-follow-through is unknown; it must not by itself make the broader regime a
-trend or produce high confidence.
-
-### 6. Weigh conflict before confidence
-
-List the strongest evidence supporting the classification and the strongest evidence against it. Use `high`, `medium`, or `low` confidence unless a downstream interface explicitly requires another scale.
-For `high`, require enough supplied structure for the axis being classified
-and no meaningful conflicting evidence. Mixed, incomplete, single-bar, or
-one-leg windows should use a lower band and state the missing structure.
-
-Do not manufacture a numerical probability from Brooks heuristic percentages. Read `references/context-evidence.md` for probability discipline.
-
-### 7. State transition conditions
-
-Identify what new price action would materially change the classification, such as:
-
-- strong breakout plus follow-through;
-- failed breakout and return into the prior range;
-- deeper two-sided pullbacks that weaken trend behavior;
-- renewed directional bars after a transition.
-
-## Output contract
-
-Return JSON with one `market_context` object and exactly the keys shown below, adapting prose only when the user explicitly requests a different format:
+Example shape (illustrative content):
 
 ```json
 {
-  "market_context": {
-    "primary_regime": "bull-trend",
-    "phase": "channel",
-    "breakout_mode": false,
-    "directional_pressure": "bull",
-    "always_in": "long",
-    "always_in_relevance": "medium",
-    "confidence": "medium",
-    "observations": ["Recent supplied bars show bull closes with shallow pullbacks."],
-    "evidence_for": ["Bull closes and limited pullback depth support directional pressure."],
-    "evidence_against": ["The supplied window includes some overlap and opposing tails."],
-    "broader_context": null,
-    "transition_conditions": ["A failed breakout or deeper two-sided pullback would weaken the read."],
-    "missing_information": []
-  }
+  "schema": "brooks.market-context.v2",
+  "role": "CONTEXT_ANALYST",
+  "symbol": "EXAMPLE",
+  "timeframe": "H4",
+  "decision_time_ms": 1700000000000,
+  "window_bars": 120,
+  "primary_regime": "trading-range",
+  "phase": "range",
+  "breakout_mode": true,
+  "directional_pressure": "balanced",
+  "always_in": "unclear",
+  "always_in_relevance": "low",
+  "observations": ["The supplied bars overlap and test both sides of the range."],
+  "structures": [],
+  "evidence_for": ["Repeated overlap and failed continuation support a range."],
+  "evidence_against": ["A recent bull leg may be an emerging breakout attempt."],
+  "transition_conditions": ["Accepted closes beyond a boundary with follow-through would change the read."],
+  "missing_information": [],
+  "confidence": "medium"
 }
 ```
-Allowed values are listed in the procedure above; the example uses one valid combination.
 
-## Guardrails
-
-- Context precedes setup labels.
-- A single leg is not automatically a trend; inspect pullback depth, overlap,
-  and whether a second leg or acceptance followed.
-- Always-In direction is separate from the primary regime and does not tell the
-  agent to enter.
-- Do not equate price above/below one moving average with Brooks market context.
-- Do not call a trend from a single breakout bar without considering follow-through and surrounding structure.
-- Do not erase a mature trading range merely because one leg looks strong.
-- Do not force certainty when bull and bear evidence is balanced.
-- Do not let an indicator, pattern name, or the user's preferred direction
-  replace the bar evidence.
-- Keep observations distinct from interpretation.
+Boundary prices must be exact canonical decimal strings copied from supplied
+closed OHLC. Use `null` when no exact boundary exists. Put approximate areas
+only in a structure's description.
 
 ## References
 
-Read `references/context-evidence.md` for the compact Brooks evidence model and edge cases.
+Read [context-evidence.md](references/context-evidence.md) when the
+trend-versus-range distinction, breakout follow-through, or another Brooks
+structural distinction is ambiguous.
 
-Read `references/source-notes.md` only when provenance or a disputed definition matters.
+Read [source-notes.md](references/source-notes.md) only when source provenance
+or the distinction between Brooks teaching and project implementation matters.

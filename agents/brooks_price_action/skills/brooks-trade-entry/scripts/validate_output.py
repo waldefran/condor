@@ -59,7 +59,7 @@ FUTURE_KEYS = {
     "realized_return", "mfe", "mae", "final_pnl",
 }
 NUMERIC_PROBABILITY = re.compile(
-    r"(?:\b\d{1,3}(?:\.\d+)?\s?%|\b(?:probability|chance|odds)\s*[:=]?\s*\d|\b\d+\s+out\s+of\s+\d|\bodds\s+\d+\s*:\s*\d)",
+    r"(?:\b\d{1,3}(?:\.\d+)?\s?%\s*(?:chance|probability|odds|win\s+rate)|\b(?:probability|chance|odds|win\s+rate)\s*[:=]?\s*\d|\b\d+\s+out\s+of\s+\d|\bodds\s+\d+\s*:\s*\d)",
     re.IGNORECASE,
 )
 
@@ -179,8 +179,12 @@ def validate_output(raw: str) -> dict[str, Any]:
             errors.append(f"{field} must be an object or null")
     setup = parsed.get("setup")
     if isinstance(setup, dict):
-        if "type" in setup and setup["type"] not in {None, *MECHANISMS}:
-            errors.append("setup.type is invalid")
+        if "type" in setup:
+            if schema == SCHEMA:
+                if setup["type"] is not None and not isinstance(setup["type"], str):
+                    errors.append("setup.type must be a string or null")
+            elif setup["type"] not in {None, *MECHANISMS}:
+                errors.append("setup.type is invalid")
         if "trigger_status" in setup and setup["trigger_status"] not in TRIGGER_STATUS:
             errors.append("setup.trigger_status is invalid")
         if "signal_quality" in setup and setup["signal_quality"] not in SIGNAL_QUALITY:
@@ -220,12 +224,17 @@ def validate_output(raw: str) -> dict[str, Any]:
         if parsed.get("entry_mechanism") in {"none", "unclear"}:
             errors.append("entry decisions require a specified entry_mechanism")
         if schema == SCHEMA:
-            if not parsed.get("decision_timeframe"):
-                errors.append("entry decisions require decision_timeframe")
+            if parsed.get("decision_timeframe") != "M15":
+                errors.append("entry decisions require decision_timeframe=M15")
             if not parsed.get("trigger"):
                 errors.append("entry decisions require trigger")
             if not parsed.get("invalidation"):
                 errors.append("entry decisions require invalidation")
+            for field in ("trigger", "invalidation"):
+                reference = parsed.get(field)
+                source = reference.get("source") if isinstance(reference, dict) else None
+                if isinstance(source, dict) and source.get("timeframe") != "M15":
+                    errors.append(f"{field}.source.timeframe must be M15")
             if not parsed.get("context_timeframes_used"):
                 errors.append("entry decisions require context_timeframes_used")
             setup_obj = parsed.get("setup")

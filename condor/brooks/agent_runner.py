@@ -293,12 +293,16 @@ async def run_role(
 
         check_public(prompt)
     instructions = (
-        f"You are the independent Brooks {role} role. Use only supplied facts and "
-        "the compact runtime below. Never invent data or request exchange writes. "
+        f"You are the independent Brooks {role} role. Apply Al Brooks' bar-by-bar "
+        "price action method within this role's boundaries. Use only supplied facts "
+        "and the operating instructions below. Never invent data or request exchange writes. "
         "Reply with exactly one JSON object matching the supplied final output schema. "
+        "Give concise, observable evidence and the strongest counterargument in the "
+        "schema's evidence fields. "
         "To request a read tool, reply with "
         '{"tool":"name","arguments":{...}}; the host returns its result, then you '
-        "may request another tool or return final JSON. Do not put JSON in prose.\n\n"
+        "may request another tool or return final JSON. Use only this JSON protocol; "
+        "do not append native tool-call, XML, or DSML markup. Do not put JSON in prose.\n\n"
         + role_skills(role)
         + (
             "\n\nRead management evidence only through read_brooks_reference with "

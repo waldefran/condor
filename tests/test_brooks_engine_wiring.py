@@ -293,6 +293,70 @@ def test_candle_adapter_obeys_closed_bar_gate():
     ]
 
 
+def test_delayed_restart_reads_exact_h1_and_m15_history_at_decision_time(monkeypatch):
+    from condor.brooks.market_tools import TraderMarketTools
+
+    decision_boundary_ms = 200 * HOUR_MS
+    decision_time_ms = decision_boundary_ms - 1
+    restart_time_ms = decision_time_ms + 43 * 60_000
+    intervals_ms = {"1h": HOUR_MS, "15m": 900_000}
+    available_rows = {}
+    for timeframe, interval_ms in intervals_ms.items():
+        rows = [
+            closed_row(decision_boundary_ms - (120 - index) * interval_ms, 100 + index)
+            for index in range(120)
+        ]
+        # Later bars are available to a delayed live read, but must not enter
+        # the decision-time snapshot.
+        rows.extend(
+            closed_row(decision_boundary_ms + index * interval_ms, 300 + index)
+            for index in range(4)
+        )
+        available_rows[timeframe] = rows
+
+    queries = []
+
+    async def fake_fetch_historical_candles(
+        _client,
+        _connector,
+        _symbol,
+        timeframe,
+        *,
+        start_time,
+        end_time,
+        limit,
+    ):
+        queries.append((timeframe, start_time, end_time, limit))
+        return [
+            row
+            for row in available_rows[timeframe]
+            if start_time <= row["timestamp"] <= end_time
+        ]
+
+    monkeypatch.setattr(
+        "condor.fetchers.market_data.fetch_historical_candles",
+        fake_fetch_historical_candles,
+    )
+    source = HummingbotCandleSource(
+        FakeClient(), "binance_perpetual", now_fn=lambda: restart_time_ms
+    )
+    tools = TraderMarketTools(source=source, decision_time_ms=decision_time_ms)
+
+    async def exercise():
+        return {
+            timeframe: await tools.get_closed_candles("BTC-USDT", timeframe, 120)
+            for timeframe in ("1h", "15m")
+        }
+
+    bars_by_timeframe = asyncio.run(exercise())
+    assert [query[0] for query in queries] == ["1h", "15m"]
+    assert all(query[2] == decision_time_ms // 1000 for query in queries)
+    for timeframe, bars in bars_by_timeframe.items():
+        assert len(bars) == 120
+        assert bars[-1]["close_time_ms"] == decision_time_ms
+        assert all(bar["close_time_ms"] <= decision_time_ms for bar in bars)
+
+
 def test_account_reader_reports_flat_book_without_bindings(tmp_path):
     fake = FakeClient()
     fake.prices = {"BTC-USDT": 50000.0}
