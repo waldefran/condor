@@ -1,0 +1,18 @@
+{
+  "initial_R_usdt": "4.995080000000000000000000000",
+  "allowed_loss_usdt": "24.97540000000000000000000000",
+  "worst_projected_exit_net_before_close": "-7.5398016994256",
+  "worst_net_loss_R": "1.509445634389359129383313180",
+  "bar": {
+    "close": "2570.81",
+    "close_time_ms": 1789903199999,
+    "closed": true,
+    "high": "2570.91",
+    "low": "2568.16",
+    "open": "2568.43",
+    "open_time_ms": 1789903140000,
+    "volume": "123589.334"
+  },
+  "field": "low",
+  "method": "Ex-post evidence reconstruction over observed CLOSED M1 using entry fee, adverse exit slippage and exit fee; never supplied to PM ahead of time."
+}

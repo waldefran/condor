@@ -87,3 +87,11 @@ somente a gestão subsequente, sem consultar candles futuros na decisão.
 Os testes determinísticos provaram que a trajetória desta primeira operação
 não exige a trava de 5R antes do TP original, caso o PM não antecipe hedge.
 Isso é verificação do simulador, não informação entregue ao modelo no replay.
+
+## Resultado final 5R
+
+[Relatório completo](at_5R/FINAL_REPORT.md): 20 decisões PM HOLD válidas,
+zero falhas, nenhuma trava/hedge. Fechamento pelo TP original em 20/09
+15:01:59.999 UTC, líquido **+8,4280110396064 USDT (+1,687262R)**.
+Pior líquido projetado observado −7,5398016994256 USDT (−1,509446R).
+Binding terminal e zero posições abertas. Replay encerrado.
