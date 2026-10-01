@@ -1,0 +1,110 @@
+{
+  "schema": "condor.brooks.pending-entry-state.v1",
+  "correlation_id": "ETH-USDT-1h-1789865999999",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1789865999999,
+  "available_at_ms": 1789866143401,
+  "expires_at_ms": 1789873199999,
+  "max_intent_age_ms": 7200000,
+  "status": "canceled",
+  "last_processed_close_time_ms": 1789868039999,
+  "changed_at_ms": 1789868039999,
+  "resolution_reason": "invalidation_touched_before_activation",
+  "evidence": {
+    "event": "canceled",
+    "changed_at_ms": 1789868039999,
+    "reason": "invalidation_touched_before_activation",
+    "invalidation_price": "2618.8",
+    "invalidation_hit": true,
+    "trigger_crossed_same_bar": false,
+    "bar": {
+      "timeframe": "M1",
+      "open_time_ms": 1789867980000,
+      "close_time_ms": 1789868039999,
+      "open": "2619.12",
+      "high": "2619.3",
+      "low": "2618.68",
+      "close": "2618.93"
+    }
+  },
+  "execution_intent": null,
+  "original_intent": {
+    "schema": "brooks.trade-intent.v2",
+    "role": "TRADER",
+    "decision": "ENTER_LONG",
+    "symbol": "ETH-USDT",
+    "decision_time_ms": 1789865999999,
+    "market_context": {
+      "regime_and_phase": "H4 context (freshness current): trading-range regime in a breakout-spike phase - nine consecutive H4 closes above the 2544.63 range top with none back inside, following two large bull trend bars (open_time 1789732800000 O2507.15/C2578.60; 1789747200000 O2579.97/C2636.28) that broke the range top and the 2609.02 swing high. D1 context (freshness current): post-climax trading range 2357.18-2771 (bar 90 high 2771), phase range, no close above 2771, last close 2632.98 the highest close of the 120-bar window.",
+      "always_in": "H4 long (medium relevance), breakout_mode true; D1 long (low relevance), directional pressure bull.",
+      "location": "M15 price 2626 sits inside a roughly 20-bar tight pause bounded by 2618.80 and 2658.79 (H4 pause structure, M15 bar 109 low and bars 89/90 highs), immediately below the 2700.00 buy-climax high (M15 bar 56) and in the upper part of the multi-day D1 range.",
+      "bias": "trend-continuation bias from H4 breakout acceptance; M15 pause is treated as a bull flag until 2618.80 fails."
+    },
+    "setup": {
+      "type": "bull flag / tight pause holding above a higher low after the H4 range-top breakout",
+      "trigger_status": "pending",
+      "signal_quality": "weak",
+      "location_assessment": "neutral",
+      "no_trade_reason": null
+    },
+    "decision_timeframe": "M15",
+    "context_timeframes_used": [
+      "M15",
+      "H1",
+      "H4",
+      "D1"
+    ],
+    "entry_mechanism": "breakout_pullback",
+    "trigger": {
+      "reference": "M15 bar 119 high 2630 (prior-bar / signal-bar breakout stop; equals the high of bull signal bar 118)",
+      "price_field": "high",
+      "price": "2630",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 119,
+        "open_time_ms": 1789865100000,
+        "close_time_ms": 1789865999999
+      },
+      "kind": "stop",
+      "direction": "above"
+    },
+    "invalidation": {
+      "reference": "M15 bar 109 low 2618.80 - higher low at the base of the pause; losing it voids the bull-flag read",
+      "price_field": "low",
+      "price": "2618.8",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 109,
+        "open_time_ms": 1789856100000,
+        "close_time_ms": 1789856999999
+      }
+    },
+    "evidence_for": [
+      "H4 breakout has acceptance, not a one-bar overshoot: nine consecutive H4 closes sit above the 2544.63 range top with none closing back inside, Always-In long, breakout_mode true (H4 context).",
+      "M15 pullback is tight and shallow, not a reversal: bars 110-119 lows are 2621.54, 2627.00, 2629.84, 2628.72, 2631.27, 2632.98, 2625.84, 2627.10, 2625.85, 2625.83 - all above the pause higher low 2618.80 (M15 bar 109 low '2618.8'), so the flag is holding far above the 2544.63 breakout level.",
+      "Higher lows keep rising: 2618.80 (M15 bar 109 low) above 2604.75 (M15 bar 87 low '2604.75') above the H4 spike low 2495.82, so the pullback is doing no damage to the bull structure.",
+      "The last bars show minimal selling pressure: bars 116-119 have 4-8 point ranges and bar 119 (O2629.57 H2630 L2625.83 C2626) failed to undercut bar 118's low 2625.85, so a stop above 2630 is the standard prior-bar/signal-bar entry (bar 118 closed 2629.75 near its 2630 high in a bull trend) with structural risk to 2618.80.",
+      "D1's final bar closes 2632.98, the highest close of its 120-bar window, and the H4 context cites a measured-move context near 2730 from the 2357.18/2358.62 double bottom plus the 2544.63 break, so the structure is not yet at an obvious exhaustion level."
+    ],
+    "evidence_against": [
+      "Nearby opposing structure crowds the trigger: the pause's double-touch high is 2658.79 (M15 bars 89 and 90 highs both 2658.79), 28.79 above the 2630 stop, and the 2700.00 buy-climax high (M15 bar 56 H2700.00, C2649.54, tail 50.46) sits just beyond it; D1 lists 2680.00 and 2700.00 as lower highs under the 2771 spike high (D1 bar 90).",
+      "The breakout is stalling, not following through: since M15 bar 56's 2700.00 high, 63 M15 bars have moved sideways with descending highs (2658.79 -> 2646.36 -> 2649.83 -> 2636.47 -> 2630.00), i.e. two-sided trading rather than new highs.",
+      "Immediate momentum is down and no bull signal bar is present at the trigger: bar 119 closes 2626 near its 2625.83 low, and the final H1 bar (open_time 1789862400000, O2632.98 H2633.05 L2625.83 C2626) is a bear bar closing near its low.",
+      "D1 phase is range with the top rejecting: no close above 2771, prior probes at 2680 (D1 bar 111) and 2700 (D1 bar 119) failed below the spike high, and the 2357.18/2358.62 double bottom frames the floor, so this is an upper-range entry rather than a fresh trend entry.",
+      "H4 itself flags the pause as a possible final flag: the last four H4 bars (open_times 1789804800000-1789848000000) are small-body bars with a 2700.00 upper tail, and H4's transition condition says a close back below 2544.63 would recast the range-top break as a bull trap."
+    ],
+    "qualitative_confidence": "medium",
+    "uncertainty": [
+      "A tight pause after a buy-climax spike can be either a bull flag or a final flag; the descending M15 highs since bar 56 leave that unresolved.",
+      "The entry is a pending stop at 2630, not a filled trade; if price loses 2618.80 first, the flag reads as a failed breakout instead of a continuation.",
+      "H4 (trading-range regime, breakout-spike phase) and D1 (range phase with the top rejecting) describe the same bars with different emphasis, so regime confidence is only medium."
+    ],
+    "conditions_that_change_market_read": [
+      "A close above 2658.79 that holds would confirm the pause as a bull flag and reopen the 2700.00 high.",
+      "A close below 2618.80 (M15 bar 109 low) breaks the flag's higher low and shifts the read toward a failed breakout and a test of 2604.75 (M15 bar 87 low).",
+      "A close below 2604.75 would expose the H4 spike low 2495.82 and weaken the Always-In long.",
+      "Continued 2625-2636 doji overlap with no new high would keep the pause unresolved and argue against any entry."
+    ]
+  },
+  "source_event_id": "c62e7d21-7d30-44fd-819a-4fa61871e279"
+}

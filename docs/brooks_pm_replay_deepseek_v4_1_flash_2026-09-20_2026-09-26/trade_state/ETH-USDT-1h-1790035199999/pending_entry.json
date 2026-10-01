@@ -1,0 +1,217 @@
+{
+  "schema": "condor.brooks.pending-entry-state.v1",
+  "correlation_id": "ETH-USDT-1h-1790035199999",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1790035199999,
+  "available_at_ms": 1790035416920,
+  "expires_at_ms": 1790042399999,
+  "max_intent_age_ms": 7200000,
+  "status": "triggered",
+  "last_processed_close_time_ms": 1790037299999,
+  "changed_at_ms": 1790037299999,
+  "resolution_reason": "close_confirmed_stop_trigger",
+  "evidence": {
+    "event": "activated",
+    "changed_at_ms": 1790037299999,
+    "reason": "close_confirmed_stop_trigger",
+    "trigger_price": "2775.61",
+    "invalidation_price": "2762.93",
+    "trigger_crossed": true,
+    "close_beyond_trigger": true,
+    "close_protective": true,
+    "execution_reference_price": "2775.82",
+    "bar": {
+      "timeframe": "M1",
+      "open_time_ms": 1790037240000,
+      "close_time_ms": 1790037299999,
+      "open": "2775.51",
+      "high": "2776.18",
+      "low": "2774.8",
+      "close": "2775.82"
+    }
+  },
+  "execution_intent": {
+    "schema": "brooks.trade-intent.v2",
+    "role": "TRADER",
+    "decision": "ENTER_LONG",
+    "symbol": "ETH-USDT",
+    "decision_time_ms": 1790035199999,
+    "market_context": {
+      "symbol": "ETH-USDT",
+      "decision_time_ms": 1790035199999,
+      "regime": "Bull breakout-spike on the higher timeframes (always-in long, directional pressure bull); M15 is a tight two-legged pullback/flag near the highs of that trend.",
+      "H1": "120 closed H1 bars inspected; last H1 bar (index 119, open_time_ms 1790031600000) open 2777.72, high 2785.48, low 2768.29, close 2775.61; H1 lows on bars 116-119 rise 2759.63, 2762.93, 2767.61, 2768.29 and H1 closes hold above the broken 2700 level.",
+      "H4": "Context was stale, so 120 closed raw H4 bars were read successfully. Last H4 bar (index 119) open 2760.51, high 2804.59, low 2759.63, close 2775.61 is the fourth consecutive close above the broken 2700 equal-highs (2723.15, 2754.31, 2760.51, 2775.61). Breakout bar index 116 (open 2658.81, high 2850.00, low 2658.06, close 2723.15) left a 66% upper tail overhead.",
+      "D1": "Stale context only, used as background, not for the trigger: bull-trend, breakout above the 2557.46 range ceiling, but only three closes old and the last D1 bar was a lower high (2645.88 vs 2700).",
+      "key_levels": {
+        "m15_flag_low": "2762.93",
+        "m15_flag_top": "2804.59",
+        "h1_higher_low": "2768.29",
+        "h4_broken_level": "2700.00",
+        "h4_spike_high": "2850.00",
+        "h4_pullback_low": "2718.09"
+      }
+    },
+    "setup": {
+      "type": "Bull flag / two-legged pullback buy (High 2): stop above the M15 bull reversal bar that closes the second pullback in a bull trend",
+      "trigger_status": "triggered",
+      "signal_quality": "clear",
+      "location_assessment": "favorable",
+      "no_trade_reason": null
+    },
+    "decision_timeframe": "M15",
+    "context_timeframes_used": [
+      "H1",
+      "M15",
+      "H4"
+    ],
+    "entry_mechanism": "breakout_pullback",
+    "trigger": {
+      "reference": "M15 bar 119 high (bull reversal bar closing on its high)",
+      "price_field": "high",
+      "price": "2775.61",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 119,
+        "open_time_ms": 1790034300000,
+        "close_time_ms": 1790035199999
+      },
+      "kind": "stop",
+      "direction": "above"
+    },
+    "invalidation": {
+      "reference": "M15 bar 109 low - low of the post-spike bull flag (bars 106-119); a break ends the higher-low structure",
+      "price_field": "low",
+      "price": "2762.93",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 109,
+        "open_time_ms": 1790025300000,
+        "close_time_ms": 1790026199999
+      }
+    },
+    "evidence_for": [
+      "H4 raw bar index 119 (open 2760.51, high 2804.59, low 2759.63, close 2775.61) closed above its predecessor 2760.51 and above the broken 2700 equal-highs - the fourth consecutive H4 close above 2700, i.e. follow-through on the breakout.",
+      "M15 lows rise through the pullback after the spike: 2759.63 (bar 104 low), 2762.93 (bar 109 low), 2767.61 (bar 112 low), 2768.29 (bar 118 low), 2768.61 (bar 119 low) - the second pullback held above the first pullback low.",
+      "M15 bar 119 is a bull reversal bar: open 2770.64, low 2768.61, high = close 2775.61 (body 4.97 of a 7.00 range), closing above bar 118's high 2773.07 and holding above bar 118's low 2768.29 after the two-bar pullback (bars 117-118) - a High 2 buy setup against bar 105's high 2804.59.",
+      "M15 bar 105 (open 2771.06, high 2804.59, low 2769.78, close 2803.78) is a spike bar and bars 106-119 form a tight flag between 2762.93 and 2804.59 (about 1.5% wide) - a continuation shape inside the H4/D1 bull breakout.",
+      "Trader's Equation location check: trigger 2775.61 versus structural invalidation 2762.93 is about 12.7 points, while the nearest opposing structure (H4 spike high 2850.00) is about 74 points above the trigger, so nearby resistance does not crowd the long."
+    ],
+    "evidence_against": [
+      "Strongest counterargument: H4 raw bar index 116 (open 2658.81, high 2850.00, low 2658.06, close 2723.15) had a 191.94 range with a 126.85 upper tail (66% of range) and closed in its lower third - a possible buy-climax rejection; the M15 flag top 2804.59 is a lower high and the 2850 zone remains untested overhead.",
+      "The trigger is not at a fresh range edge: 2775.61 sits only about 30% up the 2762.93-2804.59 flag and the M15 has not yet closed above the flag top, so the same bars can also be read as mid-range chop after a spike rather than a confirmed resumption.",
+      "H4 follow-through is not one-way: after the spike bar, H4 highs 2795.00, 2770.03 and 2804.59 failed to hold above 2795 for two bars, and the last H4 bar closed 2775.61 in the lower half of its own 2759.63-2804.59 range.",
+      "Stale D1 context shows the daily breakout above 2557.46 is only three closes old and its last bar made a lower high (2645.88 vs 2700), so the larger breakout is not yet confirmed."
+    ],
+    "qualitative_confidence": "medium",
+    "uncertainty": [
+      "The H4 context was stale, so the decision relies on a fresh 120-bar H4 raw read whose final bar closes at the decision time; H4 follow-through therefore rests on one new bar.",
+      "Signal bar 119 is only 7.00 points tall and the trigger sits near the middle of a tightening M15 range, so the stop can be reached on noise without a genuine breakout above 2804.59.",
+      "It is unresolved whether the 2850 H4 spike is a buy climax (deeper pullback likely) or a continuing spike (immediate continuation); that distinction changes the expected depth of any pullback."
+    ],
+    "conditions_that_change_market_read": [
+      "A close below M15 bar 109 low 2762.93 ends the higher-low flag structure and shifts the read to a failed break below 2804.59 and a deeper pullback toward the H4 spike-pullback low 2718.09.",
+      "Two consecutive M15 closes back below 2700.00 would reclassify the H4 breakout as failed and return the read to the old 2357.18-2700.00 range.",
+      "A strong M15 close above 2804.59 with follow-through would confirm the flag breakout and move the phase from breakout-spike toward a bull channel, favoring continuation buys on the next pullback.",
+      "A bear bar closing near 2759.63 (M15 bar 104 low) immediately after the trigger would mark the High 2 buy as failed rather than pending."
+    ]
+  },
+  "original_intent": {
+    "schema": "brooks.trade-intent.v2",
+    "role": "TRADER",
+    "decision": "ENTER_LONG",
+    "symbol": "ETH-USDT",
+    "decision_time_ms": 1790035199999,
+    "market_context": {
+      "symbol": "ETH-USDT",
+      "decision_time_ms": 1790035199999,
+      "regime": "Bull breakout-spike on the higher timeframes (always-in long, directional pressure bull); M15 is a tight two-legged pullback/flag near the highs of that trend.",
+      "H1": "120 closed H1 bars inspected; last H1 bar (index 119, open_time_ms 1790031600000) open 2777.72, high 2785.48, low 2768.29, close 2775.61; H1 lows on bars 116-119 rise 2759.63, 2762.93, 2767.61, 2768.29 and H1 closes hold above the broken 2700 level.",
+      "H4": "Context was stale, so 120 closed raw H4 bars were read successfully. Last H4 bar (index 119) open 2760.51, high 2804.59, low 2759.63, close 2775.61 is the fourth consecutive close above the broken 2700 equal-highs (2723.15, 2754.31, 2760.51, 2775.61). Breakout bar index 116 (open 2658.81, high 2850.00, low 2658.06, close 2723.15) left a 66% upper tail overhead.",
+      "D1": "Stale context only, used as background, not for the trigger: bull-trend, breakout above the 2557.46 range ceiling, but only three closes old and the last D1 bar was a lower high (2645.88 vs 2700).",
+      "key_levels": {
+        "m15_flag_low": "2762.93",
+        "m15_flag_top": "2804.59",
+        "h1_higher_low": "2768.29",
+        "h4_broken_level": "2700.00",
+        "h4_spike_high": "2850.00",
+        "h4_pullback_low": "2718.09"
+      }
+    },
+    "setup": {
+      "type": "Bull flag / two-legged pullback buy (High 2): stop above the M15 bull reversal bar that closes the second pullback in a bull trend",
+      "trigger_status": "pending",
+      "signal_quality": "clear",
+      "location_assessment": "favorable",
+      "no_trade_reason": null
+    },
+    "decision_timeframe": "M15",
+    "context_timeframes_used": [
+      "H1",
+      "M15",
+      "H4"
+    ],
+    "entry_mechanism": "breakout_pullback",
+    "trigger": {
+      "reference": "M15 bar 119 high (bull reversal bar closing on its high)",
+      "price_field": "high",
+      "price": "2775.61",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 119,
+        "open_time_ms": 1790034300000,
+        "close_time_ms": 1790035199999
+      },
+      "kind": "stop",
+      "direction": "above"
+    },
+    "invalidation": {
+      "reference": "M15 bar 109 low - low of the post-spike bull flag (bars 106-119); a break ends the higher-low structure",
+      "price_field": "low",
+      "price": "2762.93",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 109,
+        "open_time_ms": 1790025300000,
+        "close_time_ms": 1790026199999
+      }
+    },
+    "evidence_for": [
+      "H4 raw bar index 119 (open 2760.51, high 2804.59, low 2759.63, close 2775.61) closed above its predecessor 2760.51 and above the broken 2700 equal-highs - the fourth consecutive H4 close above 2700, i.e. follow-through on the breakout.",
+      "M15 lows rise through the pullback after the spike: 2759.63 (bar 104 low), 2762.93 (bar 109 low), 2767.61 (bar 112 low), 2768.29 (bar 118 low), 2768.61 (bar 119 low) - the second pullback held above the first pullback low.",
+      "M15 bar 119 is a bull reversal bar: open 2770.64, low 2768.61, high = close 2775.61 (body 4.97 of a 7.00 range), closing above bar 118's high 2773.07 and holding above bar 118's low 2768.29 after the two-bar pullback (bars 117-118) - a High 2 buy setup against bar 105's high 2804.59.",
+      "M15 bar 105 (open 2771.06, high 2804.59, low 2769.78, close 2803.78) is a spike bar and bars 106-119 form a tight flag between 2762.93 and 2804.59 (about 1.5% wide) - a continuation shape inside the H4/D1 bull breakout.",
+      "Trader's Equation location check: trigger 2775.61 versus structural invalidation 2762.93 is about 12.7 points, while the nearest opposing structure (H4 spike high 2850.00) is about 74 points above the trigger, so nearby resistance does not crowd the long."
+    ],
+    "evidence_against": [
+      "Strongest counterargument: H4 raw bar index 116 (open 2658.81, high 2850.00, low 2658.06, close 2723.15) had a 191.94 range with a 126.85 upper tail (66% of range) and closed in its lower third - a possible buy-climax rejection; the M15 flag top 2804.59 is a lower high and the 2850 zone remains untested overhead.",
+      "The trigger is not at a fresh range edge: 2775.61 sits only about 30% up the 2762.93-2804.59 flag and the M15 has not yet closed above the flag top, so the same bars can also be read as mid-range chop after a spike rather than a confirmed resumption.",
+      "H4 follow-through is not one-way: after the spike bar, H4 highs 2795.00, 2770.03 and 2804.59 failed to hold above 2795 for two bars, and the last H4 bar closed 2775.61 in the lower half of its own 2759.63-2804.59 range.",
+      "Stale D1 context shows the daily breakout above 2557.46 is only three closes old and its last bar made a lower high (2645.88 vs 2700), so the larger breakout is not yet confirmed."
+    ],
+    "qualitative_confidence": "medium",
+    "uncertainty": [
+      "The H4 context was stale, so the decision relies on a fresh 120-bar H4 raw read whose final bar closes at the decision time; H4 follow-through therefore rests on one new bar.",
+      "Signal bar 119 is only 7.00 points tall and the trigger sits near the middle of a tightening M15 range, so the stop can be reached on noise without a genuine breakout above 2804.59.",
+      "It is unresolved whether the 2850 H4 spike is a buy climax (deeper pullback likely) or a continuing spike (immediate continuation); that distinction changes the expected depth of any pullback."
+    ],
+    "conditions_that_change_market_read": [
+      "A close below M15 bar 109 low 2762.93 ends the higher-low flag structure and shifts the read to a failed break below 2804.59 and a deeper pullback toward the H4 spike-pullback low 2718.09.",
+      "Two consecutive M15 closes back below 2700.00 would reclassify the H4 breakout as failed and return the read to the old 2357.18-2700.00 range.",
+      "A strong M15 close above 2804.59 with follow-through would confirm the flag breakout and move the phase from breakout-spike toward a bull channel, favoring continuation buys on the next pullback.",
+      "A bear bar closing near 2759.63 (M15 bar 104 low) immediately after the trigger would mark the High 2 buy as failed rather than pending."
+    ]
+  },
+  "source_event_id": "06d79acd-f11b-43d3-ad47-30f2c4e026de",
+  "gm_result": {
+    "type": "GM_ENTRY_REJECTED",
+    "symbol": "ETH-USDT",
+    "payload": {
+      "reason": "position ownership or structure is unresolved"
+    },
+    "correlation_id": "ETH-USDT-1h-1790035199999",
+    "causation_id": "06d79acd-f11b-43d3-ad47-30f2c4e026de",
+    "event_id": "4993aef6-64ae-44ed-bd22-4b9acda167dd",
+    "created_at_ms": 1790820894452
+  }
+}

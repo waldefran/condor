@@ -1,0 +1,79 @@
+{
+  "schema": "brooks.trade-intent.v2",
+  "role": "TRADER",
+  "decision": "ENTER_LONG",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1789923599999,
+  "market_context": {
+    "D1": "bull-trend with phase 'range'; always_in long (low relevance); range top 2771.00 (bar 90) still unbroken, recent highs 2680.00/2700.00 below it",
+    "H4": "trading-range 2357.18-2700.00; always_in long (medium relevance); bull leg from 2358.62 intact after a 131.84-point pullback to 2568.16; last closed H4 bar 1789905600000 opened 2577.69 and closed at its high 2611.00",
+    "H1": "last H1 bar 1789920000000 (2611.00/2643.70/2605.96/2635.82) is a bull breakout bar closing in the top 21% of its range",
+    "M15": "bull leg from 2568.16 (bar 97) with higher lows into 2643.70 (bar 118) and a one-bar inside pullback (bar 119)",
+    "location": "upper third of the H4 range; prior congestion 2646.54-2658.79 overhead, H4 range top 2700.00 above that"
+  },
+  "setup": {
+    "type": "breakout pullback (High 1/High 2 buy in M15 bull leg after a wide bull breakout bar)",
+    "trigger_status": "triggered",
+    "signal_quality": "clear",
+    "location_assessment": "neutral",
+    "no_trade_reason": null
+  },
+  "decision_timeframe": "M15",
+  "context_timeframes_used": [
+    "H1",
+    "M15",
+    "H4",
+    "D1"
+  ],
+  "entry_mechanism": "breakout_pullback",
+  "trigger": {
+    "reference": "M15 bar 119 high - signal/pullback bar after the 2643.70 breakout bar",
+    "price_field": "high",
+    "price": "2642.5",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 119,
+      "open_time_ms": 1789922700000,
+      "close_time_ms": 1789923599999
+    },
+    "kind": "stop",
+    "direction": "above"
+  },
+  "invalidation": {
+    "reference": "M15 bar 118 low 2616.09 - wide bull breakout bar and last higher low of the leg",
+    "price_field": "low",
+    "price": "2616.09",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 118,
+      "open_time_ms": 1789921800000,
+      "close_time_ms": 1789922699999
+    }
+  },
+  "evidence_for": [
+    "M15 bar 118 (open_time 1789921800000) is a wide bull bar: open 2618.68, low 2616.09, high 2643.70, close 2640.67 - closes 3.03 under its high, 24.58 above its low, and takes out bar 116's 2625.32 high.",
+    "M15 higher-low sequence in the bull leg: 2568.16 (bar 97, open_time 1789902900000) -> 2605.96 (bar 116, 1789920000000) -> 2616.09 (bar 118) -> 2633.44 (bar 119); leg is 75.54 points and has not traded back below bar 118's low.",
+    "M15 bar 119 (open 2640.67, high 2642.50, low 2633.44, close 2635.82) is a one-bar inside pullback holding above bar 118's midpoint 2629.89 - a shallow pause, not a reversal, after the breakout bar.",
+    "H1 bar 1789920000000 (open 2611.00, high 2643.70, low 2605.96, close 2635.82) breaks the prior H1 bar's 2611.00 high (1789916400000) and the 2586 region that capped the prior bars, closing in the top 21% of its range.",
+    "H4 context is current and its last closed bar (1789905600000) opened 2577.69 and closed at its 2611.00 high after the 2568.16 pullback; D1 and H4 always-in are both long, so the higher-timeframe lean is with buying the first pullback after the breakout bar."
+  ],
+  "evidence_against": [
+    "Location: 2635.82 sits about 81% up the H4 range 2357.18-2700.00; the H4 context lists three failed upside probes (2537.57, 2680.00, 2700.00) each giving back 60-125 points with no close acceptance.",
+    "The pending trigger 2642.50 is only 4.04 under the prior 2646.54 high (H1 1789840800000) and 16.29 under 2658.79 (H1 1789837200000), so the fill would occur inside the 2632-2658 distribution zone that broke down to 2568.16.",
+    "M15 bar 119 is a bear bar (open 2640.67, close 2635.82) closing in the lower third of its 2633.44-2642.50 range, so the signal-bar candle itself is not a strong bull bar.",
+    "The 2700.00 top (H1 bar 1789808400000, high 2700.00, close 2641.14) was followed by three bear H1 bars into 2568.16, showing sellers still active at range highs; the current leg has retraced only about 57% of that 131.84-point drop.",
+    "D1 phase is 'range' with the 2771.00 boundary (bar 90) untested since the buy-climax bar, so a long at 2642.50 is a mid-range entry rather than a confirmed break of the upper boundary."
+  ],
+  "qualitative_confidence": "medium",
+  "uncertainty": [
+    "The trigger is a pending stop, not a filled trade; follow-through of the H1 breakout bar is unobserved.",
+    "The pullback count is ambiguous - the one-bar pause at bar 119 can be read as High 1 or as the second shallow pullback - so a dip toward 2616.09 before the trigger cannot be excluded.",
+    "H4 context lags the decision by one H1 bar (last H4 close 2611.00 versus current M15 2635.82); the forming H4 bar is not supplied."
+  ],
+  "conditions_that_change_market_read": [
+    "An M15 close above 2658.79 with follow-through would confirm a break of the prior congestion and strengthen the long toward the 2700.00 range top.",
+    "An M15 close below 2616.09 (bar 118 low) would invalidate the wide bull bar and shift the read back to rotation toward 2568.16 and the H4 range floor 2357.18.",
+    "Several overlapping M15 closes between roughly 2616 and 2658 would place price in the range middle and argue against new longs.",
+    "Two consecutive closes above 2700.00 would shift the H4 read from trading-range to bull-trend breakout."
+  ]
+}

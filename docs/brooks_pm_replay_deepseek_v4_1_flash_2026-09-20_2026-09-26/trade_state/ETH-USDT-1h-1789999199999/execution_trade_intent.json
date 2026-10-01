@@ -1,0 +1,79 @@
+{
+  "schema": "brooks.trade-intent.v2",
+  "role": "TRADER",
+  "decision": "ENTER_LONG",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1789999199999,
+  "market_context": {
+    "D1": "CONTEXT_ANALYST (current): bull-trend/breakout-spike, always_in long; three consecutive closes above the 2557.46 range ceiling (2612.02/2632.98/2642.90) with higher lows 2357.18-2358.62-2413.82-2436.87; spike high 2771 (bar 89) still overhead.",
+    "H4": "CONTEXT_ANALYST (current): bull-trend/breakout-spike, always_in long; bar 120 (open 2658.81, high 2850, low 2658.06, close 2723.15) is the first close above the twice-tested 2700 high and is a 191.94-point range bar; all 18 closes bars 103-120 hold above 2576.9; 2568.16 (bar 114 low) is the higher-low line of the leg.",
+    "H1": "Bull continuation: bars 117-119 close 2720.00 (open 2715.68), 2734.09 (open 2723.15), 2734.13 (open 2734.08) with rising lows 2713.04/2719.08/2720.15 and rising highs to 2741.55.",
+    "M15": "17-bar tight flag after the 2850 buy-climax spike (bar 102, open 2708.33, high 2850, low 2702.56, close 2739.13); flag low 2709.56 (bar 107), rising lows and rising highs, last bar 119 (open 2724.63, high 2741.55, low 2721.12, close 2734.13) is a bull bar printing a new consolidation high.",
+    "location": "Buying the M15 flag breakout roughly 41 points above the reclaimed H4 2700 breakout level, but below the D1 spike high 2771 and the H4/M15 spike high 2850."
+  },
+  "setup": {
+    "type": "bull flag / tight-range breakout continuation after higher-timeframe spike",
+    "trigger_status": "triggered",
+    "signal_quality": "clear",
+    "location_assessment": "neutral",
+    "no_trade_reason": null
+  },
+  "decision_timeframe": "M15",
+  "context_timeframes_used": [
+    "H1",
+    "M15",
+    "H4",
+    "D1"
+  ],
+  "entry_mechanism": "breakout",
+  "trigger": {
+    "reference": "M15 bar 119 high (flag breakout level)",
+    "price_field": "high",
+    "price": "2741.55",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 119,
+      "open_time_ms": 1789998300000,
+      "close_time_ms": 1789999199999
+    },
+    "kind": "stop",
+    "direction": "above"
+  },
+  "invalidation": {
+    "reference": "M15 bar 107 low (bull-flag low of the post-spike consolidation)",
+    "price_field": "low",
+    "price": "2709.56",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 107,
+      "open_time_ms": 1789987500000,
+      "close_time_ms": 1789988399999
+    }
+  },
+  "evidence_for": [
+    "M15 bar 119 (open 2724.63, high 2741.55, low 2721.12, close 2734.13) is a bull bar closing in its upper third that fully reverses bar 118 (open 2733.92, close 2721.57) and prints a new high for the consolidation.",
+    "The 17 M15 bars since the 2850 spike (bar 102, open 2708.33, high 2850, low 2702.56, close 2739.13) form a flag with a rising base: lows 2709.56 (bar 107), 2719.08 (bar 113), 2720.15 (bar 118), 2721.12 (bar 119), and rising highs 2727.01 (bar 110) -> 2736.56 (bar 115) -> 2741.55 (bar 119), holding entirely above the H4 2700 breakout level.",
+    "H1 bars 117-119 close 2720.00, 2734.09, 2734.13 with rising lows 2713.04/2719.08/2720.15, so the one-hour timeframe shows the same continuation.",
+    "H4 context (current) bar 120 close 2723.15 is the first close above the twice-tested 2700 resistance; the eight closed M15 bars after that H4 close (opens 1789992000000-1789998300000) all hold between 2719.08 and 2741.55 above 2700, meeting the supplied H4 follow-through transition condition.",
+    "D1 context (current) shows three consecutive closes above the 2557.46 ceiling and an always_in long lean, so higher-timeframe location supports continuation rather than a counter-trend entry."
+  ],
+  "evidence_against": [
+    "Strongest counterargument: the 2850 spike bar (M15 bar 102) carries a 110.87-point upper tail and closes at 25% of its 147.44-point range - a buy-climax bar - and the entire 17-bar flag sits below its close 2739.13, so the long trigger at 2741.55 is being bought into overhead supply that the market already rejected once.",
+    "The D1 spike high 2771 (context bar 89) is only about 30 points above the 2741.55 trigger, roughly equal to the 32-point distance to the flag-low invalidation, so nearby opposing structure crowds the Trader's Equation.",
+    "The trigger 2741.55 exceeds the prior consolidation high 2739.54 (M15 bar 116) by only about 2 points and no M15 bar has closed above the flag high, so this is a marginal breakout of a tight 32-point range rather than a decisive one.",
+    "Higher-timeframe precedent is failure-prone: earlier upside spikes (D1 bars 110 and 113; H4 bars 61 and 81) were rejected and retraced, and H4 bar 120's 126.85-point tail shows the 2850 high was sold."
+  ],
+  "qualitative_confidence": "medium",
+  "uncertainty": [
+    "The trigger is pending: 2741.55 has not traded and the last close 2734.13 is still inside the flag, so the breakout is not yet confirmed.",
+    "Closed bars do not yet show whether the flag resolves as trend resumption or as a lower high against the 2850 buy-climax spike.",
+    "The current H4 bar has not closed, so H4 acceptance of the 2700/2850 breakout remains unverified.",
+    "D1 context is one bar behind intraday price (last D1 close 2642.90 versus M15 close 2734.13), so the 2771 resistance may be stale relative to the current spike."
+  ],
+  "conditions_that_change_market_read": [
+    "An M15 close back below the flag low 2709.56 negates the bull flag and shifts the read to failed breakout / return into range, removing the long case.",
+    "An M15 close below the spike bar low 2702.56 or the H4 breakout level 2700 would break the H4 breakout and shift the read toward a trading range below 2700.",
+    "Decisive M15 closes above 2741.55 and then above the D1 spike high 2771 would confirm continuation toward the 2850 spike high.",
+    "Continued overlap between 2709.56 and 2741.55 without a close above 2741.55 would turn the flag into a range at the highs and argue for NO_TRADE until a clearer breakout or pullback appears."
+  ]
+}

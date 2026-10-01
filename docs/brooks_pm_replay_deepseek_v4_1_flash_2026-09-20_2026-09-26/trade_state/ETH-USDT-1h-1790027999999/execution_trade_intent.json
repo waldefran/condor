@@ -1,0 +1,88 @@
+{
+  "schema": "brooks.trade-intent.v2",
+  "role": "TRADER",
+  "decision": "ENTER_LONG",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1790027999999,
+  "market_context": {
+    "regime": "bull trend on H1/H4/D1; M15 bull leg pausing in a two-sided pullback that still holds above the last breakout shelf",
+    "h4": "context freshness current: bull-trend / breakout-spike above the 2700.00 equal highs (bars 106/116) with spike high 2850.00 on bar 118 (upper tail 126.85 = 66% of its 191.94 range) and contracting bars 119-120 (76.91, 35.81) that stop below 2850.00; possible buy-climax shape, no bear reversal bar printed yet",
+    "h1": "bull trend with rising lows 2646.02 -> 2658.06 -> 2694.94 -> 2709.56 -> 2718.09 -> 2737.86 -> 2762.93; last H1 bar (open_time_ms 1790024400000) is a bear bar open 2781.77, high 2782.00, low 2762.93, close 2768.10 after the bull bar open 2760.51, high 2804.59, close 2781.77",
+    "m15": "bull leg 2734.22 (bar 103 low) to 2804.59 (bar 113 high); six-bar pullback to 2762.93 (bar 117 low) holding above the 2746.20-2756.72 shelf (bar 111 low 2746.20, bar 111 high 2756.72, bar 107 close 2756.61); last bar 119 open 2776.18, high 2776.18, low 2768.10, close 2768.10",
+    "levels": {
+      "resistance": [
+        "2804.59",
+        "2850.00"
+      ],
+      "support": [
+        "2762.93",
+        "2746.20",
+        "2734.22",
+        "2718.09"
+      ]
+    }
+  },
+  "setup": {
+    "type": "bull-trend pullback continuation: buy stop above M15 bull signal bar 118 high",
+    "trigger_status": "triggered",
+    "signal_quality": "weak",
+    "location_assessment": "neutral",
+    "no_trade_reason": null
+  },
+  "decision_timeframe": "M15",
+  "context_timeframes_used": [
+    "H4",
+    "H1",
+    "M15"
+  ],
+  "entry_mechanism": "continuation",
+  "trigger": {
+    "reference": "M15 bar 118 (bull signal bar, close in top quarter of range) high",
+    "price_field": "high",
+    "price": "2779.05",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 118,
+      "open_time_ms": 1790026200000,
+      "close_time_ms": 1790027099999
+    },
+    "kind": "stop",
+    "direction": "above"
+  },
+  "invalidation": {
+    "reference": "M15 bar 117 low (pullback low / breakout-test low)",
+    "price_field": "low",
+    "price": "2762.93",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 117,
+      "open_time_ms": 1790025300000,
+      "close_time_ms": 1790026199999
+    }
+  },
+  "evidence_for": [
+    "Higher-timeframe trend agrees with the long: H4 context (freshness current) is bull-trend/breakout-spike with bars 113-120 closing 2577.69 to 2760.51 (seven of eight closes higher) and the 2700.00 equal highs of H4 bars 106/116 exceeded (closes 2723.15, 2754.31, 2760.51).",
+    "M15 sequence of higher lows is intact: 2718.09 (bar 89 low), 2730.01 (bar 95 low), 2734.22 (bar 103 low), 2762.93 (bar 117 low), so the current pullback has not broken the bull leg structure.",
+    "The six-bar M15 pullback off 2804.59 (bar 113 high) is holding above the prior breakout shelf 2746.20-2756.72 (bar 111 low 2746.20, high 2756.72; bar 107 close 2756.61), i.e. a breakout test rather than a broken trend.",
+    "M15 bar 118 is a bull reversal bar (open 2768.60, low 2768.42, high 2779.05, close 2776.18) closing in the top quarter of its range and above bar 117's high 2769.23, giving a specific pending stop (2779.05) with structural risk only 16.12 below it at 2762.93."
+  ],
+  "evidence_against": [
+    "M15 bar 113 (open 2771.06, high 2804.59, close 2803.78, range 34.81, widest of the leg) broke the bar 95 high 2795.00 by only 9.59 and was fully retraced in three bars to 2767.94 (bar 116 low) - a marginal new high that was immediately rejected.",
+    "Last bar M15 bar 119 (open 2776.18 = its high, close 2768.10 = its low) is a bear bar closing at its low and takes out bar 118's low 2768.42, so buyers lost the most recent bar and a deeper second leg toward 2746.20/2734.22 is possible.",
+    "Location is only neutral: 2768 is near the middle of the M15 range 2718.09-2804.59 (mid ~2761) and about 25 points under the 2804.59 high, so reward to first resistance is roughly 1.6x the 16.12-point risk.",
+    "H4 context flags possible buy-climax character overhead: H4 bar 118 range 191.94 with a 126.85 (66%) upper tail to 2850.00, and H4 bars 119-120 contract (76.91, 35.81) with highs 2795.00 and 2770.03 below 2850.00, so supply sits just above the trigger.",
+    "Three consecutive M15 bear bars (114, 115, 116: closes 2783.49, 2781.77, 2768.05) mean the first bull attempt after the leg down already failed, and a High 2 buy could print lower, near 2762.93-2747, rather than the 2779.05 stop triggering."
+  ],
+  "qualitative_confidence": "medium",
+  "uncertainty": [
+    "Whether this is a tradeable High 1/High 2 pullback or the start of a broader M15 trading range 2734.22-2804.59: bar 119 already took out bar 118's low 2768.42, so the pending 2779.05 stop may simply not fill while price works lower to 2762.93-2747.",
+    "The H4 buy-climax shape at 2850.00 is unresolved (no bear reversal bar printed), so a bull leg resuming could still stall at 2804.59/2850.00.",
+    "H1 and H4 contexts are directional labels; the raw H4 bar 118 upper tail shows the 2850.00 spike was sold, so the higher-timeframe leg may be shifting from spike to channel or range rather than extending."
+  ],
+  "conditions_that_change_market_read": [
+    "A close below M15 bar 117 low 2762.93 - and above all a close below bar 111 low 2746.20 - invalidates the continuation read and shifts M15 to a deeper pullback / trading range.",
+    "A close above 2804.59 (bar 113 high) with follow-through confirms continuation toward the H4 spike high 2850.00; rejection there with a bear reversal bar would validate the H4 buy-climax read instead.",
+    "Two consecutive M15 closes below 2734.22 (bar 103 low) break the sequence of rising M15 lows and end the bull-leg read.",
+    "A M15 bull bar closing in its upper third above 2769.23, holding above 2762.93, would confirm the pullback is over rather than two-sided."
+  ]
+}

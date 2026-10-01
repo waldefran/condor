@@ -1,0 +1,105 @@
+{
+  "schema": "condor.brooks.pending-entry-state.v1",
+  "correlation_id": "ETH-USDT-1h-1789955999999",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1789955999999,
+  "available_at_ms": 1789956101955,
+  "expires_at_ms": 1789963199999,
+  "max_intent_age_ms": 7200000,
+  "status": "expired",
+  "last_processed_close_time_ms": 1789963199999,
+  "changed_at_ms": 1789963199999,
+  "resolution_reason": "intent_expired",
+  "evidence": {
+    "event": "expired",
+    "changed_at_ms": 1789963199999,
+    "reason": "intent_expired",
+    "expires_at_ms": 1789963199999,
+    "last_processed_close_time_ms": 1789963199999
+  },
+  "execution_intent": null,
+  "original_intent": {
+    "schema": "brooks.trade-intent.v2",
+    "role": "TRADER",
+    "decision": "ENTER_SHORT",
+    "symbol": "ETH-USDT",
+    "decision_time_ms": 1789955999999,
+    "market_context": {
+      "regime_read": "H4 context reads a 120-bar two-sided range 2357.18-2700 (priors: 2680 spike fully given back to 2358.62; no close above 2700). D1 context reads bull-trend/breakout-spike (three closes 2612.02/2632.98/2642.90 above the 2557.46 ceiling) but price is still below the bar-89 spike high 2771. M15 raw bars show the second test of the H4 range top 2700 being rejected by a strong bear bar.",
+      "location": "Last close 2648.42 sits about 83% up the H4 window range 2357.18-2700, i.e. at the upper extreme; nearby support is the M15 spike bar open 2642.9 and the H4 pullback low 2568.16.",
+      "key_levels": {
+        "double_top": "2700 (M15 bar 113 high = H1 high 2700 = H4 window high)",
+        "reversal_bar": "M15 bar 119 open 2677.5 high 2682.68 low 2648.28 close 2648.42",
+        "breakout_origin": "M15 bar 112 open 2642.9",
+        "h4_range": "2357.18 - 2700",
+        "d1_ceiling": "2557.46; D1 spike high 2771"
+      },
+      "volume": "supplied volume on M15 bar 119 (699226.722) and H1 bar 1789952400000 (2316108.843) is above the immediately prior bars; used only as secondary confirmation."
+    },
+    "setup": {
+      "type": "failed upside breakout / double-top rejection short at H4 range high",
+      "trigger_status": "pending",
+      "signal_quality": "clear",
+      "location_assessment": "favorable",
+      "no_trade_reason": null
+    },
+    "decision_timeframe": "M15",
+    "context_timeframes_used": [
+      "H1",
+      "M15",
+      "H4",
+      "D1"
+    ],
+    "entry_mechanism": "reversal",
+    "trigger": {
+      "reference": "M15 bar 119 low 2648.28 — sell stop below the strong bear reversal bar that rejected the 2700 double top",
+      "price_field": "low",
+      "price": "2648.28",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 119,
+        "open_time_ms": 1789955100000,
+        "close_time_ms": 1789955999999
+      },
+      "kind": "stop",
+      "direction": "below"
+    },
+    "invalidation": {
+      "reference": "M15 bar 113 high 2700 — the double top / H4 range-top level; a trade above it negates the failed-breakout short",
+      "price_field": "high",
+      "price": "2700",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 113,
+        "open_time_ms": 1789949700000,
+        "close_time_ms": 1789950599999
+      }
+    },
+    "evidence_for": [
+      "Exact double top at 2700: M15 bar 113 (open 2676.31, high 2700, low 2675.93, close 2685.52) matches the H1 high 2700 in bar open_time 1789808400000 (close 2641.14) and the H4 window high 2700; no close above 2700 has been recorded on H1/H4/M15, so the H4 2357.18-2700 range top is being rejected, not broken.",
+      "M15 bar 119 (open 2677.5, high 2682.68, low 2648.28, close 2648.42) is a strong bear trend bar closing at its low, engulfing bars 117-118 (closes 2675.17 and 2677.5) and retracing essentially the whole M15 spike bar 112 (open 2642.9, high 2680.35, close 2676.31).",
+      "H1 confirms the rejection: bar open_time 1789952400000 (open 2691.5, high 2694.4, low 2648.28, close 2648.42) fully reverses the prior H1 bull spike bar open_time 1789948800000 (open 2642.9, high 2700, close 2690.08), a two-bar reversal at 2700 with the close back at the spike bar open.",
+      "D1 structure keeps the location as a range top rather than a trend high: price 2648-2700 is below the bar-89 spike high 2771 and D1 bar 119 made a lower high (2645.88 vs bar-118 2700), while D1/H4 contexts themselves list two earlier upside probes that closed back inside (2680 close 2514.72; 2609.02 close 2514.07).",
+      "Location is the upper extreme of the H4 window (close 2642.9 is ~83% of the 2357.18-2700 range with the last H4 close the window's highest close), i.e. the edge zone where range logic favors selling rather than buying."
+    ],
+    "evidence_against": [
+      "D1 context is bull-trend in breakout-spike phase: three consecutive closes 2612.02, 2632.98, 2642.90 above the 2557.46 range ceiling, so a short is counter to the D1 breakout read; the first reversal attempt after such a spike often fails.",
+      "H4 shows a bull channel off 2358.62 (rising lows 2413.82, 2436.87, 2568.16; rising highs 2438.47, 2585.5, 2643.52, 2700) and the last close 2642.9 is the highest close in the 120-bar H4 window, so 2700 is currently the boundary of a leg that could continue rather than a confirmed top.",
+      "The M15 pullback has only reached 2648.28, still above the spike bar 112 open 2642.9, so the breakout point has not been lost and the pattern can still be read as a bull flag that resumes upward.",
+      "Bar 119 is the first reversal bar after a strong bull spike and has no follow-through bar yet, so the bear break of the 2673-2695 pause is unconfirmed."
+    ],
+    "qualitative_confidence": "medium",
+    "uncertainty": [
+      "Whether the second 2700 test is D1 breakout acceptance in progress or the second failure of the H4 range top; the D1 and H4 contexts disagree on this and both are current.",
+      "Whether 2642.9 (M15 spike bar open / H4 breakout point) will hold as support, keeping the move a bull flag rather than a reversal.",
+      "No completed bar follows M15 bar 119, so the bear follow-through is not yet observable."
+    ],
+    "conditions_that_change_market_read": [
+      "A close above 2700 (M15 bar 113 high) or two consecutive closes above 2658.79 would shift the read to H4 bull acceptance and cancel the short thesis.",
+      "A bull bar closing above bar 119 high 2682.68 without first taking out 2648.28 would mark a bear trap and argue for buying the breakout pullback instead.",
+      "Two consecutive M15 closes below 2642.9 and then below the H4 pullback low 2568.16 would confirm the failed breakout and open the 2530/2469 range-middle area for the short.",
+      "Repeated closes between 2557.46 and 2700 with no upside progress would keep the H4 range intact and preserve the sell-the-top read."
+    ]
+  },
+  "source_event_id": "31a55b71-3775-4f1c-a49f-89c565f5ed33"
+}

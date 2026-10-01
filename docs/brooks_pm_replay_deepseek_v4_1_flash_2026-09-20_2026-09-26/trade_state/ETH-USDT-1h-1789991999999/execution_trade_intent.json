@@ -1,0 +1,76 @@
+{
+  "schema": "brooks.trade-intent.v2",
+  "role": "TRADER",
+  "decision": "ENTER_LONG",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1789991999999,
+  "market_context": {
+    "H1": "Bull trend / breakout above 2700.00. Last H1 bar (open_time_ms 1789988400000, open 2715.68, high 2727.03, low 2713.04, close 2723.15) is a bull bar closing in its top quarter and holding above the broken level; the prior H1 bar (1789981200000) opened 2696.51, spiked to 2850.00 and closed 2720.66.",
+    "M15": "Strong bull leg off 2568.16, then a tight 8-bar range 2709.56-2727.03 (bars 112-119) sitting above the former 2700.00 upper extreme - a bull flag at the highs whose top was just probed by bar 119.",
+    "H4": "Supplied H4 context stale; 120 closed raw H4 bars read successfully to 1789991999999. Last H4 bar (1789977600000, open 2658.81, high 2850.00, low 2658.06, close 2723.15) is the highest close of the window, with the 2700.00 range top now exceeded on a closing basis.",
+    "D1": "Context current: breakout-spike above the 2557.46 range ceiling; price has since extended to new highs above the 2700 area."
+  },
+  "setup": {
+    "type": "Tight-range (bull flag) breakout above a multi-day range top in a bull trend - continuation stop entry",
+    "trigger_status": "triggered",
+    "signal_quality": "weak",
+    "location_assessment": "neutral",
+    "no_trade_reason": null
+  },
+  "decision_timeframe": "M15",
+  "context_timeframes_used": [
+    "H1",
+    "M15",
+    "H4",
+    "D1"
+  ],
+  "entry_mechanism": "continuation",
+  "trigger": {
+    "reference": "M15 bar index 119 (open_time_ms 1789991100000) high 2727.03, the top of the 8-bar tight range and of the bull flag above 2700.00",
+    "price_field": "high",
+    "price": "2727.03",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 119,
+      "open_time_ms": 1789991100000,
+      "close_time_ms": 1789991999999
+    },
+    "kind": "stop",
+    "direction": "above"
+  },
+  "invalidation": {
+    "reference": "M15 bar index 115 (open_time_ms 1789987500000) low 2709.56, the base of the tight range and the most recent higher low above the broken 2700.00 level",
+    "price_field": "low",
+    "price": "2709.56",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 115,
+      "open_time_ms": 1789987500000,
+      "close_time_ms": 1789988399999
+    }
+  },
+  "evidence_for": [
+    "M15 bar 119 (open_time_ms 1789991100000, open 2726.12, high 2727.03, low 2720.05, close 2723.15) makes a marginal new high above bar 118 (high 2727.01, close 2726.12) and holds in the upper half of its range, so the flag top is already being probed upward.",
+    "M15 bars 112-119 form a tight 8-bar range 2709.56-2727.03 whose floor (bar 115 low 2709.56) sits above the broken 2700.00 former range extreme - the classic bull-flag position just after an upside breakout.",
+    "Pullbacks are being bought: M15 higher lows 2616.09 (bar 60 low, 1789938000000), 2646.02 (bar 103 low, 1789976700000), 2658.06 (bar 104 low, 1789977600000), 2709.56 (bar 115 low, 1789987500000).",
+    "Momentum with follow-through is present: M15 bar 106 (1789979400000, open 2677.82) drives to high 2706.86 and closes 2699.99; H1 bar 1789977600000 runs 2658.81 to 2696.51 and the next H1 bar closes 2720.66.",
+    "Raw H4 read (120 closed bars to 1789991999999) ends at the window's highest close (2723.15) above the 2700.00 range top, and current D1 reads breakout-spike above the 2557.46 ceiling - higher timeframes lean the same way as the raw M15 flag."
+  ],
+  "evidence_against": [
+    "Strongest opposing case: M15 bar 110 (open_time_ms 1789983000000, open 2708.33, high 2850.00, low 2702.56, close 2739.13) left about a 110.87-point upper tail, so a resting seller sits above; price is still roughly 123 points below that print and the tight range could be a climactic pause rather than a bull flag.",
+    "The leg from the 2568.16 low (M15 bar 22 low, 1789902900000) to 2727.03 is about 159 points with no H1 pullback, so a stop entry at a new high is late in the leg and far from support other than the 2700.00 breakout level.",
+    "This region has repeatedly rejected price: raw H4 shows 2680.00 (bar 1789128000000, close 2555.52) and 2700.00 (bar 1789804800000, high 2700.00, close 2638.49, 61.5 upper tail) both failing, each followed by roughly 250-point declines.",
+    "M15 bar 111 (open 2739.13, high 2739.13, low 2717.36, close 2720.66) is a bear bar immediately after the spike, and no closed M15 bar has yet closed above 2727.03, so the flag breakout is untriggered."
+  ],
+  "qualitative_confidence": "medium",
+  "uncertainty": [
+    "The 2850.00 print on M15 bar 110 is not corroborated by any other individual supplied bar; whether it is a genuine traded level or a data artifact is unknown.",
+    "The trigger 2727.03 is untriggered, so the flag's resolution is unresolved at the decision time.",
+    "Whether 2709.56-2727.03 is a bull flag (continuation) or the first pause before a deeper pullback to the 2700.00 breakout level cannot be settled from closed bars alone."
+  ],
+  "conditions_that_change_market_read": [
+    "Failure: an M15 close below 2709.56 followed by a close below 2700.00 would mark the breakout as failed and return the read to the 2358.62-2700.00 H4 range.",
+    "Continuation: an M15 close above 2727.03 that holds above 2700.00 confirms the flag breakout and keeps focus on the 2850.00 spike high.",
+    "Deeper damage: a close below 2656.75 (M15 bar 101 low, 1789974900000) would end the sequence of higher lows and put the bull leg in doubt."
+  ]
+}

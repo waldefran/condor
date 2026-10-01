@@ -1,0 +1,110 @@
+{
+  "schema": "condor.brooks.pending-entry-state.v1",
+  "correlation_id": "ETH-USDT-1h-1789981199999",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1789981199999,
+  "available_at_ms": 1789981291015,
+  "expires_at_ms": 1789988399999,
+  "max_intent_age_ms": 7200000,
+  "status": "canceled",
+  "last_processed_close_time_ms": 1789981499999,
+  "changed_at_ms": 1789981499999,
+  "resolution_reason": "invalidation_touched_before_activation",
+  "evidence": {
+    "event": "canceled",
+    "changed_at_ms": 1789981499999,
+    "reason": "invalidation_touched_before_activation",
+    "invalidation_price": "2696.51",
+    "invalidation_hit": true,
+    "trigger_crossed_same_bar": false,
+    "bar": {
+      "timeframe": "M1",
+      "open_time_ms": 1789981440000,
+      "close_time_ms": 1789981499999,
+      "open": "2698.72",
+      "high": "2699.29",
+      "low": "2694.94",
+      "close": "2694.94"
+    }
+  },
+  "execution_intent": null,
+  "original_intent": {
+    "schema": "brooks.trade-intent.v2",
+    "role": "TRADER",
+    "decision": "ENTER_LONG",
+    "symbol": "ETH-USDT",
+    "decision_time_ms": 1789981199999,
+    "market_context": {
+      "summary": "All supplied higher timeframes are bull/breakout, but price is at the top edge of the H4 container and the M15/H1 breakout bar closed back at/below the 2700.00 level. Long-side continuation is the with-trend read; the level itself is the decision point.",
+      "H1": "Bull, always-in long. H1 bar 115 (1789963200000) low 2646.02 was the pullback low; H1 bar 118 (1789974000000, open 2662.19, high 2663.96, low 2646.02, close 2658.81) is that pullback bar; H1 bar 119 (1789977600000, open 2658.81, high 2706.86, low 2658.06, close 2696.51) is a 48.80-range bull trend bar closing in its top quarter and above every prior H1 high in the supplied window (H1 bar 85 high 2700.00).",
+      "M15": "Trend up into a breakout attempt. M15 bar 118 (1789979400000) is a bull trend bar: open 2677.82, high 2706.86, low 2677.37, close 2699.99, closing in the top ~22% of its range on the largest recent M15 volume (993125.138). M15 bar 119 (1789980300000) is a 6.21-range inside bar: open 2699.99, high 2702.72, low 2696.51, close 2696.51, holding above the breakout zone.",
+      "H4": "current, bull-trend/channel, always_in long, breakout_mode true. Price sits at the top of the 2358.62-2700.00 container with two exact 2700.00 highs (1789804800000 close 2638.49; 1789948800000 close 2664.73) and a hesitating inside bar last (1789963200000 close 2658.81 below its 2664.73 open). Higher lows since 2358.62: 2370.54, 2436.87, 2495.82, 2608.83, 2568.16.",
+      "D1": "current, bull-trend/breakout-spike, breakout_mode true. Three consecutive closes above the 2557.46 range ceiling (2612.02, 2632.98, 2642.90) with D1 bar 118 reaching 2700 and the 2771 bar-89 spike high overhead; the 2700 zone under test is therefore a D1/H4 reference, not a new level."
+    },
+    "setup": {
+      "type": "inside-bar continuation above the 2700.00 range top after a bull breakout bar (M15 bars 118-119)",
+      "trigger_status": "pending",
+      "signal_quality": "clear",
+      "location_assessment": "neutral",
+      "no_trade_reason": null
+    },
+    "decision_timeframe": "M15",
+    "context_timeframes_used": [
+      "H1",
+      "M15",
+      "H4",
+      "D1"
+    ],
+    "entry_mechanism": "breakout_pullback",
+    "trigger": {
+      "reference": "M15 bar 119 high (inside/pause bar after the M15 bar 118 breakout bar)",
+      "price_field": "high",
+      "price": "2702.72",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 119,
+        "open_time_ms": 1789980300000,
+        "close_time_ms": 1789981199999
+      },
+      "kind": "stop",
+      "direction": "above"
+    },
+    "invalidation": {
+      "reference": "M15 bar 119 low (loss of the pause-bar low, which is also below the 2700.00 breakout level, marks the breakout attempt as failed)",
+      "price_field": "low",
+      "price": "2696.51",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 119,
+        "open_time_ms": 1789980300000,
+        "close_time_ms": 1789981199999
+      }
+    },
+    "evidence_for": [
+      "M15 bar 118 (open_time_ms 1789979400000) is a strong bull trend bar: open 2677.82, high 2706.86, low 2677.37, close 2699.99, i.e. it exceeds the 2700.00 H4 double-top level and closes in the top ~22% of its 29.49 range with the largest recent M15 volume (993125.138).",
+      "M15 bar 119 (open_time_ms 1789980300000) is an inside bar (high 2702.72 inside bar 118 high 2706.86; low 2696.51 inside bar 118 low 2677.37) with a 6.21 range, holding above the breakout bar midpoint - the pause form Brooks buys above in a bull trend.",
+      "H1 bar 119 (open_time_ms 1789977600000, open 2658.81, high 2706.86, low 2658.06, close 2696.51) is a 48.80-range bull trend bar closing in its upper quarter and above all prior H1 highs in the window (H1 bar 85 high 2700.00), so the higher-timeframe bar is also a breakout bar rather than a reversal bar.",
+      "M15 higher-low sequence immediately into the attempt: 2646.02 (bar 115 low, open_time_ms 1789976700000) then 2677.37 (bar 118 low) then 2696.51 (bar 119 low), and no lower low in the last five bars.",
+      "Supplied H4 and D1 contexts are current and both read bull-trend with breakout_mode true and always_in long (H4 higher lows since 2358.62 to 2568.16; D1 three consecutive closes above 2557.46), so the with-trend side is the continuation side."
+    ],
+    "evidence_against": [
+      "The 2700.00 level has already rejected price twice on H4 with exact highs (1789804800000 and 1789948800000), and the current M15 closes (2699.99 on bar 118, 2696.51 on bar 119) sit at/below 2700, so acceptance above the range top is not confirmed by a close.",
+      "Location is the top edge of the H4 2358.62-2700.00 container and below the D1 bar-89 spike high 2771; H4 phase is 'channel', and Brooks treats breakouts at the top of a channel/range edge as lower-quality than pullback entries inside it.",
+      "H4's last bar (1789963200000) is an inside bar closing 2658.81 below its 2664.73 open in the lower half of its range, and the H4 context flags 'stall at the range top' - hesitation directly at the level now being bought.",
+      "M15 bar 119 has a small bear body and closes at its low (close 2696.51 = low 2696.51), a weaker signal bar than the bar 118 breakout, and the 6.21 invalidation distance is smaller than most recent M15 bar ranges (bar 118 range 29.49)."
+    ],
+    "qualitative_confidence": "medium",
+    "uncertainty": [
+      "Whether the 2706.86 probe is acceptance above 2700.00 or the third rejection of the level (D1 bar 118 high 2700; two exact H4 2700.00 highs) cannot be resolved from closed bars alone.",
+      "The invalidation at the M15 bar 119 low 2696.51 is tight versus recent M15 ranges, so ordinary noise inside a continuing breakout could reach it; a wider structural alternative would sit at the 2646.02 higher low (M15 bar 115 / H1 bar 118), which is not used here.",
+      "Volume is supplied only as secondary context; no level, indicator, or order-flow data is used or required."
+    ],
+    "conditions_that_change_market_read": [
+      "Failure: an M15 close back below 2696.51 and then below 2646.02 (M15 bar 115 low) would mark the 2700.00 test as a failed breakout and return the read to the 2358.62-2700.00 trading range.",
+      "Acceptance: consecutive M15 closes above 2702.72/2706.86 with rising lows would confirm breakout acceptance and shift focus to the D1 bar-89 spike high 2771.",
+      "Range conversion: repeated overlapping M15 closes between 2646.02 and 2706.86 with no break of either edge would move the phase from channel to range and lower the always-in relevance on H4.",
+      "Trend damage: an M15 close below 2646.02 followed by a lower high, then below 2605.96, would put the H4 bull leg from 2358.62 in doubt."
+    ]
+  },
+  "source_event_id": "bfaefa17-98b5-4f08-9499-037a68c54a2a"
+}

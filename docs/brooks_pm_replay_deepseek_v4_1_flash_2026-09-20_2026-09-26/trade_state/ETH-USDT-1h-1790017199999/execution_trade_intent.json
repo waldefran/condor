@@ -1,0 +1,78 @@
+{
+  "schema": "brooks.trade-intent.v2",
+  "role": "TRADER",
+  "decision": "ENTER_LONG",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1790017199999,
+  "market_context": {
+    "regime": "Bull trend on D1/H4 with a post-spike M15 pullback/flag",
+    "d1": "D1 context current: bull-trend, breakout-spike, always_in long; first consecutive closes above the 2557.46 range ceiling (2612.02/2632.98/2642.90).",
+    "h4": "H4 context current: bull-trend, breakout-spike, always_in long, high confidence; higher swing lows 2495.82 -> 2568.16 -> 2658.06 and last close 2754.31 above prior 2700 highs.",
+    "h1": "H1 bars 117-119 closed 2753.69/2740.89/2756.61; final H1 bar is a bull bar closing 2756.61 vs high 2756.72, above the prior H1 high 2755.18.",
+    "m15": "M15 post-spike overlap between 2702.56 (bar 82 low) and 2765.34 (bar 109 high), but with rising pullback lows 2709.56 -> 2734.22 and a bull bar closing on its high at bar 119."
+  },
+  "setup": {
+    "type": "Bull flag / High 2 pullback resumption in a bull trend (buy above the bar-119 bull bar)",
+    "trigger_status": "triggered",
+    "signal_quality": "clear",
+    "location_assessment": "neutral",
+    "no_trade_reason": null
+  },
+  "decision_timeframe": "M15",
+  "context_timeframes_used": [
+    "M15",
+    "H1",
+    "H4",
+    "D1"
+  ],
+  "entry_mechanism": "breakout_pullback",
+  "trigger": {
+    "reference": "raw.M15[119].high (open_time_ms 1790016300000, close_time_ms 1790017199999)",
+    "price_field": "high",
+    "price": "2756.72",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 119,
+      "open_time_ms": 1790016300000,
+      "close_time_ms": 1790017199999
+    },
+    "kind": "stop",
+    "direction": "above"
+  },
+  "invalidation": {
+    "reference": "raw.M15[119].low (open_time_ms 1790016300000, close_time_ms 1790017199999)",
+    "price_field": "low",
+    "price": "2746.20",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 119,
+      "open_time_ms": 1790016300000,
+      "close_time_ms": 1790017199999
+    }
+  },
+  "evidence_for": [
+    "M15 bar 119 (open 2746.72, high 2756.72, low 2746.20, close 2756.61) is a bull bar closing 0.11 below its high and above the prior three bars' highs (bar 116 high 2749.93, bar 117 high 2750.41, bar 118 high 2749.78) after bars 112-115 drifted down to 2734.22.",
+    "M15 pullback lows since the post-spike dip rise: 2709.56 (bar 87 low), 2716.28 (bar 84 low), 2718.09 (bar 101 low), 2734.22 (bar 115 low), 2737.86 (bar 116 low) - a higher-low sequence that keeps the trend-continuation read alive.",
+    "H1 bar 119 (open 2740.89, high 2756.72, low 2737.86, close 2756.61) reverses two down bars and exceeds the prior H1 high 2755.18, i.e. closed-bar agreement between the decision timeframe and H1.",
+    "H4 context is current and reads bull-trend/breakout-spike with always_in long, and D1 context is current bull-trend/breakout-spike with three closes above 2557.46, so the higher-timeframe location permits a pullback resumption rather than treating it as countertrend.",
+    "The long has both a specific actionable pending stop (the M15 bar-119 high) and an exact structural invalidation (the M15 bar-119 low), both copied from supplied raw OHLC."
+  ],
+  "evidence_against": [
+    "Nearest opposing structure is close: M15 bar 109 high 2765.34 (also H1 bar 117 high) sits only about 8.6 points above the 2756.72 trigger, and M15 bar 107 high 2795 is unbroken supply overhead, so the entry sits just under the top of the post-spike overlap.",
+    "The M15 bar 82 wide-range spike to 2850 closed at 2739.13, leaving a 110.87-point upper tail, and the 37 bars since then overlap between 2702.56 and 2765.34, so the current area can equally be read as the upper edge of a trading range, where a long is a less favorable location.",
+    "M15 bars 110-115 fell for six consecutive bars (2757.71 -> 2740.89 close), showing sellers active just below the current price, and bar 119's signal is a single bar with no follow-through bar inside the frozen packet.",
+    "Buying at 2756.72 with invalidation at 2746.20 risks about 10.5 points into a first resistance roughly 8.6 points away; without a break of 2765.34 the immediate room is crowded."
+  ],
+  "qualitative_confidence": "medium",
+  "uncertainty": [
+    "Whether the 37 M15 bars since the 2850 spike are a bull channel continuation or the top of a trading range is unresolved by the supplied bars.",
+    "Whether M15 bar 119 is a genuine flag-breakout signal or a one-bar probe into 2765.34 cannot be confirmed, because no follow-through bar exists at the frozen decision time.",
+    "The exact depth of any pullback after a stop entry above 2756.72 is unknown, so the bar-119 low invalidation may be tested by ordinary noise."
+  ],
+  "conditions_that_change_market_read": [
+    "A M15 close above 2765.34 with follow-through would confirm the flag breakout and shift focus to 2795 and the 2850 spike high.",
+    "A M15 close back below 2746.20 would negate the bar-119 bull bar and shift the read toward range/transition.",
+    "A M15 close below 2734.22 (bar 115 low) would break the rising pullback-low sequence and argue for a test of 2709.56 and 2702.56.",
+    "Continued heavy overlap between 2702.56 and 2765.34 with mid-range closes would keep the post-spike trading-range read and make edge trades more attractive than this location."
+  ]
+}

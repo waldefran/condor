@@ -1,0 +1,95 @@
+{
+  "schema": "condor.brooks.pending-entry-state.v1",
+  "correlation_id": "ETH-USDT-1h-1789952399999",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1789952399999,
+  "available_at_ms": 1789952489177,
+  "expires_at_ms": 1789959599999,
+  "max_intent_age_ms": 7200000,
+  "status": "canceled",
+  "last_processed_close_time_ms": 1789956059999,
+  "changed_at_ms": 1789956101955,
+  "resolution_reason": "superseded_by_newer_entry",
+  "evidence": null,
+  "execution_intent": null,
+  "original_intent": {
+    "schema": "brooks.trade-intent.v2",
+    "role": "TRADER",
+    "decision": "ENTER_LONG",
+    "symbol": "ETH-USDT",
+    "decision_time_ms": 1789952399999,
+    "market_context": {
+      "H1": "Bull trend resumption: last H1 bar (idx 119, open 2642.9, high 2700, low 2641.7, close 2690.08) is a bull trend bar closing in its top third after the 2616-2568 pullback; prior 8 H1 bars built higher lows off 2568.16.",
+      "M15": "Bull spike into the H4 range top: bars 116-119 close 2676.31, 2685.52, 2684.77, 2690.08 with no lower tails on 116 and 119; 2700 printed once (bar 117 high) but not yet closed above.",
+      "H4": "Trading-range outline 2357.18-2700 with a bull leg/channel from 2358.62 (rising lows 2413.82, 2436.87, 2568.16) and a two-bar bull spike (1789732800000, 1789747200000); price back at the range top.",
+      "D1": "Breakout-spike bull: three consecutive closes above the 2557.46 ceiling and a large bull bar (bar 117, 2446.22 to 2612.02) with follow-through, always-in long; 2771 spike high remains overhead."
+    },
+    "setup": {
+      "type": "breakout above H4/D1 range top 2700 after a four-bar M15 bull spike",
+      "trigger_status": "pending",
+      "signal_quality": "clear",
+      "location_assessment": "neutral",
+      "no_trade_reason": null
+    },
+    "decision_timeframe": "M15",
+    "context_timeframes_used": [
+      "H1",
+      "M15",
+      "H4",
+      "D1"
+    ],
+    "entry_mechanism": "breakout",
+    "trigger": {
+      "reference": "M15 bar 117 high (the exact 2700 range-top/exact H4 window high)",
+      "price_field": "high",
+      "price": "2700",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 117,
+        "open_time_ms": 1789949700000,
+        "close_time_ms": 1789950599999
+      },
+      "kind": "stop",
+      "direction": "above"
+    },
+    "invalidation": {
+      "reference": "M15 bar 116 low, the base of the four-bar bull spike and the last consolidation low before the breakout leg",
+      "price_field": "low",
+      "price": "2641.7",
+      "source": {
+        "timeframe": "M15",
+        "bar_index": 116,
+        "open_time_ms": 1789948800000,
+        "close_time_ms": 1789949699999
+      }
+    },
+    "evidence_for": [
+      "M15 bar 116 (idx 116, open_time 1789948800000, open 2642.9, high 2680.35, low 2641.7, close 2676.31) is a large bull trend bar with a 33.41-point body closing in its top quarter with no lower tail, the spike bar that broke the H4 flag top 2658.79.",
+      "M15 bar 119 (idx 119, open_time 1789951500000, open 2684.77, high 2695.98, low 2684.77, close 2690.08) closes near its high on a zero lower tail, so the spike is still holding highs rather than being given back.",
+      "M15 higher lows through the breakout leg: 2641.7 (bar 116 low), 2675.93 (bar 117 low), 2683.18 (bar 118 low), 2684.77 (bar 119 low); the H1 bar idx 119 (open 2642.9, high 2700, low 2641.7, close 2690.08) confirms the same on the hourly aggregation.",
+      "H4 context (current) shows a bull leg from 2358.62 with rising lows 2413.82/2436.87/2568.16 holding above the leg midpoint 2529.31, plus a two-bar bull spike, i.e. a bull-flag base under this breakout attempt.",
+      "D1 context (current) is breakout-spike bull with three consecutive closes above the 2557.46 ceiling (2612.02, 2632.98, 2642.90) and always-in long, so the higher-timeframe pressure supports continuation through 2700.",
+      "Price is at the top edge of the H4 range rather than its middle, and overhead structure (D1 bar-89 spike high 2771) is roughly one range-height above the low, so a confirmed break above 2700 is not blocked by immediate nearby resistance."
+    ],
+    "evidence_against": [
+      "2700 is the exact H4 window high and a prior spike there (H4 bar 1789804800000, high 2700, close 2638.49) was fully given back to 2568.16, and the earlier 2680 spike (close 2555.52) was also retraced - two recent upside probes in this zone were rejected, so this is a double-top area, not open air.",
+      "M15 bar 117 printed exactly 2700 and closed 2685.52, a 14.48-point rejection at the level; no M15 close above 2700 exists yet, so acceptance above the range top is unconfirmed and the pending stop may simply be swept.",
+      "The pending entry at 2700 is 9.92 points above the last M15 close 2690.08 after a four-bar, ~47-point vertical spike, which is chase risk at the top of a trading range where Brooks prefers buying the pullback or the low end.",
+      "D1 context itself flags that 2642.90 is still below the 2771 spike high, so the post-spike section can still be read as one broad range; the H4 primary_regime is trading-range with the last close still below the 2658.79 swing high.",
+      "Stop risk to the structural invalidation (2641.7) is about 58 points from the 2700 trigger while the nearest opposing structure (D1 2771 spike high) is only about 71 points away, a marginal Trader's Equation at this location."
+    ],
+    "qualitative_confidence": "medium",
+    "uncertainty": [
+      "Whether the pending stop at 2700 is reached before any deeper pullback into the 2658.79-2604.75 flag area.",
+      "Whether this is acceptance above the H4 range top (D1 breakout) or the second failure of a double top at 2700, since both 2680 and 2700 were previously given back.",
+      "H4 is classified as trading-range while D1 is breakout-spike bull, so the dominant regime for sizing the breakout's follow-through is unresolved."
+    ],
+    "conditions_that_change_market_read": [
+      "A close above 2700 with a second consecutive close above it (the H4 transition condition) would confirm range-top acceptance and strongly support continuation toward 2771.",
+      "A rejection at 2700 producing a lower high and a close back below 2641.7 (M15 bar 116 low) would mark the breakout as failed and put the 2604.75-2568.16 flag area back in play.",
+      "A close below 2568.16 (H4 flag low) would negate the bull leg from 2358.62 and remove the continuation read entirely.",
+      "Repeated closes between 2557.46 and 2700 without progress would reassert the broad H4/D1 range and turn this into range rotation rather than a breakout."
+    ]
+  },
+  "source_event_id": "69fcda28-feb9-4647-a328-76a19271723d"
+}

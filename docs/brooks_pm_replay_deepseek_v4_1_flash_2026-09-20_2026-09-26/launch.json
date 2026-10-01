@@ -1,0 +1,27 @@
+{
+  "pid": 2185589,
+  "git_head": "13cd19c9aa017563ff39ee390d1e856105fbcf77",
+  "runtime_snapshot": "/tmp/brooks-pm-replay-runtime-13cd19c9",
+  "state": "/tmp/brooks-pm-replay-deepseek-v4-1-flash-20261001-state",
+  "log": "/tmp/brooks-pm-replay-deepseek-v4-1-flash-20261001-state/runner.log",
+  "args": [
+    "/home/valdemaster/brooks-condor/condor/.venv/bin/python",
+    "/tmp/brooks-pm-replay-runtime-13cd19c9/scripts/brooks_walkforward.py",
+    "--dataset",
+    "/tmp/brooks-walkforward-10d-data",
+    "--output",
+    "/home/valdemaster/brooks-condor/condor/docs/brooks_pm_replay_deepseek_v4_1_flash_2026-09-20_2026-09-26",
+    "--state",
+    "/tmp/brooks-pm-replay-deepseek-v4-1-flash-20261001-state",
+    "--recorded-run",
+    "/home/valdemaster/brooks-condor/condor/docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29",
+    "--start",
+    "2026-09-20T00:00:00Z",
+    "--end",
+    "2026-09-26T13:00:00Z",
+    "--agent-key",
+    "custom@opencode-go:deepseek-v4.1-flash",
+    "--git-head",
+    "13cd19c9aa017563ff39ee390d1e856105fbcf77"
+  ]
+}
