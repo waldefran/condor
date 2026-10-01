@@ -61,10 +61,11 @@ management and execution policy. They are not Al Brooks teachings. Preserve
 the typed management policy, authoritative hedge ownership, and reconciliation
 rules when applying any price-action judgment.
 
-For the first-operation `lock_and_wait_nonnegative_net` experiment, follow the
-opt-in procedure in the parent position-management skill. With
-`max_unhedged_loss_r: "5"`, the host locks at 100% when combined projected exit
-net reaches the five frozen initial-R loss on a closed M1 bar; the original
+For an operation-scoped `lock_and_wait_nonnegative_net` experiment, apply the
+procedure in the parent skill only when the host-supplied
+`operation_correlation_id` exactly matches the current MAIN LONG operation.
+With `max_unhedged_loss_r: "5"`, the host locks at 100% when combined projected
+exit net reaches the five frozen initial-R loss on a closed M1 bar; the original
 structural limit is informational and is used for PM unlock only after
 Brooks-supported resumption and a closed-M15 reclaim. If the max-loss field is
 absent, use only the explicitly defined legacy 1R fallback. Judge exit net

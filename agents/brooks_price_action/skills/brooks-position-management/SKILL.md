@@ -187,10 +187,13 @@ size, array order, or PnL.
 
    **Opted-in long exit experiment.** Apply only when the authoritative
    `management_policy.applicable_risk_behavior.long_exit_policy` is exactly
-   `lock_and_wait_nonnegative_net`. The host scopes it to the first target
-   operation only: MAIN LONG cid `ETH-USDT-1h-1789883999999`. This is Condor
-   policy, not an Al Brooks teaching. Do not infer or carry the opt-in to
-   another operation. If risk-behavior fields conflict, reconcile or block.
+   `lock_and_wait_nonnegative_net` and the host-supplied
+   `management_policy.applicable_risk_behavior.operation_correlation_id`
+   exactly matches the authoritative correlation ID for the current MAIN LONG
+   operation. This is Condor policy, not an Al Brooks teaching. A missing or
+   mismatched ID invalidates the opt-in; reconcile or block rather than infer
+   or carry it to another operation. If risk-behavior fields conflict, also
+   reconcile or block.
    Neither branch authorizes the PM to place or move a stop.
 
    - **5R mode:** when

@@ -46,6 +46,7 @@ async def test_first_long_old_stop_locks_and_negative_exit_is_blocked(tmp_path, 
     assert not any(fill.get("reason") == "STOP_LOSS" for fill in runner.venue.fills)
     context = await runner.load_pm_context(CID)
     assert context["management_policy"]["applicable_risk_behavior"]["long_exit_policy"] == "lock_and_wait_nonnegative_net"
+    assert context["management_policy"]["applicable_risk_behavior"]["operation_correlation_id"] == CID
     assert context["hedge_state"]["hedge_ratio"] == "1"
     event = BrooksEvent(EventType.MANAGEMENT_INTENT_CREATED, "ETH-USDT",
         {"action": "CLOSE"}, correlation_id=CID)
@@ -60,6 +61,35 @@ async def test_first_long_old_stop_locks_and_negative_exit_is_blocked(tmp_path, 
     proof = json.loads((runner.root / "long_lock_events.jsonl").read_text().splitlines()[0])
     assert proof["gm_result"]["assessment"] == "confirmed"
     assert proof["simulation_time_ms"] == 1789894319999
+    runner.events.close()
+    runner.store.flush()
+
+
+@pytest.mark.asyncio
+@pytest.mark.skipif(not Path("/tmp/brooks-walkforward-10d-data/ETH_USDT_1m.jsonl").exists(),
+    reason="historical integration requires the downloaded immutable M1 dataset")
+async def test_selected_long_policy_scope_and_duration_wake(tmp_path, monkeypatch):
+    args = _args(tmp_path)
+    args.only_trade = "ETH-USDT-1h-1790002799999"
+    args.start, args.end = "2026-09-21T15:00:00Z", "2026-09-24T15:00:00Z"
+    args.max_unhedged_loss_r = "5"
+    runner = WalkForward(args)
+    monkeypatch.setattr(gm_module, "time", SimpleNamespace(time=lambda: runner.now / 1000))
+    await runner.advance_to(utc_ms("2026-09-21T16:00:00Z") - 1)
+    assert len(runner.venue.trades) == 1
+    trade = runner.venue.trades[0]
+    assert trade.correlation_id == args.only_trade and trade.opened_at_ms == 1790005679999
+    context = await runner.load_pm_context(args.only_trade)
+    policy = context["management_policy"]["applicable_risk_behavior"]
+    assert context["correlation_id"] == policy["operation_correlation_id"] == args.only_trade
+    assert policy["max_unhedged_loss_r"] == "5"
+    assert await runner.load_pm_context(CID) is None
+    await runner.advance_to(utc_ms("2026-09-22T16:00:00Z") - 1)
+    assert trade.closed_at_ms is None
+    assert not any(f.get("reason") in ("STOP_LOSS", "TIME_LIMIT") for f in runner.venue.fills)
+    wakes = (runner.root / "long_duration_events.jsonl").read_text().splitlines()
+    assert any(json.loads(row)["correlation_id"] == args.only_trade for row in wakes)
+    assert runner.venue.long_policy_context(args.only_trade)["initial_R_usdt"] == str(trade.initial_risk_usd)
     runner.events.close()
     runner.store.flush()
 

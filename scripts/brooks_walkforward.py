@@ -504,16 +504,17 @@ class WalkForward:
 
     async def load_pm_context(self, cid):
         context = await self.venue.pm_load_context(cid)
-        if context is None or not self.long_lock_policy:
+        if context is None or not self.long_lock_policy or cid != self.only_trade:
             return context
         state = self.venue.long_policy_context(cid)
         if state is None:
             return context
         context["management_policy"].update(
-            policy_id="brooks-long-lock-first-operation", version="experimental-1",
+            policy_id="brooks-long-lock-selected-operation", version="experimental-1",
             protection_semantics="LONG limit locks exposure through a confirmed hedge; final operation exits require nonnegative combined net",
             applicable_risk_behavior={
                 "long_exit_policy": "lock_and_wait_nonnegative_net",
+                "operation_correlation_id": self.only_trade,
                 "projection_scope": "MAIN_PLUS_HEDGE_NET",
                 "funding_mode": "not_modeled",
                 "short_stop_policy": "normal",
@@ -914,7 +915,7 @@ def main():
         help="Replay accepted Trader and Context Analyst source outputs at their original completion times; run PM and GM live")
     parser.add_argument("--only-trade", help="Reproduce only this source Trader correlation id; stop after its position closes")
     parser.add_argument("--long-lock-policy", action="store_true",
-        help="Simulated first-operation experiment: LONG limit locks a hedge and negative combined net MAIN exits are blocked")
+        help="Simulated selected-operation experiment: LONG limit locks a hedge and negative combined net MAIN exits are blocked")
     parser.add_argument("--max-unhedged-loss-r", choices=["5"],
         help="Permit unhedged LONG operation loss up to 5 times the original GM risk; lock at observed combined net ceiling")
     parser.add_argument("--pm-timeout-sec", type=float, default=60,
