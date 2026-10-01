@@ -430,6 +430,7 @@ def _role_runs_for_record(
     refs = record.get("role_runs")
     if not isinstance(refs, list):
         refs = []
+    refs = [*refs, *(record.get("source_role_runs") or [])]
     attached: list[dict[str, Any]] = []
     record_id = _get(record, "round_id", "cycle_id")
     cycle = record.get("cycle") if isinstance(record.get("cycle"), Mapping) else {}
@@ -1316,7 +1317,15 @@ def render_report(root: Path) -> dict[str, Any]:
         read_errors.append(f"run_manifest.json: {manifest_error}")
     read_errors.extend(f"cycles.jsonl: {err}" for err in cycle_errors)
     read_errors.extend(role_errors)
+    activation_rows, activation_errors, _ = _read_jsonl(root / "entry_activation_outcomes.jsonl")
+    read_errors.extend(f"entry_activation_outcomes.jsonl: {err}" for err in activation_errors)
+    activations = {row.get("correlation_id"): row for row in activation_rows}
     for cycle in cycles:
+        activation = activations.get(cycle.get("correlation_id"))
+        if activation:
+            # The source cycle remains immutable on disk. Activation is a
+            # later execution event, joined only for this derived report.
+            cycle["gm_result"] = activation.get("gm_result")
         packet, packet_path = _find_packet(cycle, root, _get(cycle, "round_id"))
         cycle["_packet"] = packet
         cycle["_packet_path"] = str(packet_path) if packet_path else None

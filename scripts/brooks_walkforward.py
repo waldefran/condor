@@ -35,6 +35,7 @@ from condor.brooks.adapters import build_watcher_provider, read_bindings
 from condor.brooks.clock import MarketClock
 from condor.brooks.config import BrooksConfig, MarketWakeConfig
 from condor.brooks.decision_cycles import DecisionCycleStore
+from condor.brooks.contracts import MarketContextV2, TradeIntentV2
 from condor.brooks.events import BrooksEvent, EventBus, EventType
 from condor.brooks.gm import BrooksGM, GMPolicy
 from condor.brooks.htf_analyst import ContextAnalystConsumer
@@ -46,6 +47,7 @@ from condor.brooks.trader import TraderConsumer
 from scripts.brooks_walkforward_data import FrozenHistoricalSource
 from scripts.brooks_walkforward_report import render_report
 from scripts.brooks_walkforward_simulation import WalkForwardVenueAdapter
+from scripts.brooks_pending_entry import PendingStopState, process_pending_stop
 
 HOUR = 3_600_000
 MINUTE = 60_000
@@ -150,6 +152,11 @@ class WalkForward:
         if self.start % HOUR or self.end % HOUR or self.end <= self.start:
             raise ValueError("Replay boundaries must be ascending absolute UTC hours")
         self.symbol = args.symbol
+        self.recorded_run = getattr(args, "recorded_run", None)
+        self.pending_entries: dict[str, PendingStopState] = {}
+        self.pending_events: dict[str, dict[str, Any]] = {}
+        if self.recorded_run is not None:
+            self.recorded_run = self.recorded_run.resolve()
         self.now = self.start - 10 * MINUTE
         self.stop = asyncio.Event()
         self._advance_lock = asyncio.Lock()
@@ -203,12 +210,15 @@ class WalkForward:
             h4=MarketWakeConfig(timeframe="4h", wake_offset_sec=3))
         self.agenda = []
         self.sequence = 0
-        for boundary in range(self.start, self.end, HOUR):
-            self.enqueue(boundary + 2000, 0, "clock", timeframe="1h", decision=boundary-1)
-            if boundary % (4*HOUR) == 0:
-                self.enqueue(boundary + 3000, 10, "clock", timeframe="4h", decision=boundary-1)
-            if boundary % DAY == 0:
-                self.enqueue(boundary + 3000, 10, "clock", timeframe="1d", decision=boundary-1)
+        if self.recorded_run is None:
+            for boundary in range(self.start, self.end, HOUR):
+                self.enqueue(boundary + 2000, 0, "clock", timeframe="1h", decision=boundary-1)
+                if boundary % (4*HOUR) == 0:
+                    self.enqueue(boundary + 3000, 10, "clock", timeframe="4h", decision=boundary-1)
+                if boundary % DAY == 0:
+                    self.enqueue(boundary + 3000, 10, "clock", timeframe="1d", decision=boundary-1)
+        else:
+            self._schedule_recorded_outputs()
         pm_interval_ms = self.pm_interval_sec * 1000
         for boundary in range(self.start + pm_interval_ms, self.end, pm_interval_ms):
             self.enqueue(boundary, 20, "timer")
@@ -231,6 +241,28 @@ class WalkForward:
                 "trader_timeout_sec": self.trader.timeout_sec, "context_timeout_sec": 300,
                 "venue_rules": "simulation assumptions: ETH step/min 0.001, minimum notional 5, leverage 5",
                 "evaluation": "retrospective replay, not a prospective out-forward; no parameter optimization"}}
+        if self.recorded_run is not None:
+            source_manifest = json.loads((self.recorded_run / "run_manifest.json").read_text())
+            self.manifest.update(method="recorded Trader and Context Analyst outputs, real PM PydanticAI API and deterministic GM",
+                recorded_source={"path": str(self.recorded_run), "model": source_manifest.get("model"),
+                    "cycles_sha256": hashlib.sha256((self.recorded_run / "cycles.jsonl").read_bytes()).hexdigest(),
+                    "manifest_sha256": hashlib.sha256((self.recorded_run / "run_manifest.json").read_bytes()).hexdigest()},
+                source_trader_cycles=sum(e["kind"] == "recorded_trader" for e in self.agenda),
+                source_context_updates=sum(e["kind"] == "recorded_context" for e in self.agenda))
+            self.manifest["expected_trader_cycles"] = self.manifest["source_trader_cycles"]
+            self.manifest["script_sha256"]["brooks_pending_entry.py"] = hashlib.sha256(
+                (REPO / "scripts/brooks_pending_entry.py").read_bytes()).hexdigest()
+            self.manifest["assumptions"]["latency"] = "source decisions and contexts become available at their original simulation completion times; PM API latency advances simulation"
+            self.manifest["assumptions"]["execution"] = (
+                "recorded pending stops activate only on a complete M1 candle opened after intent availability, "
+                "with strict crossing and close beyond trigger; invalidation wins same-bar ambiguity; "
+                "MARKET at observed M1 close plus adverse slippage after existing GM validation; "
+                "original intent is preserved, expiry uses existing max_intent_age_ms"
+            )
+            self.manifest["assumptions"]["pending_cancellation"] = (
+                "invalidation, expiry or a newer same-symbol ENTER cancels a pending candidate; "
+                "NO_TRADE does not cancel an earlier candidate"
+            )
         checkpoint = self.args.state / "walkforward_checkpoint.json"
         if checkpoint.exists():
             state = json.loads(checkpoint.read_text())
@@ -247,16 +279,147 @@ class WalkForward:
                 on_snapshot=self.gm_consumer.reconcile_bound_snapshot,
             )
             self.gm_results = state.get("gm_results", {})
+            self.pending_entries = {cid: PendingStopState.model_validate(value)
+                for cid, value in state.get("pending_entries", {}).items()}
+            self.pending_events = state.get("pending_events", {})
+
+    def _schedule_recorded_outputs(self):
+        """Ingest accepted source role outputs at their historical completion times."""
+        source = self.recorded_run
+        assert source is not None
+        cycles_file = source / "cycles.jsonl"
+        if not cycles_file.is_file():
+            raise ValueError(f"Recorded source lacks cycles.jsonl: {source}")
+        for line_no, line in enumerate(cycles_file.read_text().splitlines(), 1):
+            row = json.loads(line)
+            decision = row["decision_time_ms"]
+            due = row["simulation_completed_at_ms"]
+            if not (self.start - HOUR <= decision < self.end and due < self.end):
+                continue
+            if due < decision or row["symbol"] != self.symbol:
+                raise ValueError(f"Invalid recorded Trader timing/symbol at source line {line_no}")
+            intent = row.get("intent")
+            if row.get("status") == "completed":
+                if intent is None:
+                    raise ValueError(f"Completed source cycle lacks intent at line {line_no}")
+                validated = TradeIntentV2.model_validate(intent)
+                if validated.decision_time_ms != decision or validated.symbol != self.symbol:
+                    raise ValueError(f"Source intent identity mismatch at line {line_no}")
+            elif intent is not None:
+                raise ValueError(f"Failed source cycle contains intent at line {line_no}")
+            packet_file = row.get("frozen_packet_file")
+            if not packet_file or not (source / packet_file).is_file():
+                raise ValueError(f"Source cycle lacks frozen packet at line {line_no}")
+            self.enqueue(due, 0, "recorded_trader", source_line=line_no,
+                decision=decision)
+        for source_file in sorted((source / "role_runs").glob("*.json")):
+            capture = json.loads(source_file.read_text())
+            if capture.get("role") != "CONTEXT_ANALYST" or capture.get("host", {}).get("accepted") is not True:
+                continue
+            final = None
+            for call in capture.get("calls", []):
+                raw = call.get("raw_response")
+                if raw is None:
+                    continue
+                try:
+                    value = MarketContextV2.model_validate_json(raw)
+                except (ValueError, TypeError):
+                    continue
+                final = (value, call.get("simulation_finished_at_ms"))
+            if final is None:
+                raise ValueError(f"Accepted analyst capture lacks valid final output: {source_file}")
+            context, due = final
+            if not isinstance(due, int) or due < context.decision_time_ms:
+                raise ValueError(f"Invalid analyst output timing: {source_file}")
+            if context.symbol != self.symbol:
+                raise ValueError(f"Analyst source symbol mismatch: {source_file}")
+            if due < self.end and context.decision_time_ms < self.end:
+                self.enqueue(due, 0, "recorded_context", source_file=source_file.name,
+                    decision=context.decision_time_ms)
+
+    def _copy_recorded_artifacts(self):
+        source = self.recorded_run
+        assert source is not None
+        destination = self.root / "source_artifacts"
+        for name in ("cycles.jsonl", "run_manifest.json"):
+            destination.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source / name, destination / name)
+        for name in ("role_runs", "frozen_packets", "wire_requests"):
+            shutil.copytree(source / name, destination / name, dirs_exist_ok=True)
+
+    async def _apply_recorded(self, item, *, drain_events=True):
+        source = self.recorded_run
+        assert source is not None
+        if item["kind"] == "recorded_context":
+            capture = json.loads((source / "role_runs" / item["source_file"]).read_text())
+            final = None
+            for call in capture["calls"]:
+                try:
+                    candidate = MarketContextV2.model_validate_json(call["raw_response"])
+                except (KeyError, ValueError, TypeError):
+                    continue
+                final = (candidate, call["simulation_finished_at_ms"])
+            if final is None or final[1] != item["due"] or final[0].decision_time_ms != item["decision"]:
+                raise ValueError("Recorded analyst output changed after scheduling")
+            context = final[0]
+            self.store.save_market_context(context)
+            await self.events.publish(BrooksEvent(EventType.MARKET_CONTEXT_UPDATED, self.symbol,
+                {"timeframe": context.timeframe, "market_context": context.model_dump(mode="json"),
+                    "recorded_source_file": f"source_artifacts/role_runs/{item['source_file']}"},
+                correlation_id=f"recorded-{context.timeframe}-{context.decision_time_ms}"))
+            if drain_events:
+                await self.drain()
+            return
+        lines = (source / "cycles.jsonl").read_text().splitlines()
+        row = json.loads(lines[item["source_line"] - 1])
+        if row["simulation_completed_at_ms"] != item["due"] or row["decision_time_ms"] != item["decision"]:
+            raise ValueError("Recorded Trader output changed after scheduling")
+        intent = row.get("intent")
+        if intent is not None:
+            validated = TradeIntentV2.model_validate(intent)
+            self.store.save_trader_intent(validated.model_dump(mode="json"))
+            event = BrooksEvent(EventType.TRADER_INTENT_CREATED, self.symbol,
+                {"intent": validated.model_dump(mode="json"), "shadow_mode": False,
+                    "recorded_source_line": item["source_line"]},
+                correlation_id=row["correlation_id"])
+            await self.events.publish(event)
+            if drain_events:
+                await self.drain()
+            else:
+                await self._route_entry(event)
+        new_row = dict(row)
+        new_row.update(round_id=f"recorded-1h-{row['decision_time_ms']}", simulation_completed_at_ms=self.now,
+            recorded_source={"cycle_line": item["source_line"], "original_round_id": row["round_id"],
+                "original_simulation_completed_at_ms": row["simulation_completed_at_ms"]},
+            role_runs=[], source_role_runs=[f"source_artifacts/{f}" for f in row.get("role_runs", [])],
+            frozen_packet_file=f"source_artifacts/{row['frozen_packet_file']}",
+            gm_result=self.gm_results.get(row["correlation_id"]),
+            simulation={k:v for k,v in self.venue.snapshot().items() if k not in ("fills", "executions", "equity_curve")})
+        append_json(self.root / "cycles.jsonl", new_row)
+
+    async def _apply_due_recorded(self, until_ms):
+        if self.recorded_run is None:
+            return
+        due = sorted((item for item in self.agenda
+            if item["kind"].startswith("recorded_") and item["due"] <= until_ms),
+            key=lambda item: (item["due"], item["sequence"]))
+        for item in due:
+            # Recorded outputs require no inference. Publish them even while
+            # a PM call is pending, before processing later market candles.
+            self.now = max(self.now, item["due"])
+            self.venue.now_ms = self.now
+            await self._apply_recorded(item, drain_events=False)
+            self.agenda.remove(item)
 
     def enqueue(self, due: int, priority: int, kind: str, **fields):
         self.sequence += 1
         self.agenda.append({"due": due, "priority": priority, "sequence": self.sequence, "kind": kind, **fields})
 
-    async def advance_to(self, target: int):
+    async def advance_to(self, target: int, *, stop_on_event: bool = False):
         async with self._advance_lock:
-            await self._advance_locked(target)
+            await self._advance_locked(target, stop_on_event=stop_on_event)
 
-    async def _advance_locked(self, target: int):
+    async def _advance_locked(self, target: int, *, stop_on_event: bool = False):
         target = min(target, self.end-1)
         if target < self.now:
             return
@@ -267,11 +430,22 @@ class WalkForward:
             self.minute_index += 1
             if bar["close_time_ms"] <= self.now:
                 continue
+            await self._apply_due_recorded(bar["close_time_ms"] - 1)
             self.now = bar["close_time_ms"]
             self.venue.resolve_executor_bar(bar)
             self.venue.set_market(bar, decision_time_ms=self.now)
+            await self._apply_due_recorded(self.now)
             if self.now >= self.start:
                 await self.watcher.poll()
+                await self._activate_pending_entries(bar)
+                await self.watcher.poll()
+                if stop_on_event and not self.event_queue.empty():
+                    # Deliver opening/fill/exit wakes at the observed minute;
+                    # do not skip an entire short-lived position on a jump to
+                    # the next H1 output or 30-minute timer.
+                    self.venue.now_ms = self.now
+                    return
+        await self._apply_due_recorded(target)
         self.now = target
         self.venue.now_ms = target
 
@@ -292,13 +466,98 @@ class WalkForward:
     def persist_capture(self, record):
         write_json(self.root / record["file"], record)
 
+    def _persist_pending_entry(self, cid: str, *, gm_result=None):
+        state = self.pending_entries[cid].model_dump(mode="json")
+        event = self.pending_events[cid]
+        record = {**state, "original_intent": event["payload"]["intent"],
+            "source_event_id": event["event_id"]}
+        if gm_result is not None:
+            record["gm_result"] = gm_result
+        write_json(self.store.root / "trades" / cid / "pending_entry.json", record)
+        self.venue.pending_intents = [value.model_dump(mode="json")
+            for value in self.pending_entries.values() if value.status == "pending"]
+
+    def _register_pending_entry(self, event: BrooksEvent):
+        cid = event.correlation_id
+        if cid in self.pending_entries:
+            return
+        intent = event.payload["intent"]
+        for prior_id, prior in list(self.pending_entries.items()):
+            if prior.status == "pending" and prior.symbol == event.symbol:
+                self.pending_entries[prior_id] = prior.model_copy(update={
+                    "status": "canceled", "changed_at_ms": self.now,
+                    "resolution_reason": "superseded_by_newer_entry"})
+                self._persist_pending_entry(prior_id)
+                append_json(self.root / "pending_entry_events.jsonl",
+                    self.pending_entries[prior_id].model_dump(mode="json"))
+        self.pending_events[cid] = event.to_dict()
+        self.pending_entries[cid] = process_pending_stop(intent,
+            correlation_id=cid, available_at_ms=self.now, closed_bars=[],
+            as_of_ms=self.now, max_intent_age_ms=self.policy.max_intent_age_ms)
+        self._persist_pending_entry(cid)
+        append_json(self.root / "pending_entry_events.jsonl",
+            self.pending_entries[cid].model_dump(mode="json"))
+        logging.info("PENDING ENTRY %s available=%s", cid, self.now)
+
+    async def _activate_pending_entries(self, bar):
+        for cid, prior in list(self.pending_entries.items()):
+            if prior.status != "pending":
+                continue
+            source = BrooksEvent.from_dict(self.pending_events[cid])
+            state = process_pending_stop(source.payload["intent"],
+                correlation_id=cid, available_at_ms=prior.available_at_ms,
+                closed_bars=[bar], as_of_ms=self.now,
+                max_intent_age_ms=self.policy.max_intent_age_ms, state=prior)
+            self.pending_entries[cid] = state
+            if state.status == "pending":
+                continue
+            # Proof is saved before the one permitted submission. Never emit a
+            # second Trader intent or modify a stored model response.
+            self._persist_pending_entry(cid)
+            append_json(self.root / "pending_entry_events.jsonl", state.model_dump(mode="json"))
+            logging.info("PENDING RESOLVED %s %s sim=%s", cid, state.status, self.now)
+            if state.status != "triggered":
+                continue
+            write_json(self.store.root / "trades" / cid / "execution_trade_intent.json", state.execution_intent)
+            activated = replace(source, payload={**source.payload,
+                "intent": state.execution_intent, "pending_activation": state.evidence})
+            self.venue.stage_trade_intent(cid, state.execution_intent)
+            # GM is deterministic. scoped() would recursively await this lock.
+            result = await self.gm_consumer.handle(activated)
+            outcome = result.to_dict() if isinstance(result, BrooksEvent) else result
+            self.gm_results[cid] = outcome
+            logging.info("ENTRY ACTIVATION %s %s", cid, outcome.get("type") if isinstance(outcome, dict) else outcome)
+            if isinstance(result, BrooksEvent) and result.type == EventType.GM_ENTRY_REJECTED:
+                self.venue.mark_entry_rejected(cid, str(result.payload.get("reason", "")))
+            if (self.store.root / "trades" / cid / "original_trade_intent.json").exists():
+                self.store.write_trade_document(cid, "original_trade_intent.json", source.payload["intent"])
+            self._persist_pending_entry(cid, gm_result=outcome)
+            append_json(self.root / "entry_activation_outcomes.jsonl", {
+                "correlation_id": cid, "simulation_time_ms": self.now,
+                "activation": state.model_dump(mode="json"), "gm_result": outcome})
+            self.venue.clear_staged_trade_intent()
+
+    async def _route_entry(self, event):
+        intent = event.payload["intent"]
+        if intent.get("decision") == "NO_TRADE":
+            return
+        cid = event.correlation_id
+        if cid in self.gm_results:
+            return
+        setup, trigger = intent.get("setup") or {}, intent.get("trigger") or {}
+        if (self.recorded_run is not None and setup.get("trigger_status") == "pending"
+            and trigger.get("kind") == "stop"):
+            self._register_pending_entry(event)
+            return
+        self.venue.stage_trade_intent(cid, intent)
+        result = await self.gm_consumer.handle(event)
+        self.gm_results[cid] = result.to_dict() if isinstance(result, BrooksEvent) else result
+
     async def drain(self):
         while not self.event_queue.empty():
             event = self.event_queue.get_nowait()
             if event.type == EventType.TRADER_INTENT_CREATED:
-                self.venue.stage_trade_intent(event.correlation_id, event.payload["intent"])
-                result, _ = await self.scoped(f"gm-entry-{event.correlation_id}", lambda: self.gm_consumer.handle(event))
-                self.gm_results[event.correlation_id] = result.to_dict() if isinstance(result, BrooksEvent) else result
+                await self._route_entry(event)
             elif event.type == EventType.MANAGEMENT_INTENT_CREATED:
                 result, _ = await self.scoped(f"gm-management-{event.event_id}", lambda: self.gm_consumer.handle(event))
                 append_json(self.root / "management_outcomes.jsonl", {"simulation_time_ms": self.now,
@@ -357,6 +616,8 @@ class WalkForward:
             "git_head": self.args.git_head, "start_ms": self.start, "end_ms": self.end,
             "now": self.now, "minute_index": self.minute_index, "agenda": self.agenda,
             "sequence": self.sequence, "manifest": self.manifest, "gm_results": self.gm_results,
+            "pending_entries": {cid: value.model_dump(mode="json") for cid, value in self.pending_entries.items()},
+            "pending_events": self.pending_events,
             "watcher_snapshots": list(self.watcher._previous.values())})
         render_report(self.root)
 
@@ -366,7 +627,9 @@ class WalkForward:
         self.manifest["status"] = "running"
         write_json(self.root / "run_manifest.json", self.manifest)
         render_report(self.root)
-        if not (self.args.state / "walkforward_checkpoint.json").exists():
+        if self.recorded_run is not None:
+            self._copy_recorded_artifacts()
+        if self.recorded_run is None and not (self.args.state / "walkforward_checkpoint.json").exists():
             await self.advance_to(self.now)
             for tf, interval in (("1d", DAY), ("4h", 4*HOUR)):
                 close = self.start-interval-1
@@ -379,11 +642,16 @@ class WalkForward:
         while self.agenda and not self.stop.is_set():
             ready = [event for event in self.agenda if event["due"] <= self.now]
             item = min(ready, key=lambda e:(e["priority"],e["due"],e["sequence"])) if ready else min(self.agenda, key=lambda e:(e["due"],e["priority"],e["sequence"]))
-            await self.advance_to(max(self.now, item["due"]))
+            await self.advance_to(max(self.now, item["due"]), stop_on_event=True)
+            await self.drain()
+            if self.now < item["due"] or item not in self.agenda:
+                continue
             label = f"{item['kind']}-{item.get('timeframe','pm')}-{item.get('decision',item['due'])}-{item['sequence']}"
             self.current_round = label
             logging.info("REPLAY START %s sim=%s", label, self.now)
-            if item["kind"] == "clock":
+            if item["kind"].startswith("recorded_"):
+                await self._apply_recorded(item)
+            elif item["kind"] == "clock":
                 tf, decision = item["timeframe"], item["decision"]
                 event_type = {"1h":EventType.H1_BAR_CLOSED,"4h":EventType.H4_BAR_CLOSED,"1d":EventType.D1_BAR_CLOSED}[tf]
                 self.clock.source = self.source.at_decision_time(decision)
@@ -486,6 +754,8 @@ def main():
     parser.add_argument("--fee-rate", default="0.0004")
     parser.add_argument("--slippage-bps", default="1")
     parser.add_argument("--git-head", required=True)
+    parser.add_argument("--recorded-run", type=Path,
+        help="Replay accepted Trader and Context Analyst source outputs at their original completion times; run PM and GM live")
     args = parser.parse_args()
     args.state.mkdir(parents=True, exist_ok=True)
     lock = (args.state / "runner.lock").open("a")
