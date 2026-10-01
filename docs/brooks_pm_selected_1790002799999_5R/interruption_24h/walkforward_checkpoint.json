@@ -1,0 +1,1018 @@
+{
+  "git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+  "start_ms": 1790002800000,
+  "end_ms": 1790262000000,
+  "now": 1790091029898,
+  "minute_index": 3940,
+  "agenda": [
+    {
+      "due": 1790121920116,
+      "priority": 0,
+      "sequence": 7,
+      "kind": "recorded_context",
+      "source_file": "clock-1d-1790121599999-96-1-84d7951d.json",
+      "decision": 1790121599999
+    },
+    {
+      "due": 1790208698311,
+      "priority": 0,
+      "sequence": 8,
+      "kind": "recorded_context",
+      "source_file": "clock-1d-1790207999999-127-1-6bd1e9d3.json",
+      "decision": 1790207999999
+    },
+    {
+      "due": 1790092989407,
+      "priority": 0,
+      "sequence": 25,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790092799999-85-1-38896482.json",
+      "decision": 1790092799999
+    },
+    {
+      "due": 1790107415386,
+      "priority": 0,
+      "sequence": 26,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790107199999-90-1-f8397df9.json",
+      "decision": 1790107199999
+    },
+    {
+      "due": 1790121826894,
+      "priority": 0,
+      "sequence": 27,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790121599999-95-1-712e75fe.json",
+      "decision": 1790121599999
+    },
+    {
+      "due": 1790136331136,
+      "priority": 0,
+      "sequence": 28,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790135999999-101-1-62b5fde9.json",
+      "decision": 1790135999999
+    },
+    {
+      "due": 1790150770564,
+      "priority": 0,
+      "sequence": 29,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790150399999-106-1-ef83d919.json",
+      "decision": 1790150399999
+    },
+    {
+      "due": 1790165115709,
+      "priority": 0,
+      "sequence": 30,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790164799999-111-1-3551d6fa.json",
+      "decision": 1790164799999
+    },
+    {
+      "due": 1790179530989,
+      "priority": 0,
+      "sequence": 31,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790179199999-116-1-d225e81b.json",
+      "decision": 1790179199999
+    },
+    {
+      "due": 1790193982273,
+      "priority": 0,
+      "sequence": 32,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790193599999-121-1-2c8ae28e.json",
+      "decision": 1790193599999
+    },
+    {
+      "due": 1790208621868,
+      "priority": 0,
+      "sequence": 33,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790207999999-126-1-1aef2fca.json",
+      "decision": 1790207999999
+    },
+    {
+      "due": 1790222718523,
+      "priority": 0,
+      "sequence": 34,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790222399999-132-1-81978675.json",
+      "decision": 1790222399999
+    },
+    {
+      "due": 1790237063222,
+      "priority": 0,
+      "sequence": 35,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790236799999-137-1-9cd74dbf.json",
+      "decision": 1790236799999
+    },
+    {
+      "due": 1790251528268,
+      "priority": 0,
+      "sequence": 36,
+      "kind": "recorded_context",
+      "source_file": "clock-4h-1790251199999-142-1-6c5d1333.json",
+      "decision": 1790251199999
+    },
+    {
+      "due": 1790092800000,
+      "priority": 20,
+      "sequence": 86,
+      "kind": "timer"
+    },
+    {
+      "due": 1790094600000,
+      "priority": 20,
+      "sequence": 87,
+      "kind": "timer"
+    },
+    {
+      "due": 1790096400000,
+      "priority": 20,
+      "sequence": 88,
+      "kind": "timer"
+    },
+    {
+      "due": 1790098200000,
+      "priority": 20,
+      "sequence": 89,
+      "kind": "timer"
+    },
+    {
+      "due": 1790100000000,
+      "priority": 20,
+      "sequence": 90,
+      "kind": "timer"
+    },
+    {
+      "due": 1790101800000,
+      "priority": 20,
+      "sequence": 91,
+      "kind": "timer"
+    },
+    {
+      "due": 1790103600000,
+      "priority": 20,
+      "sequence": 92,
+      "kind": "timer"
+    },
+    {
+      "due": 1790105400000,
+      "priority": 20,
+      "sequence": 93,
+      "kind": "timer"
+    },
+    {
+      "due": 1790107200000,
+      "priority": 20,
+      "sequence": 94,
+      "kind": "timer"
+    },
+    {
+      "due": 1790109000000,
+      "priority": 20,
+      "sequence": 95,
+      "kind": "timer"
+    },
+    {
+      "due": 1790110800000,
+      "priority": 20,
+      "sequence": 96,
+      "kind": "timer"
+    },
+    {
+      "due": 1790112600000,
+      "priority": 20,
+      "sequence": 97,
+      "kind": "timer"
+    },
+    {
+      "due": 1790114400000,
+      "priority": 20,
+      "sequence": 98,
+      "kind": "timer"
+    },
+    {
+      "due": 1790116200000,
+      "priority": 20,
+      "sequence": 99,
+      "kind": "timer"
+    },
+    {
+      "due": 1790118000000,
+      "priority": 20,
+      "sequence": 100,
+      "kind": "timer"
+    },
+    {
+      "due": 1790119800000,
+      "priority": 20,
+      "sequence": 101,
+      "kind": "timer"
+    },
+    {
+      "due": 1790121600000,
+      "priority": 20,
+      "sequence": 102,
+      "kind": "timer"
+    },
+    {
+      "due": 1790123400000,
+      "priority": 20,
+      "sequence": 103,
+      "kind": "timer"
+    },
+    {
+      "due": 1790125200000,
+      "priority": 20,
+      "sequence": 104,
+      "kind": "timer"
+    },
+    {
+      "due": 1790127000000,
+      "priority": 20,
+      "sequence": 105,
+      "kind": "timer"
+    },
+    {
+      "due": 1790128800000,
+      "priority": 20,
+      "sequence": 106,
+      "kind": "timer"
+    },
+    {
+      "due": 1790130600000,
+      "priority": 20,
+      "sequence": 107,
+      "kind": "timer"
+    },
+    {
+      "due": 1790132400000,
+      "priority": 20,
+      "sequence": 108,
+      "kind": "timer"
+    },
+    {
+      "due": 1790134200000,
+      "priority": 20,
+      "sequence": 109,
+      "kind": "timer"
+    },
+    {
+      "due": 1790136000000,
+      "priority": 20,
+      "sequence": 110,
+      "kind": "timer"
+    },
+    {
+      "due": 1790137800000,
+      "priority": 20,
+      "sequence": 111,
+      "kind": "timer"
+    },
+    {
+      "due": 1790139600000,
+      "priority": 20,
+      "sequence": 112,
+      "kind": "timer"
+    },
+    {
+      "due": 1790141400000,
+      "priority": 20,
+      "sequence": 113,
+      "kind": "timer"
+    },
+    {
+      "due": 1790143200000,
+      "priority": 20,
+      "sequence": 114,
+      "kind": "timer"
+    },
+    {
+      "due": 1790145000000,
+      "priority": 20,
+      "sequence": 115,
+      "kind": "timer"
+    },
+    {
+      "due": 1790146800000,
+      "priority": 20,
+      "sequence": 116,
+      "kind": "timer"
+    },
+    {
+      "due": 1790148600000,
+      "priority": 20,
+      "sequence": 117,
+      "kind": "timer"
+    },
+    {
+      "due": 1790150400000,
+      "priority": 20,
+      "sequence": 118,
+      "kind": "timer"
+    },
+    {
+      "due": 1790152200000,
+      "priority": 20,
+      "sequence": 119,
+      "kind": "timer"
+    },
+    {
+      "due": 1790154000000,
+      "priority": 20,
+      "sequence": 120,
+      "kind": "timer"
+    },
+    {
+      "due": 1790155800000,
+      "priority": 20,
+      "sequence": 121,
+      "kind": "timer"
+    },
+    {
+      "due": 1790157600000,
+      "priority": 20,
+      "sequence": 122,
+      "kind": "timer"
+    },
+    {
+      "due": 1790159400000,
+      "priority": 20,
+      "sequence": 123,
+      "kind": "timer"
+    },
+    {
+      "due": 1790161200000,
+      "priority": 20,
+      "sequence": 124,
+      "kind": "timer"
+    },
+    {
+      "due": 1790163000000,
+      "priority": 20,
+      "sequence": 125,
+      "kind": "timer"
+    },
+    {
+      "due": 1790164800000,
+      "priority": 20,
+      "sequence": 126,
+      "kind": "timer"
+    },
+    {
+      "due": 1790166600000,
+      "priority": 20,
+      "sequence": 127,
+      "kind": "timer"
+    },
+    {
+      "due": 1790168400000,
+      "priority": 20,
+      "sequence": 128,
+      "kind": "timer"
+    },
+    {
+      "due": 1790170200000,
+      "priority": 20,
+      "sequence": 129,
+      "kind": "timer"
+    },
+    {
+      "due": 1790172000000,
+      "priority": 20,
+      "sequence": 130,
+      "kind": "timer"
+    },
+    {
+      "due": 1790173800000,
+      "priority": 20,
+      "sequence": 131,
+      "kind": "timer"
+    },
+    {
+      "due": 1790175600000,
+      "priority": 20,
+      "sequence": 132,
+      "kind": "timer"
+    },
+    {
+      "due": 1790177400000,
+      "priority": 20,
+      "sequence": 133,
+      "kind": "timer"
+    },
+    {
+      "due": 1790179200000,
+      "priority": 20,
+      "sequence": 134,
+      "kind": "timer"
+    },
+    {
+      "due": 1790181000000,
+      "priority": 20,
+      "sequence": 135,
+      "kind": "timer"
+    },
+    {
+      "due": 1790182800000,
+      "priority": 20,
+      "sequence": 136,
+      "kind": "timer"
+    },
+    {
+      "due": 1790184600000,
+      "priority": 20,
+      "sequence": 137,
+      "kind": "timer"
+    },
+    {
+      "due": 1790186400000,
+      "priority": 20,
+      "sequence": 138,
+      "kind": "timer"
+    },
+    {
+      "due": 1790188200000,
+      "priority": 20,
+      "sequence": 139,
+      "kind": "timer"
+    },
+    {
+      "due": 1790190000000,
+      "priority": 20,
+      "sequence": 140,
+      "kind": "timer"
+    },
+    {
+      "due": 1790191800000,
+      "priority": 20,
+      "sequence": 141,
+      "kind": "timer"
+    },
+    {
+      "due": 1790193600000,
+      "priority": 20,
+      "sequence": 142,
+      "kind": "timer"
+    },
+    {
+      "due": 1790195400000,
+      "priority": 20,
+      "sequence": 143,
+      "kind": "timer"
+    },
+    {
+      "due": 1790197200000,
+      "priority": 20,
+      "sequence": 144,
+      "kind": "timer"
+    },
+    {
+      "due": 1790199000000,
+      "priority": 20,
+      "sequence": 145,
+      "kind": "timer"
+    },
+    {
+      "due": 1790200800000,
+      "priority": 20,
+      "sequence": 146,
+      "kind": "timer"
+    },
+    {
+      "due": 1790202600000,
+      "priority": 20,
+      "sequence": 147,
+      "kind": "timer"
+    },
+    {
+      "due": 1790204400000,
+      "priority": 20,
+      "sequence": 148,
+      "kind": "timer"
+    },
+    {
+      "due": 1790206200000,
+      "priority": 20,
+      "sequence": 149,
+      "kind": "timer"
+    },
+    {
+      "due": 1790208000000,
+      "priority": 20,
+      "sequence": 150,
+      "kind": "timer"
+    },
+    {
+      "due": 1790209800000,
+      "priority": 20,
+      "sequence": 151,
+      "kind": "timer"
+    },
+    {
+      "due": 1790211600000,
+      "priority": 20,
+      "sequence": 152,
+      "kind": "timer"
+    },
+    {
+      "due": 1790213400000,
+      "priority": 20,
+      "sequence": 153,
+      "kind": "timer"
+    },
+    {
+      "due": 1790215200000,
+      "priority": 20,
+      "sequence": 154,
+      "kind": "timer"
+    },
+    {
+      "due": 1790217000000,
+      "priority": 20,
+      "sequence": 155,
+      "kind": "timer"
+    },
+    {
+      "due": 1790218800000,
+      "priority": 20,
+      "sequence": 156,
+      "kind": "timer"
+    },
+    {
+      "due": 1790220600000,
+      "priority": 20,
+      "sequence": 157,
+      "kind": "timer"
+    },
+    {
+      "due": 1790222400000,
+      "priority": 20,
+      "sequence": 158,
+      "kind": "timer"
+    },
+    {
+      "due": 1790224200000,
+      "priority": 20,
+      "sequence": 159,
+      "kind": "timer"
+    },
+    {
+      "due": 1790226000000,
+      "priority": 20,
+      "sequence": 160,
+      "kind": "timer"
+    },
+    {
+      "due": 1790227800000,
+      "priority": 20,
+      "sequence": 161,
+      "kind": "timer"
+    },
+    {
+      "due": 1790229600000,
+      "priority": 20,
+      "sequence": 162,
+      "kind": "timer"
+    },
+    {
+      "due": 1790231400000,
+      "priority": 20,
+      "sequence": 163,
+      "kind": "timer"
+    },
+    {
+      "due": 1790233200000,
+      "priority": 20,
+      "sequence": 164,
+      "kind": "timer"
+    },
+    {
+      "due": 1790235000000,
+      "priority": 20,
+      "sequence": 165,
+      "kind": "timer"
+    },
+    {
+      "due": 1790236800000,
+      "priority": 20,
+      "sequence": 166,
+      "kind": "timer"
+    },
+    {
+      "due": 1790238600000,
+      "priority": 20,
+      "sequence": 167,
+      "kind": "timer"
+    },
+    {
+      "due": 1790240400000,
+      "priority": 20,
+      "sequence": 168,
+      "kind": "timer"
+    },
+    {
+      "due": 1790242200000,
+      "priority": 20,
+      "sequence": 169,
+      "kind": "timer"
+    },
+    {
+      "due": 1790244000000,
+      "priority": 20,
+      "sequence": 170,
+      "kind": "timer"
+    },
+    {
+      "due": 1790245800000,
+      "priority": 20,
+      "sequence": 171,
+      "kind": "timer"
+    },
+    {
+      "due": 1790247600000,
+      "priority": 20,
+      "sequence": 172,
+      "kind": "timer"
+    },
+    {
+      "due": 1790249400000,
+      "priority": 20,
+      "sequence": 173,
+      "kind": "timer"
+    },
+    {
+      "due": 1790251200000,
+      "priority": 20,
+      "sequence": 174,
+      "kind": "timer"
+    },
+    {
+      "due": 1790253000000,
+      "priority": 20,
+      "sequence": 175,
+      "kind": "timer"
+    },
+    {
+      "due": 1790254800000,
+      "priority": 20,
+      "sequence": 176,
+      "kind": "timer"
+    },
+    {
+      "due": 1790256600000,
+      "priority": 20,
+      "sequence": 177,
+      "kind": "timer"
+    },
+    {
+      "due": 1790258400000,
+      "priority": 20,
+      "sequence": 178,
+      "kind": "timer"
+    },
+    {
+      "due": 1790260200000,
+      "priority": 20,
+      "sequence": 179,
+      "kind": "timer"
+    }
+  ],
+  "sequence": 203,
+  "manifest": {
+    "status": "running",
+    "symbol": "ETH-USDT",
+    "model": "custom@opencode-go:deepseek-v4.1-flash",
+    "start_ms": 1790002800000,
+    "end_ms": 1790262000000,
+    "start_utc": "2026-09-21T15:00:00Z",
+    "end_exclusive_utc": "2026-09-24T15:00:00Z",
+    "expected_trader_cycles": 1,
+    "started_at_ms": 1790863535518,
+    "git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+    "script_sha256": {
+      "brooks_walkforward.py": "47741afb559d87f9a85bb85cd788cb3b78075e6cb2ebf3f20850ac9039a0d321",
+      "brooks_walkforward_data.py": "6a4a1bd3ab96a2160f81da1f9fd12882b912bdac8072b5896aeca27820246ce8",
+      "brooks_walkforward_simulation.py": "c5c5e6a431966bfc6625c11af8be634050749e12267ce3251c822de2448efce7",
+      "brooks_walkforward_report.py": "d0ecf5c686d68d5038137b6b060b7145c81ff759daa1537382836136f017412d",
+      "brooks_pending_entry.py": "6d2b2458ade80de460ef24cf48104170d6b68f45ecadf14f0234a86137a5ca46",
+      "brooks_long_lock_policy.py": "601bb38736f87e4fa845ea006472998887b3d6fdb167fa4eabbfee60d8963193"
+    },
+    "method": "recorded Trader and Context Analyst outputs, real PM PydanticAI API and deterministic GM",
+    "assumptions": {
+      "initial_equity_usdt": "10000",
+      "taker_fee_rate": "0.0004",
+      "adverse_slippage_bps": "1",
+      "funding": "not modeled (zero); net results exclude funding",
+      "execution": "recorded pending stops activate only on a complete M1 candle opened after intent availability, with strict crossing and close beyond trigger; invalidation wins same-bar ambiguity; MARKET at observed M1 close plus adverse slippage after existing GM validation; original intent is preserved, expiry uses existing max_intent_age_ms",
+      "barriers": "subsequent full M1 bars; stop first if both barriers touched; partial entry minute excluded",
+      "latency": "source decisions and contexts become available at their original simulation completion times; PM API latency advances simulation",
+      "risk_policy": {
+        "risk_per_trade_pct": "0.0005",
+        "max_positions": "1",
+        "max_gross_exposure_pct": "1",
+        "leverage": "5",
+        "take_profit_r": "2",
+        "time_limit_sec": "86400",
+        "max_trigger_drift_pct": "0.02",
+        "max_snapshot_age_ms": "60000",
+        "max_intent_age_ms": "7200000"
+      },
+      "pm_interval_sec": 1800,
+      "pm_timeout_sec": 180.0,
+      "trader_timeout_sec": 360,
+      "context_timeout_sec": 300,
+      "venue_rules": "simulation assumptions: ETH step/min 0.001, minimum notional 5, leverage 5",
+      "evaluation": "retrospective replay, not a prospective out-forward; no parameter optimization",
+      "pending_cancellation": "invalidation, expiry or a newer same-symbol ENTER cancels a pending candidate; NO_TRADE does not cancel an earlier candidate",
+      "long_exit_policy": "lock_and_wait_nonnegative_net: no automatic LONG stop or time-limit exit; observed closed M1 combined net loss at 5 original R requests full hedge through existing GM; MAIN close/reduction blocked if projected MAIN+HEDGE liquidation net is negative; SHORT MAIN barriers unchanged; management horizon is finite",
+      "max_unhedged_loss_r": "5"
+    },
+    "recorded_source": {
+      "path": "/home/valdemaster/brooks-condor/condor/docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29",
+      "model": "custom@opencode-go:deepseek-v4.1-flash",
+      "cycles_sha256": "7b66949de8d98bc04c25e02572f5e1a6623cd38b5795fda56149b7fca309672d",
+      "manifest_sha256": "79c53a176735b5eab1ac03e4885984730b2fbdd9cca3696869cadf956e65949d"
+    },
+    "source_trader_cycles": 1,
+    "source_context_updates": 35,
+    "only_trade": "ETH-USDT-1h-1790002799999",
+    "simulation_time_ms": 1790091029898,
+    "updated_at_ms": 1790865310470
+  },
+  "gm_results": {
+    "ETH-USDT-1h-1790002799999": {
+      "type": "GM_ENTRY_APPROVED",
+      "symbol": "ETH-USDT",
+      "payload": {
+        "binding": {
+          "account_name": "walkforward",
+          "connector_name": "binance_perpetual_demo",
+          "controller_id": "brooks-walkforward-10d",
+          "correlation_id": "ETH-USDT-1h-1790002799999",
+          "executor_id": "wf-exec-1",
+          "main_executor_id": "wf-exec-1",
+          "main_position_id": "wf-main-1",
+          "main_side": "LONG",
+          "planned_quantity": "0.159",
+          "schema": "condor.brooks.trade-binding.v1",
+          "status": "reconciled",
+          "symbol": "ETH-USDT"
+        }
+      },
+      "correlation_id": "ETH-USDT-1h-1790002799999",
+      "causation_id": "83fc9fe3-bee2-4549-a5d1-0c94d37659da",
+      "event_id": "47c22138-f3a9-44ff-b7a2-60c78d5e8259",
+      "created_at_ms": 1790863536302
+    }
+  },
+  "pending_entries": {
+    "ETH-USDT-1h-1790002799999": {
+      "schema": "condor.brooks.pending-entry-state.v1",
+      "correlation_id": "ETH-USDT-1h-1790002799999",
+      "symbol": "ETH-USDT",
+      "decision_time_ms": 1790002799999,
+      "available_at_ms": 1790002918165,
+      "expires_at_ms": 1790009999999,
+      "max_intent_age_ms": 7200000,
+      "status": "triggered",
+      "last_processed_close_time_ms": 1790005679999,
+      "changed_at_ms": 1790005679999,
+      "resolution_reason": "close_confirmed_stop_trigger",
+      "evidence": {
+        "event": "activated",
+        "changed_at_ms": 1790005679999,
+        "reason": "close_confirmed_stop_trigger",
+        "trigger_price": "2747.76",
+        "invalidation_price": "2718.09",
+        "trigger_crossed": true,
+        "close_beyond_trigger": true,
+        "close_protective": true,
+        "execution_reference_price": "2749.44",
+        "bar": {
+          "timeframe": "M1",
+          "open_time_ms": 1790005620000,
+          "close_time_ms": 1790005679999,
+          "open": "2745.74",
+          "high": "2749.56",
+          "low": "2745.74",
+          "close": "2749.44"
+        }
+      },
+      "execution_intent": {
+        "schema": "brooks.trade-intent.v2",
+        "role": "TRADER",
+        "decision": "ENTER_LONG",
+        "symbol": "ETH-USDT",
+        "decision_time_ms": 1790002799999,
+        "market_context": {
+          "regime": "bull-trend",
+          "phase": "breakout-spike with a tight range at the highs",
+          "location": "price holds above the twice-tested H4 2700 zone (H4 bar 108 high 2700, H4 bar 118 high 2700) inside a 21-bar M15 tight range (bar 98 low 2702.56 to bar 119 high 2747.76); first opposing level 2771 (D1 bar-89 spike high), then 2850 (M15 bar 98 / H4 bar 120 high)",
+          "always_in": "long",
+          "notes": "H4 context (current, decision_time_ms 1789991999999) and D1 context (current, decision_time_ms 1789948799999) both read bull-trend/breakout-spike; D1 context is used only for the 2771 spike-high location, and raw closed M15/H1 bars are the entry evidence."
+        },
+        "setup": {
+          "type": "breakout pullback: buy the breakout of the 21-bar M15 tight range that has held above the broken 2700 H4 double top",
+          "trigger_status": "triggered",
+          "signal_quality": "weak",
+          "location_assessment": "neutral",
+          "no_trade_reason": null
+        },
+        "decision_timeframe": "M15",
+        "context_timeframes_used": [
+          "H1",
+          "M15",
+          "H4",
+          "D1"
+        ],
+        "entry_mechanism": "breakout_pullback",
+        "trigger": {
+          "reference": "M15 bar 119 high (range high)",
+          "price_field": "high",
+          "price": "2747.76",
+          "source": {
+            "timeframe": "M15",
+            "bar_index": 119,
+            "open_time_ms": 1790001900000,
+            "close_time_ms": 1790002799999
+          },
+          "kind": "stop",
+          "direction": "above"
+        },
+        "invalidation": {
+          "reference": "M15 bar 117 low (low of the recent higher-low cluster 2718.09/2720.15/2718.23; back into the middle of the tight range)",
+          "price_field": "low",
+          "price": "2718.09",
+          "source": {
+            "timeframe": "M15",
+            "bar_index": 117,
+            "open_time_ms": 1790000100000,
+            "close_time_ms": 1790000999999
+          }
+        },
+        "evidence_for": [
+          "M15 bar 119 (open 2733.06, close 2734.92) is the highest close of the 21-bar consolidation and takes out the prior range highs: 2739.54 (bar 112), 2741.55 (bar 115), 2742.56 (bar 118), then 2747.76 (bar 119) - range highs are rising into the close.",
+          "The M15 range since the spike bar 98 (open 2708.33, high 2850, low 2702.56, close 2739.13) has held entirely above 2702.56, i.e. above the H4 2700 zone that had been tagged twice (H4 bar 108 high 2700, H4 bar 118 high 2700) - a tight consolidation above a broken double top, not a pullback below it.",
+          "H1 follow-through per the H4 transition condition: H1 bars 117-119 (open_time 1789992000000 / 1789995600000 / 1789999200000) closed 2734.09, 2734.13, 2734.92, all above the H4 breakout bar's close 2723.15, with lows 2719.08 / 2720.15 / 2718.09 above 2700.",
+          "H1 bar 119 (open 2734.63, high 2747.76, low 2718.09, close 2734.92) makes a higher high versus H1 bar 118 high 2741.55 and closes at the top of the last five H1 bars (lows 2709.56, 2713.04, 2719.08, 2720.15, 2718.09 all hold above 2700).",
+          "M15 lows have stopped falling under the range: 2718.23 (bar 116), 2718.09 (bar 117), 2731.83 (bar 118), 2731.83 (bar 119), so a stop below 2718.09 is a defensible structural invalidation with a defined 29.67-point risk from the 2747.76 trigger."
+        ],
+        "evidence_against": [
+          "M15 bar 98 printed 2850 and closed 2739.13, a 147.44-point bar with a 110.87-point upper tail; the whole 21-bar range sits inside that tail, so the buy trigger 2747.76 is still 102.24 below a level that was just rejected.",
+          "H4 bar 120 (open 2658.81, high 2850, low 2658.06, close 2723.15) left a 126.85-point upper tail with no follow-through bar in the window; the H4 context flags two earlier upside spikes (bar 61 high 2680, bar 81 high 2609.02) that were fully retraced.",
+          "Overhead structure crowds the setup versus its invalidation: 2747.76 is only 5.20 above the prior M15 range high 2742.56 and only 23.24 below the 2771 D1 spike high, against a 29.67-point stop distance.",
+          "Bar 119 is a weak breakout bar, not a bull trend bar closing on its high: its close 2734.92 sits in the lower ~19% of its 2731.83-2747.76 range with a 12.84 upper tail.",
+          "The 21-bar M15 range is only about 45 points (1.6%) and oscillates around the H4 breakout bar's close 2723.15 - consistent with balance at the breakout level, and tight-range breakouts frequently fail without a strong breakout bar."
+        ],
+        "qualitative_confidence": "medium",
+        "uncertainty": [
+          "Whether the M15 tight range resolves upward or becomes a final flag: no bar in the supplied packet closes above 2747.76, so the breakout is untriggered and unconfirmed.",
+          "The would-be signal bar is already printed (bar 119) and is marginal (new high by 5.20 with a 12.84 upper tail); a stronger bull bar closing on its high would raise confidence in the same trigger.",
+          "The D1 context is 15 hours older than the frozen decision time and its 2771/2557 levels are contextual descriptions; the D1 spike high 2771 was exceeded only by a wick (M15 bar 98 high 2850) with no close above it."
+        ],
+        "conditions_that_change_market_read": [
+          "A M15 close back below 2731.83 (bar 119 low) and then below 2718.09 (bar 117 low) would mark a failed breakout of the range high and void the long case.",
+          "A M15/H1 close below 2702.56 (bar 98 low) would break the three-hour acceptance above the H4 2700 zone and return price to the prior H4 wide range.",
+          "Repeated M15 closes between 2718.09 and 2747.76 without exceeding 2747.76 would keep the tight-range read and argue against a breakout.",
+          "A M15 close above 2747.76 with the low holding above 2731.83 would confirm the breakout and shift the focus to 2771 and then 2850."
+        ]
+      }
+    }
+  },
+  "pending_events": {
+    "ETH-USDT-1h-1790002799999": {
+      "type": "TRADER_INTENT_CREATED",
+      "symbol": "ETH-USDT",
+      "payload": {
+        "intent": {
+          "schema": "brooks.trade-intent.v2",
+          "role": "TRADER",
+          "decision": "ENTER_LONG",
+          "symbol": "ETH-USDT",
+          "decision_time_ms": 1790002799999,
+          "market_context": {
+            "regime": "bull-trend",
+            "phase": "breakout-spike with a tight range at the highs",
+            "location": "price holds above the twice-tested H4 2700 zone (H4 bar 108 high 2700, H4 bar 118 high 2700) inside a 21-bar M15 tight range (bar 98 low 2702.56 to bar 119 high 2747.76); first opposing level 2771 (D1 bar-89 spike high), then 2850 (M15 bar 98 / H4 bar 120 high)",
+            "always_in": "long",
+            "notes": "H4 context (current, decision_time_ms 1789991999999) and D1 context (current, decision_time_ms 1789948799999) both read bull-trend/breakout-spike; D1 context is used only for the 2771 spike-high location, and raw closed M15/H1 bars are the entry evidence."
+          },
+          "setup": {
+            "type": "breakout pullback: buy the breakout of the 21-bar M15 tight range that has held above the broken 2700 H4 double top",
+            "trigger_status": "pending",
+            "signal_quality": "weak",
+            "location_assessment": "neutral",
+            "no_trade_reason": null
+          },
+          "decision_timeframe": "M15",
+          "context_timeframes_used": [
+            "H1",
+            "M15",
+            "H4",
+            "D1"
+          ],
+          "entry_mechanism": "breakout_pullback",
+          "trigger": {
+            "reference": "M15 bar 119 high (range high)",
+            "price_field": "high",
+            "price": "2747.76",
+            "source": {
+              "timeframe": "M15",
+              "bar_index": 119,
+              "open_time_ms": 1790001900000,
+              "close_time_ms": 1790002799999
+            },
+            "kind": "stop",
+            "direction": "above"
+          },
+          "invalidation": {
+            "reference": "M15 bar 117 low (low of the recent higher-low cluster 2718.09/2720.15/2718.23; back into the middle of the tight range)",
+            "price_field": "low",
+            "price": "2718.09",
+            "source": {
+              "timeframe": "M15",
+              "bar_index": 117,
+              "open_time_ms": 1790000100000,
+              "close_time_ms": 1790000999999
+            }
+          },
+          "evidence_for": [
+            "M15 bar 119 (open 2733.06, close 2734.92) is the highest close of the 21-bar consolidation and takes out the prior range highs: 2739.54 (bar 112), 2741.55 (bar 115), 2742.56 (bar 118), then 2747.76 (bar 119) - range highs are rising into the close.",
+            "The M15 range since the spike bar 98 (open 2708.33, high 2850, low 2702.56, close 2739.13) has held entirely above 2702.56, i.e. above the H4 2700 zone that had been tagged twice (H4 bar 108 high 2700, H4 bar 118 high 2700) - a tight consolidation above a broken double top, not a pullback below it.",
+            "H1 follow-through per the H4 transition condition: H1 bars 117-119 (open_time 1789992000000 / 1789995600000 / 1789999200000) closed 2734.09, 2734.13, 2734.92, all above the H4 breakout bar's close 2723.15, with lows 2719.08 / 2720.15 / 2718.09 above 2700.",
+            "H1 bar 119 (open 2734.63, high 2747.76, low 2718.09, close 2734.92) makes a higher high versus H1 bar 118 high 2741.55 and closes at the top of the last five H1 bars (lows 2709.56, 2713.04, 2719.08, 2720.15, 2718.09 all hold above 2700).",
+            "M15 lows have stopped falling under the range: 2718.23 (bar 116), 2718.09 (bar 117), 2731.83 (bar 118), 2731.83 (bar 119), so a stop below 2718.09 is a defensible structural invalidation with a defined 29.67-point risk from the 2747.76 trigger."
+          ],
+          "evidence_against": [
+            "M15 bar 98 printed 2850 and closed 2739.13, a 147.44-point bar with a 110.87-point upper tail; the whole 21-bar range sits inside that tail, so the buy trigger 2747.76 is still 102.24 below a level that was just rejected.",
+            "H4 bar 120 (open 2658.81, high 2850, low 2658.06, close 2723.15) left a 126.85-point upper tail with no follow-through bar in the window; the H4 context flags two earlier upside spikes (bar 61 high 2680, bar 81 high 2609.02) that were fully retraced.",
+            "Overhead structure crowds the setup versus its invalidation: 2747.76 is only 5.20 above the prior M15 range high 2742.56 and only 23.24 below the 2771 D1 spike high, against a 29.67-point stop distance.",
+            "Bar 119 is a weak breakout bar, not a bull trend bar closing on its high: its close 2734.92 sits in the lower ~19% of its 2731.83-2747.76 range with a 12.84 upper tail.",
+            "The 21-bar M15 range is only about 45 points (1.6%) and oscillates around the H4 breakout bar's close 2723.15 - consistent with balance at the breakout level, and tight-range breakouts frequently fail without a strong breakout bar."
+          ],
+          "qualitative_confidence": "medium",
+          "uncertainty": [
+            "Whether the M15 tight range resolves upward or becomes a final flag: no bar in the supplied packet closes above 2747.76, so the breakout is untriggered and unconfirmed.",
+            "The would-be signal bar is already printed (bar 119) and is marginal (new high by 5.20 with a 12.84 upper tail); a stronger bull bar closing on its high would raise confidence in the same trigger.",
+            "The D1 context is 15 hours older than the frozen decision time and its 2771/2557 levels are contextual descriptions; the D1 spike high 2771 was exceeded only by a wick (M15 bar 98 high 2850) with no close above it."
+          ],
+          "conditions_that_change_market_read": [
+            "A M15 close back below 2731.83 (bar 119 low) and then below 2718.09 (bar 117 low) would mark a failed breakout of the range high and void the long case.",
+            "A M15/H1 close below 2702.56 (bar 98 low) would break the three-hour acceptance above the H4 2700 zone and return price to the prior H4 wide range.",
+            "Repeated M15 closes between 2718.09 and 2747.76 without exceeding 2747.76 would keep the tight-range read and argue against a breakout.",
+            "A M15 close above 2747.76 with the low holding above 2731.83 would confirm the breakout and shift the focus to 2771 and then 2850."
+          ]
+        },
+        "shadow_mode": false,
+        "recorded_source_line": 40
+      },
+      "correlation_id": "ETH-USDT-1h-1790002799999",
+      "causation_id": null,
+      "event_id": "83fc9fe3-bee2-4549-a5d1-0c94d37659da",
+      "created_at_ms": 1790863536187
+    }
+  },
+  "only_trade": "ETH-USDT-1h-1790002799999",
+  "long_lock_policy": true,
+  "max_unhedged_loss_r": "5",
+  "watcher_snapshots": [
+    {
+      "correlation_id": "ETH-USDT-1h-1790002799999",
+      "symbol": "ETH-USDT",
+      "main": {
+        "id": "wf-main-1",
+        "side": "LONG",
+        "qty": "0.159"
+      },
+      "hedge": {
+        "id": "",
+        "side": "",
+        "qty": "0"
+      },
+      "executors": [
+        {
+          "id": "wf-exec-1",
+          "status": "RUNNING"
+        }
+      ],
+      "open_orders": [],
+      "fills_cursor": "wf-fill-1",
+      "recent_fills": [
+        {
+          "fill_id": "wf-fill-1",
+          "order_id": "wf-fill-1",
+          "symbol": "ETH-USDT",
+          "status": "FILLED",
+          "filled_quantity": "0.159",
+          "price": "2749.714944",
+          "side": "BUY"
+        }
+      ]
+    }
+  ]
+}

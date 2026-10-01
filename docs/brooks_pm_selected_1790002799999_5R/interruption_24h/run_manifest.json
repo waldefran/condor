@@ -1,0 +1,61 @@
+{
+  "status": "running",
+  "symbol": "ETH-USDT",
+  "model": "custom@opencode-go:deepseek-v4.1-flash",
+  "start_ms": 1790002800000,
+  "end_ms": 1790262000000,
+  "start_utc": "2026-09-21T15:00:00Z",
+  "end_exclusive_utc": "2026-09-24T15:00:00Z",
+  "expected_trader_cycles": 1,
+  "started_at_ms": 1790863535518,
+  "git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+  "script_sha256": {
+    "brooks_walkforward.py": "47741afb559d87f9a85bb85cd788cb3b78075e6cb2ebf3f20850ac9039a0d321",
+    "brooks_walkforward_data.py": "6a4a1bd3ab96a2160f81da1f9fd12882b912bdac8072b5896aeca27820246ce8",
+    "brooks_walkforward_simulation.py": "c5c5e6a431966bfc6625c11af8be634050749e12267ce3251c822de2448efce7",
+    "brooks_walkforward_report.py": "d0ecf5c686d68d5038137b6b060b7145c81ff759daa1537382836136f017412d",
+    "brooks_pending_entry.py": "6d2b2458ade80de460ef24cf48104170d6b68f45ecadf14f0234a86137a5ca46",
+    "brooks_long_lock_policy.py": "601bb38736f87e4fa845ea006472998887b3d6fdb167fa4eabbfee60d8963193"
+  },
+  "method": "recorded Trader and Context Analyst outputs, real PM PydanticAI API and deterministic GM",
+  "assumptions": {
+    "initial_equity_usdt": "10000",
+    "taker_fee_rate": "0.0004",
+    "adverse_slippage_bps": "1",
+    "funding": "not modeled (zero); net results exclude funding",
+    "execution": "recorded pending stops activate only on a complete M1 candle opened after intent availability, with strict crossing and close beyond trigger; invalidation wins same-bar ambiguity; MARKET at observed M1 close plus adverse slippage after existing GM validation; original intent is preserved, expiry uses existing max_intent_age_ms",
+    "barriers": "subsequent full M1 bars; stop first if both barriers touched; partial entry minute excluded",
+    "latency": "source decisions and contexts become available at their original simulation completion times; PM API latency advances simulation",
+    "risk_policy": {
+      "risk_per_trade_pct": "0.0005",
+      "max_positions": "1",
+      "max_gross_exposure_pct": "1",
+      "leverage": "5",
+      "take_profit_r": "2",
+      "time_limit_sec": "86400",
+      "max_trigger_drift_pct": "0.02",
+      "max_snapshot_age_ms": "60000",
+      "max_intent_age_ms": "7200000"
+    },
+    "pm_interval_sec": 1800,
+    "pm_timeout_sec": 180.0,
+    "trader_timeout_sec": 360,
+    "context_timeout_sec": 300,
+    "venue_rules": "simulation assumptions: ETH step/min 0.001, minimum notional 5, leverage 5",
+    "evaluation": "retrospective replay, not a prospective out-forward; no parameter optimization",
+    "pending_cancellation": "invalidation, expiry or a newer same-symbol ENTER cancels a pending candidate; NO_TRADE does not cancel an earlier candidate",
+    "long_exit_policy": "lock_and_wait_nonnegative_net: no automatic LONG stop or time-limit exit; observed closed M1 combined net loss at 5 original R requests full hedge through existing GM; MAIN close/reduction blocked if projected MAIN+HEDGE liquidation net is negative; SHORT MAIN barriers unchanged; management horizon is finite",
+    "max_unhedged_loss_r": "5"
+  },
+  "recorded_source": {
+    "path": "/home/valdemaster/brooks-condor/condor/docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29",
+    "model": "custom@opencode-go:deepseek-v4.1-flash",
+    "cycles_sha256": "7b66949de8d98bc04c25e02572f5e1a6623cd38b5795fda56149b7fca309672d",
+    "manifest_sha256": "79c53a176735b5eab1ac03e4885984730b2fbdd9cca3696869cadf956e65949d"
+  },
+  "source_trader_cycles": 1,
+  "source_context_updates": 35,
+  "only_trade": "ETH-USDT-1h-1790002799999",
+  "simulation_time_ms": 1790091029898,
+  "updated_at_ms": 1790865310470
+}

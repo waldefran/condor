@@ -1,0 +1,16 @@
+{
+  "status": "failed_before_duration_PM_dispatch",
+  "error_type": "KeyError",
+  "error_message": "payload",
+  "failed_process_pid": 3504236,
+  "git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+  "last_checkpoint_simulation_time_ms": 1790091029898,
+  "duration_observed_at_ms": 1790092079999,
+  "completed_PM_decisions": 50,
+  "LLM_calls_on_failed_duration_wake": 0,
+  "venue_writes_after_checkpoint": 0,
+  "cause": "Duration producer enqueued a hand-built mapping missing payload/event_id; strict BrooksEvent.from_dict rejected it before calling PM. Published journal event was complete, queued envelope was incomplete.",
+  "recovery_plan": "Keep archived evidence; resume copied state at last checkpoint with corrected producer. Preserve all 50 role runs/outputs. Roll back only the uncheckpointed journal suffix/duration proof in working copy; no resubmission of MAIN or accepted PM decisions.",
+  "checkpoint_journal_sha256": "6d667506c4636befd98049aa9418834db11f851cd480080b8f6e08e34cd84d83",
+  "uncheckpointed_journal_suffix_bytes": 364
+}

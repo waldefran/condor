@@ -56,3 +56,26 @@ negativo automático. Nenhuma alteração em GM/ExecutionPort/PM consumer.
 
 Todos os prompts literais, respostas brutas, tools, wire requests,
 resultados do GM e checkpoints serão preservados nesta pasta.
+
+## Interrupção às 24h e correção necessária
+
+O processo inicial terminou no primeiro wake de duração com `KeyError: payload`.
+O produtor publicou um PM_TIMER completo, mas enfileirou separadamente um
+dict sem payload/event_id. A desserialização estrita impediu o dispatch antes
+de qualquer inferência PM nesse wake. As 50 avaliações anteriores foram
+aceitas, todas HOLD; não houve write após o último checkpoint.
+
+Evidência original, log e checkpoint preservados em `interruption_24h/`.
+A correção faz publicar e enfileirar o MESMO BrooksEvent completo.
+O teste agora desserializa o evento real e passa HOLD tipado por PM/GM reais,
+confirmando extensão do prazo e nenhuma ordem/fill/entrada duplicada.
+O mesmo comando de verificação passou novamente: **26 passed**.
+
+A retomada usa cópia independente do último checkpoint (22/09 15:30:29.898 UTC),
+preserva os 50 role runs/wire requests e remove apenas o sufixo não
+checkpointado do journal/prova de duração na cópia de trabalho. O sufixo
+original permanece no arquivo de interrupção. A troca de identidade de
+código será documentada em RESUME_LINEAGE.json, sem relaxar o gate de restart.
+A pausa real de manutenção não avança o relógio histórico. Não há nova
+entrada ou repetição das 50 decisões. O packet do wake vencido é capturado
+na sua hora histórica, sem candles posteriores ou alteração da política.

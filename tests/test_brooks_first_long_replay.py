@@ -7,8 +7,10 @@ from types import SimpleNamespace
 import pytest
 
 from condor.brooks import gm as gm_module
+from condor.brooks.contracts import ManagementDecisionV2
 from condor.brooks.events import BrooksEvent, EventType
 from scripts.brooks_walkforward import WalkForward, utc_ms
+from tests.brooks_e2e_harness import hold_decision
 
 
 CID = "ETH-USDT-1h-1789883999999"
@@ -84,11 +86,66 @@ async def test_selected_long_policy_scope_and_duration_wake(tmp_path, monkeypatc
     assert context["correlation_id"] == policy["operation_correlation_id"] == args.only_trade
     assert policy["max_unhedged_loss_r"] == "5"
     assert await runner.load_pm_context(CID) is None
-    await runner.advance_to(utc_ms("2026-09-22T16:00:00Z") - 1)
+    initial_deadline = runner.venue.long_policy_context(args.only_trade)["duration_expires_at_ms"]
+    assert initial_deadline == trade.opened_at_ms + 86400 * 1000
+    await runner.advance_to(initial_deadline)
     assert trade.closed_at_ms is None
     assert not any(f.get("reason") in ("STOP_LOSS", "TIME_LIMIT") for f in runner.venue.fills)
-    wakes = (runner.root / "long_duration_events.jsonl").read_text().splitlines()
-    assert any(json.loads(row)["correlation_id"] == args.only_trade for row in wakes)
+    duration_records = [json.loads(row) for row in
+        (runner.root / "long_duration_events.jsonl").read_text().splitlines()]
+    proof = next(row for row in duration_records
+        if row.get("correlation_id") == args.only_trade and row.get("observed_at_ms") is not None)
+    queued = next(item for item in runner.agenda
+        if item["kind"] == "pm"
+        and item["event"].get("payload", {}).get("duration_limit_reached") == proof)
+    timer = BrooksEvent.from_dict(queued["event"])
+    assert timer.type == EventType.PM_TIMER
+    assert timer.correlation_id == args.only_trade
+    assert timer.created_at_ms == proof["observed_at_ms"] == runner.now
+    assert timer.payload["duration_limit_reached"] == proof
+
+    model_calls = []
+
+    async def fake_readonly_model(role, **kwargs):
+        assert role == "POSITION_MANAGER"
+        assert kwargs["output_model"] is ManagementDecisionV2
+        prompt = kwargs["prompt"]
+        positions = prompt.get("positions") or [prompt.get("position")]
+        position = next(row for row in positions if row is not None)
+        decision = ManagementDecisionV2.model_validate(
+            hold_decision(prompt["decision_time_ms"], position["position_id"])
+        )
+        model_calls.append(decision)
+        return decision
+
+    runner.pm.runner = fake_readonly_model
+    before_fills = list(runner.venue.fills)
+    before_executors = list(runner.venue.executor_rows)
+    before_submissions = list(runner.venue.entry_submissions)
+    result, _ = await runner.scoped(
+        "pm-duration-test", lambda: runner.pm.handle_event(timer.to_dict())
+    )
+    assert isinstance(result, ManagementDecisionV2) and result.action == "HOLD"
+    assert len(model_calls) == 1
+    await runner.drain()
+    outcome = json.loads((runner.root / "management_outcomes.jsonl").read_text().splitlines()[-1])
+    assert outcome["decision"]["action"] == "HOLD"
+    assert outcome["gm_result"]["type"] == "GM_MANAGEMENT_APPROVED"
+    state = runner.venue.long_policy_context(args.only_trade)
+    assert state["duration_expires_at_ms"] > initial_deadline
+    assert trade.closed_at_ms is None
+    assert runner.venue.trades == [trade]
+    assert runner.venue.fills == before_fills
+    assert runner.venue.executor_rows == before_executors
+    assert runner.venue.entry_submissions == before_submissions
+    updated_duration_records = [json.loads(row) for row in
+        (runner.root / "long_duration_events.jsonl").read_text().splitlines()]
+    extensions = [row for row in updated_duration_records if row.get("action") == "HOLD_EXTENSION"]
+    assert extensions
+    assert extensions[-1]["expires_at_ms"] == state["duration_expires_at_ms"]
+    assert extensions[-1]["expires_at_ms"] == (
+        extensions[-1]["simulation_time_ms"] + runner.pm_interval_sec * 1000
+    )
     assert runner.venue.long_policy_context(args.only_trade)["initial_R_usdt"] == str(trade.initial_risk_usd)
     runner.events.close()
     runner.store.flush()

@@ -1,0 +1,1 @@
+{"correlation_id": "ETH-USDT-1h-1790002799999", "decision": "ENTER_LONG", "decision_time_ms": 1790002799999, "executor_id": "wf-exec-1", "fill_price": "2749.714944", "mark": "2749.44", "note": "Current Brooks ExecutionPort maps accepted entries to MARKET.", "simulated_order_type": "MARKET", "status": "filled_market", "trigger_kind": "stop", "trigger_status": "triggered"}

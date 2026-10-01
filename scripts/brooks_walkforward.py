@@ -556,11 +556,11 @@ class WalkForward:
         while self.venue.duration_requests:
             proof = self.venue.duration_requests.pop(0)
             append_json(self.root / "long_duration_events.jsonl", proof)
-            await self.events.publish(BrooksEvent(EventType.PM_TIMER, self.symbol,
-                {"duration_limit_reached": proof}, correlation_id=proof["correlation_id"]))
-            self.enqueue(self.now, 20, "pm", event={
-                "type": "PM_TIMER", "symbol": self.symbol,
-                "correlation_id": proof["correlation_id"], "created_at_ms": self.now})
+            event = BrooksEvent(EventType.PM_TIMER, self.symbol,
+                {"duration_limit_reached": proof}, correlation_id=proof["correlation_id"],
+                created_at_ms=self.now)
+            await self.events.publish(event)
+            self.enqueue(self.now, 20, "pm", event=event.to_dict())
 
     def save_pm(self, cid, decision):
         value = decision.model_dump(mode="json")
