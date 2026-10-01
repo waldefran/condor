@@ -41,7 +41,7 @@ class BrooksConfig(BaseModel):
         default_factory=lambda: MarketWakeConfig(timeframe="4h", wake_offset_sec=3)
     )
     pm: PeriodicWakeConfig = Field(
-        default_factory=lambda: PeriodicWakeConfig(frequency_sec=60)
+        default_factory=lambda: PeriodicWakeConfig(frequency_sec=1800)
     )
     position_watcher: PeriodicWakeConfig = Field(
         default_factory=lambda: PeriodicWakeConfig(frequency_sec=10)

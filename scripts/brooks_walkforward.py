@@ -33,7 +33,7 @@ from dotenv import load_dotenv
 from condor.brooks import agent_runner, gm as gm_module
 from condor.brooks.adapters import build_watcher_provider, read_bindings
 from condor.brooks.clock import MarketClock
-from condor.brooks.config import MarketWakeConfig
+from condor.brooks.config import BrooksConfig, MarketWakeConfig
 from condor.brooks.decision_cycles import DecisionCycleStore
 from condor.brooks.events import BrooksEvent, EventBus, EventType
 from condor.brooks.gm import BrooksGM, GMPolicy
@@ -181,6 +181,7 @@ class WalkForward:
         self.trader = TraderConsumer(args.agent_key, self.source, self.store, self.events, shadow_mode=False)
         self.contexts = {tf: ContextAnalystConsumer(args.agent_key, self.source, self.store, self.events, timeframe=tf)
                          for tf in ("1d", "4h")}
+        self.pm_interval_sec = BrooksConfig().pm.frequency_sec
         self.pm = PositionManager(load_context=self.venue.pm_load_context, save_decision=self.save_pm,
             publish=self.events, candle_source=self.source, record_market_read=self.record_pm_read,
             list_active_correlations=self.active_correlations, agent_key=args.agent_key)
@@ -208,7 +209,8 @@ class WalkForward:
                 self.enqueue(boundary + 3000, 10, "clock", timeframe="4h", decision=boundary-1)
             if boundary % DAY == 0:
                 self.enqueue(boundary + 3000, 10, "clock", timeframe="1d", decision=boundary-1)
-        for boundary in range(self.start + 15*MINUTE, self.end, 15*MINUTE):
+        pm_interval_ms = self.pm_interval_sec * 1000
+        for boundary in range(self.start + pm_interval_ms, self.end, pm_interval_ms):
             self.enqueue(boundary, 20, "timer")
         self.current_round = "bootstrap"
         self.gm_results: dict[str, Any] = {}
@@ -225,7 +227,7 @@ class WalkForward:
                 "barriers": "subsequent full M1 bars; stop first if both barriers touched; partial entry minute excluded",
                 "latency": "actual model response elapsed time advances simulation; raw role inputs remain frozen",
                 "risk_policy": {k: str(v) for k,v in vars(self.policy).items()},
-                "pm_interval_sec": 900, "pm_timeout_sec": self.pm.timeout_sec,
+                "pm_interval_sec": self.pm_interval_sec, "pm_timeout_sec": self.pm.timeout_sec,
                 "trader_timeout_sec": self.trader.timeout_sec, "context_timeout_sec": 300,
                 "venue_rules": "simulation assumptions: ETH step/min 0.001, minimum notional 5, leverage 5",
                 "evaluation": "retrospective replay, not a prospective out-forward; no parameter optimization"}}
