@@ -1,0 +1,63 @@
+{
+  "cycles": 131,
+  "decisions": {
+    "NO_TRADE": 90,
+    "ENTER_LONG": 34,
+    "FAILED": 2,
+    "ENTER_SHORT": 5
+  },
+  "repaired_output_issue_categories": {
+    "invalid_json": 6,
+    "ohlc_reference": 2,
+    "schema": 3
+  },
+  "cycles_with_repair": 11,
+  "recovered_repair_cycles": 9,
+  "failed_cycles": [
+    {
+      "id": "ETH-USDT-1h-1789934399999",
+      "failure": {
+        "error_type": "RoleRunError",
+        "message": "entry requires a successful same-run raw H4 candle read when H4 context is stale or missing",
+        "attempt": 1,
+        "transient": false
+      },
+      "role_runs": [
+        "role_runs/clock-1h-1789934399999-27-1-62504096.json"
+      ]
+    },
+    {
+      "id": "ETH-USDT-1h-1790251199999",
+      "failure": {
+        "error_type": "ValidationError",
+        "message": "1 validation error for TradeIntentV2\nevidence_against\n  Input should be a valid list [type=list_type, input_value='H4 bar 1790236800000 (O ...tely beneath the entry.', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/list_type",
+        "attempt": 1,
+        "transient": false
+      },
+      "role_runs": [
+        "role_runs/clock-1h-1790251199999-141-1-ea138da7.json"
+      ]
+    }
+  ],
+  "retry_cycles": [
+    {
+      "id": "ETH-USDT-1h-1790207999999",
+      "attempt": 2,
+      "duration_sec": 496.795
+    }
+  ],
+  "timing_sec": {
+    "mean": 134.02434351145038,
+    "median": 116.824,
+    "min": 38.743,
+    "max": 496.795
+  },
+  "interrupted": [
+    {
+      "round_id": "clock-1h-1790333999999-171",
+      "role": "TRADER",
+      "file": "role_runs/clock-1h-1790333999999-171-1-91bee99f.json",
+      "last_call_started_at_ms": 1790816070594
+    }
+  ]
+}

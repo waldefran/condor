@@ -1,0 +1,16 @@
+{
+  "stopped_at_utc": "2026-10-01T00:56:56.271640+00:00",
+  "pid": 1372876,
+  "reason": "explicit user request",
+  "method": "SIGTERM followed by SIGKILL after 15 seconds with model call still active",
+  "completed_cycle_records": 131,
+  "interrupted_role_runs": [
+    {
+      "round_id": "clock-1h-1790333999999-171",
+      "role": "TRADER",
+      "file": "role_runs/clock-1h-1790333999999-171-1-91bee99f.json",
+      "last_call_started_at_ms": 1790816070594
+    }
+  ],
+  "note": "The interrupted cycle is not counted as a model failure or NO_TRADE; raw capture and operational state are preserved."
+}

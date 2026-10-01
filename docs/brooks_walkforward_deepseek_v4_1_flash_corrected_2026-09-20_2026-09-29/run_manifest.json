@@ -1,5 +1,5 @@
 {
-  "status": "running",
+  "status": "paused",
   "symbol": "ETH-USDT",
   "model": "custom@opencode-go:deepseek-v4.1-flash",
   "start_ms": 1789862400000,
@@ -41,5 +41,10 @@
     "context_timeout_sec": 300,
     "venue_rules": "simulation assumptions: ETH step/min 0.001, minimum notional 5, leverage 5",
     "evaluation": "retrospective replay, not a prospective out-forward; no parameter optimization"
-  }
+  },
+  "simulation_time_ms": 1790334000000,
+  "updated_at_ms": 1790815923059,
+  "stopped_at_ms": 1790816216271,
+  "stop_reason": "user_requested",
+  "stop_record": "stop.json"
 }
