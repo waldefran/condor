@@ -1,0 +1,3700 @@
+{
+  "schema": "brooks.replay-investigation.timing-audit.v1",
+  "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+  "method": "Call latency uses capture.elapsed_ms; real role wall time uses actual started/finished timestamps. Decision/GM lags use separate historical timestamps and include host/event scheduling, not just model inference. Source Trader/D1/H4 are recorded and excluded.",
+  "roles": 203,
+  "stats": {
+    "api_call_seconds": {
+      "count": 203,
+      "min": 15.789,
+      "median": 32.227,
+      "max": 92.802,
+      "sum": 7012.7119999999995
+    },
+    "role_wall_seconds": {
+      "count": 203,
+      "min": 15.79,
+      "median": 32.239,
+      "max": 92.815,
+      "sum": 7015.888
+    },
+    "role_start_lag_seconds": {
+      "count": 203,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0,
+      "sum": 0.0
+    },
+    "decision_to_gm_seconds": {
+      "count": 203,
+      "min": 16.018,
+      "median": 32.685,
+      "max": 93.177,
+      "sum": 7097.558
+    },
+    "role_finish_to_gm_seconds": {
+      "count": 203,
+      "min": 0.023,
+      "median": 0.084,
+      "max": 2.902,
+      "sum": 44.037
+    }
+  },
+  "ambiguous_outcome_matches": [],
+  "records": [
+    {
+      "role_file": "role_runs/pm-pm-1790005679999-195-1-64b0fba8.json",
+      "decision_time_ms": 1790005679999,
+      "call_count": 1,
+      "api_call_seconds": 27.124,
+      "role_wall_seconds": 27.124,
+      "role_simulation_start_ms": 1790005679999,
+      "role_simulation_finish_ms": 1790005708947,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790005710422,
+      "decision_to_gm_seconds": 30.423,
+      "role_finish_to_gm_seconds": 1.475
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790005679999-196-1-f65306da.json",
+      "decision_time_ms": 1790005710422,
+      "call_count": 1,
+      "api_call_seconds": 15.789,
+      "role_wall_seconds": 15.79,
+      "role_simulation_start_ms": 1790005710422,
+      "role_simulation_finish_ms": 1790005726319,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790005726440,
+      "decision_to_gm_seconds": 16.018,
+      "role_finish_to_gm_seconds": 0.121
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790006400000-38-1-2c83487e.json",
+      "decision_time_ms": 1790006400000,
+      "call_count": 3,
+      "api_call_seconds": 36.253,
+      "role_wall_seconds": 36.265,
+      "role_simulation_start_ms": 1790006400000,
+      "role_simulation_finish_ms": 1790006436440,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790006436489,
+      "decision_to_gm_seconds": 36.489,
+      "role_finish_to_gm_seconds": 0.049
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790008200000-39-1-3642573c.json",
+      "decision_time_ms": 1790008200000,
+      "call_count": 2,
+      "api_call_seconds": 35.581,
+      "role_wall_seconds": 35.593,
+      "role_simulation_start_ms": 1790008200000,
+      "role_simulation_finish_ms": 1790008235637,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790008235842,
+      "decision_to_gm_seconds": 35.842,
+      "role_finish_to_gm_seconds": 0.205
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790010000000-40-1-1aee49f1.json",
+      "decision_time_ms": 1790010000000,
+      "call_count": 2,
+      "api_call_seconds": 24.853,
+      "role_wall_seconds": 24.862,
+      "role_simulation_start_ms": 1790010000000,
+      "role_simulation_finish_ms": 1790010024947,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790010025096,
+      "decision_to_gm_seconds": 25.096,
+      "role_finish_to_gm_seconds": 0.149
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790011800000-41-1-483a79eb.json",
+      "decision_time_ms": 1790011800000,
+      "call_count": 2,
+      "api_call_seconds": 39.845,
+      "role_wall_seconds": 39.854,
+      "role_simulation_start_ms": 1790011800000,
+      "role_simulation_finish_ms": 1790011840060,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790011840099,
+      "decision_to_gm_seconds": 40.099,
+      "role_finish_to_gm_seconds": 0.039
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790013600000-42-1-652ed528.json",
+      "decision_time_ms": 1790013600000,
+      "call_count": 2,
+      "api_call_seconds": 21.342,
+      "role_wall_seconds": 21.351,
+      "role_simulation_start_ms": 1790013600000,
+      "role_simulation_finish_ms": 1790013621534,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790013621585,
+      "decision_to_gm_seconds": 21.585,
+      "role_finish_to_gm_seconds": 0.051
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790015400000-43-1-d63a06db.json",
+      "decision_time_ms": 1790015400000,
+      "call_count": 2,
+      "api_call_seconds": 24.521,
+      "role_wall_seconds": 24.529,
+      "role_simulation_start_ms": 1790015400000,
+      "role_simulation_finish_ms": 1790015424595,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790015424742,
+      "decision_to_gm_seconds": 24.742,
+      "role_finish_to_gm_seconds": 0.147
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790017200000-44-1-8c11b5a8.json",
+      "decision_time_ms": 1790017200000,
+      "call_count": 2,
+      "api_call_seconds": 28.438,
+      "role_wall_seconds": 28.448,
+      "role_simulation_start_ms": 1790017200000,
+      "role_simulation_finish_ms": 1790017228569,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790017228675,
+      "decision_to_gm_seconds": 28.675,
+      "role_finish_to_gm_seconds": 0.106
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790019000000-45-1-c62d7608.json",
+      "decision_time_ms": 1790019000000,
+      "call_count": 2,
+      "api_call_seconds": 29.533,
+      "role_wall_seconds": 29.546,
+      "role_simulation_start_ms": 1790019000000,
+      "role_simulation_finish_ms": 1790019029696,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790019029764,
+      "decision_to_gm_seconds": 29.764,
+      "role_finish_to_gm_seconds": 0.068
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790020800000-46-1-24d44255.json",
+      "decision_time_ms": 1790020800000,
+      "call_count": 2,
+      "api_call_seconds": 28.642,
+      "role_wall_seconds": 28.657,
+      "role_simulation_start_ms": 1790020800000,
+      "role_simulation_finish_ms": 1790020828780,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790020828886,
+      "decision_to_gm_seconds": 28.886,
+      "role_finish_to_gm_seconds": 0.106
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790022600000-47-1-2270dc2e.json",
+      "decision_time_ms": 1790022600000,
+      "call_count": 2,
+      "api_call_seconds": 29.055,
+      "role_wall_seconds": 29.067,
+      "role_simulation_start_ms": 1790022600000,
+      "role_simulation_finish_ms": 1790022629224,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790022629290,
+      "decision_to_gm_seconds": 29.29,
+      "role_finish_to_gm_seconds": 0.066
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790024400000-48-1-62310cbe.json",
+      "decision_time_ms": 1790024400000,
+      "call_count": 2,
+      "api_call_seconds": 28.599,
+      "role_wall_seconds": 28.612,
+      "role_simulation_start_ms": 1790024400000,
+      "role_simulation_finish_ms": 1790024428766,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790024428828,
+      "decision_to_gm_seconds": 28.828,
+      "role_finish_to_gm_seconds": 0.062
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790026200000-49-1-faf23459.json",
+      "decision_time_ms": 1790026200000,
+      "call_count": 2,
+      "api_call_seconds": 31.152,
+      "role_wall_seconds": 31.165,
+      "role_simulation_start_ms": 1790026200000,
+      "role_simulation_finish_ms": 1790026231235,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790026231432,
+      "decision_to_gm_seconds": 31.432,
+      "role_finish_to_gm_seconds": 0.197
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790028000000-50-1-014734e2.json",
+      "decision_time_ms": 1790028000000,
+      "call_count": 2,
+      "api_call_seconds": 31.086,
+      "role_wall_seconds": 31.1,
+      "role_simulation_start_ms": 1790028000000,
+      "role_simulation_finish_ms": 1790028031199,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790028031315,
+      "decision_to_gm_seconds": 31.315,
+      "role_finish_to_gm_seconds": 0.116
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790029800000-51-1-1079d85a.json",
+      "decision_time_ms": 1790029800000,
+      "call_count": 3,
+      "api_call_seconds": 44.741,
+      "role_wall_seconds": 44.765,
+      "role_simulation_start_ms": 1790029800000,
+      "role_simulation_finish_ms": 1790029844941,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790029844980,
+      "decision_to_gm_seconds": 44.98,
+      "role_finish_to_gm_seconds": 0.039
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790031600000-52-1-d224b060.json",
+      "decision_time_ms": 1790031600000,
+      "call_count": 2,
+      "api_call_seconds": 26.371,
+      "role_wall_seconds": 26.384,
+      "role_simulation_start_ms": 1790031600000,
+      "role_simulation_finish_ms": 1790031626569,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790031626613,
+      "decision_to_gm_seconds": 26.613,
+      "role_finish_to_gm_seconds": 0.044
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790033400000-53-1-fa653018.json",
+      "decision_time_ms": 1790033400000,
+      "call_count": 2,
+      "api_call_seconds": 25.935,
+      "role_wall_seconds": 25.948,
+      "role_simulation_start_ms": 1790033400000,
+      "role_simulation_finish_ms": 1790033426079,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790033426159,
+      "decision_to_gm_seconds": 26.159,
+      "role_finish_to_gm_seconds": 0.08
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790035200000-54-1-6e1f4683.json",
+      "decision_time_ms": 1790035200000,
+      "call_count": 2,
+      "api_call_seconds": 27.426,
+      "role_wall_seconds": 27.442,
+      "role_simulation_start_ms": 1790035200000,
+      "role_simulation_finish_ms": 1790035227597,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790035227656,
+      "decision_to_gm_seconds": 27.656,
+      "role_finish_to_gm_seconds": 0.059
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790037000000-55-1-877fb993.json",
+      "decision_time_ms": 1790037000000,
+      "call_count": 2,
+      "api_call_seconds": 25.46,
+      "role_wall_seconds": 25.473,
+      "role_simulation_start_ms": 1790037000000,
+      "role_simulation_finish_ms": 1790037025588,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790037025741,
+      "decision_to_gm_seconds": 25.741,
+      "role_finish_to_gm_seconds": 0.153
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790038800000-56-1-b9f4fba0.json",
+      "decision_time_ms": 1790038800000,
+      "call_count": 2,
+      "api_call_seconds": 29.088,
+      "role_wall_seconds": 29.102,
+      "role_simulation_start_ms": 1790038800000,
+      "role_simulation_finish_ms": 1790038829250,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790038829323,
+      "decision_to_gm_seconds": 29.323,
+      "role_finish_to_gm_seconds": 0.073
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790040600000-57-1-067e982a.json",
+      "decision_time_ms": 1790040600000,
+      "call_count": 2,
+      "api_call_seconds": 30.547,
+      "role_wall_seconds": 30.561,
+      "role_simulation_start_ms": 1790040600000,
+      "role_simulation_finish_ms": 1790040630706,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790040630786,
+      "decision_to_gm_seconds": 30.786,
+      "role_finish_to_gm_seconds": 0.08
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790042400000-58-1-cee436b5.json",
+      "decision_time_ms": 1790042400000,
+      "call_count": 2,
+      "api_call_seconds": 50.343,
+      "role_wall_seconds": 50.359,
+      "role_simulation_start_ms": 1790042400000,
+      "role_simulation_finish_ms": 1790042450509,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790042450578,
+      "decision_to_gm_seconds": 50.578,
+      "role_finish_to_gm_seconds": 0.069
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790044200000-59-1-4d679a76.json",
+      "decision_time_ms": 1790044200000,
+      "call_count": 3,
+      "api_call_seconds": 56.085,
+      "role_wall_seconds": 56.115,
+      "role_simulation_start_ms": 1790044200000,
+      "role_simulation_finish_ms": 1790044256259,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790044256343,
+      "decision_to_gm_seconds": 56.343,
+      "role_finish_to_gm_seconds": 0.084
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790046000000-60-1-f5b4a4c3.json",
+      "decision_time_ms": 1790046000000,
+      "call_count": 2,
+      "api_call_seconds": 47.539,
+      "role_wall_seconds": 47.552,
+      "role_simulation_start_ms": 1790046000000,
+      "role_simulation_finish_ms": 1790046047720,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790046047764,
+      "decision_to_gm_seconds": 47.764,
+      "role_finish_to_gm_seconds": 0.044
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790047800000-61-1-92092389.json",
+      "decision_time_ms": 1790047800000,
+      "call_count": 3,
+      "api_call_seconds": 62.24,
+      "role_wall_seconds": 62.271,
+      "role_simulation_start_ms": 1790047800000,
+      "role_simulation_finish_ms": 1790047862437,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790047862490,
+      "decision_to_gm_seconds": 62.49,
+      "role_finish_to_gm_seconds": 0.053
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790049600000-62-1-05a707a3.json",
+      "decision_time_ms": 1790049600000,
+      "call_count": 2,
+      "api_call_seconds": 65.235,
+      "role_wall_seconds": 65.25,
+      "role_simulation_start_ms": 1790049600000,
+      "role_simulation_finish_ms": 1790049665375,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790049666939,
+      "decision_to_gm_seconds": 66.939,
+      "role_finish_to_gm_seconds": 1.564
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790051400000-63-1-3240054e.json",
+      "decision_time_ms": 1790051400000,
+      "call_count": 2,
+      "api_call_seconds": 40.131,
+      "role_wall_seconds": 40.146,
+      "role_simulation_start_ms": 1790051400000,
+      "role_simulation_finish_ms": 1790051440495,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790051440634,
+      "decision_to_gm_seconds": 40.634,
+      "role_finish_to_gm_seconds": 0.139
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790053200000-64-1-922d0ee7.json",
+      "decision_time_ms": 1790053200000,
+      "call_count": 2,
+      "api_call_seconds": 44.767,
+      "role_wall_seconds": 44.78,
+      "role_simulation_start_ms": 1790053200000,
+      "role_simulation_finish_ms": 1790053244864,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790053245011,
+      "decision_to_gm_seconds": 45.011,
+      "role_finish_to_gm_seconds": 0.147
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790055000000-65-1-64597178.json",
+      "decision_time_ms": 1790055000000,
+      "call_count": 2,
+      "api_call_seconds": 74.895,
+      "role_wall_seconds": 74.908,
+      "role_simulation_start_ms": 1790055000000,
+      "role_simulation_finish_ms": 1790055075101,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790055075150,
+      "decision_to_gm_seconds": 75.15,
+      "role_finish_to_gm_seconds": 0.049
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790056800000-66-1-2478cf97.json",
+      "decision_time_ms": 1790056800000,
+      "call_count": 2,
+      "api_call_seconds": 43.171,
+      "role_wall_seconds": 43.18,
+      "role_simulation_start_ms": 1790056800000,
+      "role_simulation_finish_ms": 1790056843299,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790056843451,
+      "decision_to_gm_seconds": 43.451,
+      "role_finish_to_gm_seconds": 0.152
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790058600000-67-1-26a05167.json",
+      "decision_time_ms": 1790058600000,
+      "call_count": 2,
+      "api_call_seconds": 26.647,
+      "role_wall_seconds": 26.664,
+      "role_simulation_start_ms": 1790058600000,
+      "role_simulation_finish_ms": 1790058626830,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790058626902,
+      "decision_to_gm_seconds": 26.902,
+      "role_finish_to_gm_seconds": 0.072
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790060400000-68-1-598a2ada.json",
+      "decision_time_ms": 1790060400000,
+      "call_count": 2,
+      "api_call_seconds": 33.746,
+      "role_wall_seconds": 33.767,
+      "role_simulation_start_ms": 1790060400000,
+      "role_simulation_finish_ms": 1790060433959,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790060434002,
+      "decision_to_gm_seconds": 34.002,
+      "role_finish_to_gm_seconds": 0.043
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790062200000-69-1-63500d60.json",
+      "decision_time_ms": 1790062200000,
+      "call_count": 2,
+      "api_call_seconds": 24.732,
+      "role_wall_seconds": 24.746,
+      "role_simulation_start_ms": 1790062200000,
+      "role_simulation_finish_ms": 1790062224924,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790062224961,
+      "decision_to_gm_seconds": 24.961,
+      "role_finish_to_gm_seconds": 0.037
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790064000000-70-1-8d36ab31.json",
+      "decision_time_ms": 1790064000000,
+      "call_count": 2,
+      "api_call_seconds": 34.397,
+      "role_wall_seconds": 34.409,
+      "role_simulation_start_ms": 1790064000000,
+      "role_simulation_finish_ms": 1790064034599,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790064034632,
+      "decision_to_gm_seconds": 34.632,
+      "role_finish_to_gm_seconds": 0.033
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790065800000-71-1-bff51f55.json",
+      "decision_time_ms": 1790065800000,
+      "call_count": 2,
+      "api_call_seconds": 26.432,
+      "role_wall_seconds": 26.447,
+      "role_simulation_start_ms": 1790065800000,
+      "role_simulation_finish_ms": 1790065826576,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790065826688,
+      "decision_to_gm_seconds": 26.688,
+      "role_finish_to_gm_seconds": 0.112
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790067600000-72-1-0cf19008.json",
+      "decision_time_ms": 1790067600000,
+      "call_count": 2,
+      "api_call_seconds": 30.037,
+      "role_wall_seconds": 30.051,
+      "role_simulation_start_ms": 1790067600000,
+      "role_simulation_finish_ms": 1790067630174,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790067630263,
+      "decision_to_gm_seconds": 30.263,
+      "role_finish_to_gm_seconds": 0.089
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790069400000-73-1-5ef85aef.json",
+      "decision_time_ms": 1790069400000,
+      "call_count": 2,
+      "api_call_seconds": 35.096,
+      "role_wall_seconds": 35.122,
+      "role_simulation_start_ms": 1790069400000,
+      "role_simulation_finish_ms": 1790069435202,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790069437138,
+      "decision_to_gm_seconds": 37.138,
+      "role_finish_to_gm_seconds": 1.936
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790071200000-74-1-3be139bc.json",
+      "decision_time_ms": 1790071200000,
+      "call_count": 2,
+      "api_call_seconds": 30.356,
+      "role_wall_seconds": 30.372,
+      "role_simulation_start_ms": 1790071200000,
+      "role_simulation_finish_ms": 1790071230718,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790071230857,
+      "decision_to_gm_seconds": 30.857,
+      "role_finish_to_gm_seconds": 0.139
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790073000000-75-1-5400ea25.json",
+      "decision_time_ms": 1790073000000,
+      "call_count": 2,
+      "api_call_seconds": 28.56,
+      "role_wall_seconds": 28.573,
+      "role_simulation_start_ms": 1790073000000,
+      "role_simulation_finish_ms": 1790073028768,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790073028803,
+      "decision_to_gm_seconds": 28.803,
+      "role_finish_to_gm_seconds": 0.035
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790074800000-76-1-42b96c71.json",
+      "decision_time_ms": 1790074800000,
+      "call_count": 2,
+      "api_call_seconds": 27.788,
+      "role_wall_seconds": 27.802,
+      "role_simulation_start_ms": 1790074800000,
+      "role_simulation_finish_ms": 1790074827955,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790074828026,
+      "decision_to_gm_seconds": 28.026,
+      "role_finish_to_gm_seconds": 0.071
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790076600000-77-1-729c09c3.json",
+      "decision_time_ms": 1790076600000,
+      "call_count": 2,
+      "api_call_seconds": 30.459,
+      "role_wall_seconds": 30.474,
+      "role_simulation_start_ms": 1790076600000,
+      "role_simulation_finish_ms": 1790076630590,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790076630717,
+      "decision_to_gm_seconds": 30.717,
+      "role_finish_to_gm_seconds": 0.127
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790078400000-78-1-6f9e17ea.json",
+      "decision_time_ms": 1790078400000,
+      "call_count": 2,
+      "api_call_seconds": 28.54,
+      "role_wall_seconds": 28.555,
+      "role_simulation_start_ms": 1790078400000,
+      "role_simulation_finish_ms": 1790078428676,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790078428780,
+      "decision_to_gm_seconds": 28.78,
+      "role_finish_to_gm_seconds": 0.104
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790080200000-79-1-e7328b4d.json",
+      "decision_time_ms": 1790080200000,
+      "call_count": 2,
+      "api_call_seconds": 33.174,
+      "role_wall_seconds": 33.19,
+      "role_simulation_start_ms": 1790080200000,
+      "role_simulation_finish_ms": 1790080233379,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790080233406,
+      "decision_to_gm_seconds": 33.406,
+      "role_finish_to_gm_seconds": 0.027
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790082000000-80-1-648cf814.json",
+      "decision_time_ms": 1790082000000,
+      "call_count": 2,
+      "api_call_seconds": 42.206,
+      "role_wall_seconds": 42.222,
+      "role_simulation_start_ms": 1790082000000,
+      "role_simulation_finish_ms": 1790082042342,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790082042441,
+      "decision_to_gm_seconds": 42.441,
+      "role_finish_to_gm_seconds": 0.099
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790083800000-81-1-52e784d5.json",
+      "decision_time_ms": 1790083800000,
+      "call_count": 3,
+      "api_call_seconds": 49.787,
+      "role_wall_seconds": 49.811,
+      "role_simulation_start_ms": 1790083800000,
+      "role_simulation_finish_ms": 1790083849963,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790083850034,
+      "decision_to_gm_seconds": 50.034,
+      "role_finish_to_gm_seconds": 0.071
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790085600000-82-1-048cbb98.json",
+      "decision_time_ms": 1790085600000,
+      "call_count": 2,
+      "api_call_seconds": 36.638,
+      "role_wall_seconds": 36.652,
+      "role_simulation_start_ms": 1790085600000,
+      "role_simulation_finish_ms": 1790085636861,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790085636899,
+      "decision_to_gm_seconds": 36.899,
+      "role_finish_to_gm_seconds": 0.038
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790087400000-83-1-e4082bd0.json",
+      "decision_time_ms": 1790087400000,
+      "call_count": 2,
+      "api_call_seconds": 30.134,
+      "role_wall_seconds": 30.149,
+      "role_simulation_start_ms": 1790087400000,
+      "role_simulation_finish_ms": 1790087430352,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790087430534,
+      "decision_to_gm_seconds": 30.534,
+      "role_finish_to_gm_seconds": 0.182
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790089200000-84-1-9d12c491.json",
+      "decision_time_ms": 1790089200000,
+      "call_count": 2,
+      "api_call_seconds": 29.661,
+      "role_wall_seconds": 29.678,
+      "role_simulation_start_ms": 1790089200000,
+      "role_simulation_finish_ms": 1790089229785,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790089229907,
+      "decision_to_gm_seconds": 29.907,
+      "role_finish_to_gm_seconds": 0.122
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790091000000-85-1-72a4c971.json",
+      "decision_time_ms": 1790091000000,
+      "call_count": 2,
+      "api_call_seconds": 29.657,
+      "role_wall_seconds": 29.673,
+      "role_simulation_start_ms": 1790091000000,
+      "role_simulation_finish_ms": 1790091029772,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790091029898,
+      "decision_to_gm_seconds": 29.898,
+      "role_finish_to_gm_seconds": 0.126
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790092079999-204-1-7c42135f.json",
+      "decision_time_ms": 1790092079999,
+      "call_count": 3,
+      "api_call_seconds": 35.493,
+      "role_wall_seconds": 35.513,
+      "role_simulation_start_ms": 1790092079999,
+      "role_simulation_finish_ms": 1790092117373,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790092118002,
+      "decision_to_gm_seconds": 38.003,
+      "role_finish_to_gm_seconds": 0.629
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790092800000-86-1-b46f9125.json",
+      "decision_time_ms": 1790092800000,
+      "call_count": 2,
+      "api_call_seconds": 40.242,
+      "role_wall_seconds": 40.258,
+      "role_simulation_start_ms": 1790092800000,
+      "role_simulation_finish_ms": 1790092840476,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790092840528,
+      "decision_to_gm_seconds": 40.528,
+      "role_finish_to_gm_seconds": 0.052
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790093939999-206-1-3855886b.json",
+      "decision_time_ms": 1790093939999,
+      "call_count": 2,
+      "api_call_seconds": 29.268,
+      "role_wall_seconds": 29.28,
+      "role_simulation_start_ms": 1790093939999,
+      "role_simulation_finish_ms": 1790093969440,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790093969496,
+      "decision_to_gm_seconds": 29.497,
+      "role_finish_to_gm_seconds": 0.056
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790094600000-87-1-5b8520bd.json",
+      "decision_time_ms": 1790094600000,
+      "call_count": 2,
+      "api_call_seconds": 32.46,
+      "role_wall_seconds": 32.474,
+      "role_simulation_start_ms": 1790094600000,
+      "role_simulation_finish_ms": 1790094632590,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790094632698,
+      "decision_to_gm_seconds": 32.698,
+      "role_finish_to_gm_seconds": 0.108
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790095799999-207-1-30f1d104.json",
+      "decision_time_ms": 1790095799999,
+      "call_count": 2,
+      "api_call_seconds": 37.038,
+      "role_wall_seconds": 37.054,
+      "role_simulation_start_ms": 1790095799999,
+      "role_simulation_finish_ms": 1790095837215,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790095837262,
+      "decision_to_gm_seconds": 37.263,
+      "role_finish_to_gm_seconds": 0.047
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790096400000-88-1-8d44aa97.json",
+      "decision_time_ms": 1790096400000,
+      "call_count": 2,
+      "api_call_seconds": 30.301,
+      "role_wall_seconds": 30.316,
+      "role_simulation_start_ms": 1790096400000,
+      "role_simulation_finish_ms": 1790096430373,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790096430541,
+      "decision_to_gm_seconds": 30.541,
+      "role_finish_to_gm_seconds": 0.168
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790097659999-208-1-a9832cd0.json",
+      "decision_time_ms": 1790097659999,
+      "call_count": 2,
+      "api_call_seconds": 28.91,
+      "role_wall_seconds": 28.925,
+      "role_simulation_start_ms": 1790097659999,
+      "role_simulation_finish_ms": 1790097689108,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790097689154,
+      "decision_to_gm_seconds": 29.155,
+      "role_finish_to_gm_seconds": 0.046
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790098200000-89-1-fe791db4.json",
+      "decision_time_ms": 1790098200000,
+      "call_count": 2,
+      "api_call_seconds": 61.38,
+      "role_wall_seconds": 61.396,
+      "role_simulation_start_ms": 1790098200000,
+      "role_simulation_finish_ms": 1790098261542,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790098261619,
+      "decision_to_gm_seconds": 61.619,
+      "role_finish_to_gm_seconds": 0.077
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790099519999-209-1-6e8b7237.json",
+      "decision_time_ms": 1790099519999,
+      "call_count": 2,
+      "api_call_seconds": 31.804,
+      "role_wall_seconds": 31.82,
+      "role_simulation_start_ms": 1790099519999,
+      "role_simulation_finish_ms": 1790099551975,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790099552244,
+      "decision_to_gm_seconds": 32.245,
+      "role_finish_to_gm_seconds": 0.269
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790100000000-90-1-46a1c64e.json",
+      "decision_time_ms": 1790100000000,
+      "call_count": 2,
+      "api_call_seconds": 33.105,
+      "role_wall_seconds": 33.141,
+      "role_simulation_start_ms": 1790100000000,
+      "role_simulation_finish_ms": 1790100033489,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790100035130,
+      "decision_to_gm_seconds": 35.13,
+      "role_finish_to_gm_seconds": 1.641
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790101379999-210-1-8be37c2a.json",
+      "decision_time_ms": 1790101379999,
+      "call_count": 2,
+      "api_call_seconds": 31.263,
+      "role_wall_seconds": 31.315,
+      "role_simulation_start_ms": 1790101379999,
+      "role_simulation_finish_ms": 1790101411814,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790101413009,
+      "decision_to_gm_seconds": 33.01,
+      "role_finish_to_gm_seconds": 1.195
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790101800000-91-1-87ccd2b3.json",
+      "decision_time_ms": 1790101800000,
+      "call_count": 2,
+      "api_call_seconds": 26.565,
+      "role_wall_seconds": 26.577,
+      "role_simulation_start_ms": 1790101800000,
+      "role_simulation_finish_ms": 1790101827027,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790101827082,
+      "decision_to_gm_seconds": 27.082,
+      "role_finish_to_gm_seconds": 0.055
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790103239999-211-1-793a664d.json",
+      "decision_time_ms": 1790103239999,
+      "call_count": 2,
+      "api_call_seconds": 31.837,
+      "role_wall_seconds": 31.852,
+      "role_simulation_start_ms": 1790103239999,
+      "role_simulation_finish_ms": 1790103272000,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790103272100,
+      "decision_to_gm_seconds": 32.101,
+      "role_finish_to_gm_seconds": 0.1
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790103600000-92-1-ad43f294.json",
+      "decision_time_ms": 1790103600000,
+      "call_count": 2,
+      "api_call_seconds": 32.742,
+      "role_wall_seconds": 32.757,
+      "role_simulation_start_ms": 1790103600000,
+      "role_simulation_finish_ms": 1790103632825,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790103632989,
+      "decision_to_gm_seconds": 32.989,
+      "role_finish_to_gm_seconds": 0.164
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790105099999-212-1-d86b6a5f.json",
+      "decision_time_ms": 1790105099999,
+      "call_count": 2,
+      "api_call_seconds": 47.369,
+      "role_wall_seconds": 47.386,
+      "role_simulation_start_ms": 1790105099999,
+      "role_simulation_finish_ms": 1790105147467,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790105147602,
+      "decision_to_gm_seconds": 47.603,
+      "role_finish_to_gm_seconds": 0.135
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790105400000-93-1-e5a23593.json",
+      "decision_time_ms": 1790105400000,
+      "call_count": 3,
+      "api_call_seconds": 40.397,
+      "role_wall_seconds": 40.419,
+      "role_simulation_start_ms": 1790105400000,
+      "role_simulation_finish_ms": 1790105440645,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790105440668,
+      "decision_to_gm_seconds": 40.668,
+      "role_finish_to_gm_seconds": 0.023
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790106959999-213-1-10fb5501.json",
+      "decision_time_ms": 1790106959999,
+      "call_count": 2,
+      "api_call_seconds": 36.425,
+      "role_wall_seconds": 36.434,
+      "role_simulation_start_ms": 1790106959999,
+      "role_simulation_finish_ms": 1790106996595,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790106996661,
+      "decision_to_gm_seconds": 36.662,
+      "role_finish_to_gm_seconds": 0.066
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790107200000-94-1-82b4f590.json",
+      "decision_time_ms": 1790107200000,
+      "call_count": 2,
+      "api_call_seconds": 33.326,
+      "role_wall_seconds": 33.345,
+      "role_simulation_start_ms": 1790107200000,
+      "role_simulation_finish_ms": 1790107233521,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790107233571,
+      "decision_to_gm_seconds": 33.571,
+      "role_finish_to_gm_seconds": 0.05
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790108819999-215-1-5c8a818e.json",
+      "decision_time_ms": 1790108819999,
+      "call_count": 2,
+      "api_call_seconds": 33.001,
+      "role_wall_seconds": 33.018,
+      "role_simulation_start_ms": 1790108819999,
+      "role_simulation_finish_ms": 1790108853191,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790108853248,
+      "decision_to_gm_seconds": 33.249,
+      "role_finish_to_gm_seconds": 0.057
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790109000000-95-1-e2c3df84.json",
+      "decision_time_ms": 1790109000000,
+      "call_count": 2,
+      "api_call_seconds": 30.818,
+      "role_wall_seconds": 30.833,
+      "role_simulation_start_ms": 1790109000000,
+      "role_simulation_finish_ms": 1790109031006,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790109031091,
+      "decision_to_gm_seconds": 31.091,
+      "role_finish_to_gm_seconds": 0.085
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790110679999-216-1-c35bfbd1.json",
+      "decision_time_ms": 1790110679999,
+      "call_count": 2,
+      "api_call_seconds": 35.133,
+      "role_wall_seconds": 35.149,
+      "role_simulation_start_ms": 1790110679999,
+      "role_simulation_finish_ms": 1790110715326,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790110715520,
+      "decision_to_gm_seconds": 35.521,
+      "role_finish_to_gm_seconds": 0.194
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790110800000-96-1-a34e5eef.json",
+      "decision_time_ms": 1790110800000,
+      "call_count": 3,
+      "api_call_seconds": 35.133,
+      "role_wall_seconds": 35.16,
+      "role_simulation_start_ms": 1790110800000,
+      "role_simulation_finish_ms": 1790110835253,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790110835449,
+      "decision_to_gm_seconds": 35.449,
+      "role_finish_to_gm_seconds": 0.196
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790112539999-217-1-509f189c.json",
+      "decision_time_ms": 1790112539999,
+      "call_count": 2,
+      "api_call_seconds": 35.428,
+      "role_wall_seconds": 35.444,
+      "role_simulation_start_ms": 1790112539999,
+      "role_simulation_finish_ms": 1790112575594,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790112575683,
+      "decision_to_gm_seconds": 35.684,
+      "role_finish_to_gm_seconds": 0.089
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790112600000-97-1-8b6aa828.json",
+      "decision_time_ms": 1790112600000,
+      "call_count": 2,
+      "api_call_seconds": 30.473,
+      "role_wall_seconds": 30.489,
+      "role_simulation_start_ms": 1790112600000,
+      "role_simulation_finish_ms": 1790112630594,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790112630745,
+      "decision_to_gm_seconds": 30.745,
+      "role_finish_to_gm_seconds": 0.151
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790114399999-218-1-1fd320d4.json",
+      "decision_time_ms": 1790114399999,
+      "call_count": 2,
+      "api_call_seconds": 29.559,
+      "role_wall_seconds": 29.569,
+      "role_simulation_start_ms": 1790114399999,
+      "role_simulation_finish_ms": 1790114429758,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790114429786,
+      "decision_to_gm_seconds": 29.787,
+      "role_finish_to_gm_seconds": 0.028
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790114400000-98-1-b29de368.json",
+      "decision_time_ms": 1790114429786,
+      "call_count": 2,
+      "api_call_seconds": 31.891,
+      "role_wall_seconds": 31.906,
+      "role_simulation_start_ms": 1790114429786,
+      "role_simulation_finish_ms": 1790114461837,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790114463906,
+      "decision_to_gm_seconds": 34.12,
+      "role_finish_to_gm_seconds": 2.069
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790116200000-99-1-5f8f2fd2.json",
+      "decision_time_ms": 1790116200000,
+      "call_count": 2,
+      "api_call_seconds": 30.877,
+      "role_wall_seconds": 30.895,
+      "role_simulation_start_ms": 1790116200000,
+      "role_simulation_finish_ms": 1790116231367,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790116234198,
+      "decision_to_gm_seconds": 34.198,
+      "role_finish_to_gm_seconds": 2.831
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790118000000-100-1-28ca520c.json",
+      "decision_time_ms": 1790118000000,
+      "call_count": 3,
+      "api_call_seconds": 37.07,
+      "role_wall_seconds": 37.098,
+      "role_simulation_start_ms": 1790118000000,
+      "role_simulation_finish_ms": 1790118037620,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790118037748,
+      "decision_to_gm_seconds": 37.748,
+      "role_finish_to_gm_seconds": 0.128
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790119800000-101-1-120c0f54.json",
+      "decision_time_ms": 1790119800000,
+      "call_count": 2,
+      "api_call_seconds": 29.748,
+      "role_wall_seconds": 29.761,
+      "role_simulation_start_ms": 1790119800000,
+      "role_simulation_finish_ms": 1790119830013,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790119830044,
+      "decision_to_gm_seconds": 30.044,
+      "role_finish_to_gm_seconds": 0.031
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790119859999-219-1-246d1a49.json",
+      "decision_time_ms": 1790119859999,
+      "call_count": 2,
+      "api_call_seconds": 37.944,
+      "role_wall_seconds": 37.96,
+      "role_simulation_start_ms": 1790119859999,
+      "role_simulation_finish_ms": 1790119898113,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790119898173,
+      "decision_to_gm_seconds": 38.174,
+      "role_finish_to_gm_seconds": 0.06
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790121600000-102-1-f7f3a8cc.json",
+      "decision_time_ms": 1790121600000,
+      "call_count": 2,
+      "api_call_seconds": 29.335,
+      "role_wall_seconds": 29.35,
+      "role_simulation_start_ms": 1790121600000,
+      "role_simulation_finish_ms": 1790121629583,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790121629679,
+      "decision_to_gm_seconds": 29.679,
+      "role_finish_to_gm_seconds": 0.096
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790121719999-220-1-f2e16429.json",
+      "decision_time_ms": 1790121719999,
+      "call_count": 2,
+      "api_call_seconds": 31.102,
+      "role_wall_seconds": 31.118,
+      "role_simulation_start_ms": 1790121719999,
+      "role_simulation_finish_ms": 1790121751243,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790121751332,
+      "decision_to_gm_seconds": 31.333,
+      "role_finish_to_gm_seconds": 0.089
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790123400000-103-1-ae8bf95f.json",
+      "decision_time_ms": 1790123400000,
+      "call_count": 2,
+      "api_call_seconds": 34.775,
+      "role_wall_seconds": 34.793,
+      "role_simulation_start_ms": 1790123400000,
+      "role_simulation_finish_ms": 1790123434960,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790123434986,
+      "decision_to_gm_seconds": 34.986,
+      "role_finish_to_gm_seconds": 0.026
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790123579999-223-1-b2773150.json",
+      "decision_time_ms": 1790123579999,
+      "call_count": 2,
+      "api_call_seconds": 30.925,
+      "role_wall_seconds": 30.939,
+      "role_simulation_start_ms": 1790123579999,
+      "role_simulation_finish_ms": 1790123610977,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790123611177,
+      "decision_to_gm_seconds": 31.178,
+      "role_finish_to_gm_seconds": 0.2
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790125200000-104-1-ad8bbed7.json",
+      "decision_time_ms": 1790125200000,
+      "call_count": 2,
+      "api_call_seconds": 33.948,
+      "role_wall_seconds": 33.966,
+      "role_simulation_start_ms": 1790125200000,
+      "role_simulation_finish_ms": 1790125234162,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790125234220,
+      "decision_to_gm_seconds": 34.22,
+      "role_finish_to_gm_seconds": 0.058
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790125439999-224-1-848ec2b3.json",
+      "decision_time_ms": 1790125439999,
+      "call_count": 2,
+      "api_call_seconds": 42.461,
+      "role_wall_seconds": 42.478,
+      "role_simulation_start_ms": 1790125439999,
+      "role_simulation_finish_ms": 1790125482643,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790125482722,
+      "decision_to_gm_seconds": 42.723,
+      "role_finish_to_gm_seconds": 0.079
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790127000000-105-1-5500e1ea.json",
+      "decision_time_ms": 1790127000000,
+      "call_count": 2,
+      "api_call_seconds": 37.898,
+      "role_wall_seconds": 37.91,
+      "role_simulation_start_ms": 1790127000000,
+      "role_simulation_finish_ms": 1790127038161,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790127038202,
+      "decision_to_gm_seconds": 38.202,
+      "role_finish_to_gm_seconds": 0.041
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790127299999-225-1-1cdaf4c5.json",
+      "decision_time_ms": 1790127299999,
+      "call_count": 2,
+      "api_call_seconds": 29.15,
+      "role_wall_seconds": 29.165,
+      "role_simulation_start_ms": 1790127299999,
+      "role_simulation_finish_ms": 1790127329361,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790127329399,
+      "decision_to_gm_seconds": 29.4,
+      "role_finish_to_gm_seconds": 0.038
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790128800000-106-1-187926e1.json",
+      "decision_time_ms": 1790128800000,
+      "call_count": 2,
+      "api_call_seconds": 39.366,
+      "role_wall_seconds": 39.381,
+      "role_simulation_start_ms": 1790128800000,
+      "role_simulation_finish_ms": 1790128839528,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790128839669,
+      "decision_to_gm_seconds": 39.669,
+      "role_finish_to_gm_seconds": 0.141
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790129159999-226-1-b48ef4bd.json",
+      "decision_time_ms": 1790129159999,
+      "call_count": 2,
+      "api_call_seconds": 34.119,
+      "role_wall_seconds": 34.135,
+      "role_simulation_start_ms": 1790129159999,
+      "role_simulation_finish_ms": 1790129194324,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790129194376,
+      "decision_to_gm_seconds": 34.377,
+      "role_finish_to_gm_seconds": 0.052
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790130600000-107-1-9402a7e4.json",
+      "decision_time_ms": 1790130600000,
+      "call_count": 2,
+      "api_call_seconds": 34.246,
+      "role_wall_seconds": 34.267,
+      "role_simulation_start_ms": 1790130600000,
+      "role_simulation_finish_ms": 1790130634394,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790130634490,
+      "decision_to_gm_seconds": 34.49,
+      "role_finish_to_gm_seconds": 0.096
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790131019999-227-1-f119b6c7.json",
+      "decision_time_ms": 1790131019999,
+      "call_count": 2,
+      "api_call_seconds": 29.257,
+      "role_wall_seconds": 29.273,
+      "role_simulation_start_ms": 1790131019999,
+      "role_simulation_finish_ms": 1790131049386,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790131049512,
+      "decision_to_gm_seconds": 29.513,
+      "role_finish_to_gm_seconds": 0.126
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790132400000-108-1-43a02272.json",
+      "decision_time_ms": 1790132400000,
+      "call_count": 2,
+      "api_call_seconds": 33.028,
+      "role_wall_seconds": 33.044,
+      "role_simulation_start_ms": 1790132400000,
+      "role_simulation_finish_ms": 1790132433185,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790132433261,
+      "decision_to_gm_seconds": 33.261,
+      "role_finish_to_gm_seconds": 0.076
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790132879999-228-1-aeb6b3d3.json",
+      "decision_time_ms": 1790132879999,
+      "call_count": 3,
+      "api_call_seconds": 39.849,
+      "role_wall_seconds": 39.879,
+      "role_simulation_start_ms": 1790132879999,
+      "role_simulation_finish_ms": 1790132920046,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790132920139,
+      "decision_to_gm_seconds": 40.14,
+      "role_finish_to_gm_seconds": 0.093
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790134200000-109-1-bce4b5ea.json",
+      "decision_time_ms": 1790134200000,
+      "call_count": 2,
+      "api_call_seconds": 28.87,
+      "role_wall_seconds": 28.882,
+      "role_simulation_start_ms": 1790134200000,
+      "role_simulation_finish_ms": 1790134229015,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790134229163,
+      "decision_to_gm_seconds": 29.163,
+      "role_finish_to_gm_seconds": 0.148
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790134739999-229-1-d35e5bb8.json",
+      "decision_time_ms": 1790134739999,
+      "call_count": 2,
+      "api_call_seconds": 31.396,
+      "role_wall_seconds": 31.412,
+      "role_simulation_start_ms": 1790134739999,
+      "role_simulation_finish_ms": 1790134771594,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790134771632,
+      "decision_to_gm_seconds": 31.633,
+      "role_finish_to_gm_seconds": 0.038
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790136000000-110-1-3a1029a6.json",
+      "decision_time_ms": 1790136000000,
+      "call_count": 2,
+      "api_call_seconds": 29.289,
+      "role_wall_seconds": 29.305,
+      "role_simulation_start_ms": 1790136000000,
+      "role_simulation_finish_ms": 1790136029443,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790136029521,
+      "decision_to_gm_seconds": 29.521,
+      "role_finish_to_gm_seconds": 0.078
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790136599999-231-1-69fb4ae6.json",
+      "decision_time_ms": 1790136599999,
+      "call_count": 2,
+      "api_call_seconds": 34.543,
+      "role_wall_seconds": 34.559,
+      "role_simulation_start_ms": 1790136599999,
+      "role_simulation_finish_ms": 1790136634617,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790136637519,
+      "decision_to_gm_seconds": 37.52,
+      "role_finish_to_gm_seconds": 2.902
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790137800000-111-1-55d66176.json",
+      "decision_time_ms": 1790137800000,
+      "call_count": 2,
+      "api_call_seconds": 36.025,
+      "role_wall_seconds": 36.04,
+      "role_simulation_start_ms": 1790137800000,
+      "role_simulation_finish_ms": 1790137836242,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790137836296,
+      "decision_to_gm_seconds": 36.296,
+      "role_finish_to_gm_seconds": 0.054
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790138459999-232-1-a77728ef.json",
+      "decision_time_ms": 1790138459999,
+      "call_count": 2,
+      "api_call_seconds": 30.741,
+      "role_wall_seconds": 30.756,
+      "role_simulation_start_ms": 1790138459999,
+      "role_simulation_finish_ms": 1790138490780,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790138490970,
+      "decision_to_gm_seconds": 30.971,
+      "role_finish_to_gm_seconds": 0.19
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790139600000-112-1-d6546746.json",
+      "decision_time_ms": 1790139600000,
+      "call_count": 2,
+      "api_call_seconds": 26.586,
+      "role_wall_seconds": 26.601,
+      "role_simulation_start_ms": 1790139600000,
+      "role_simulation_finish_ms": 1790139626791,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790139626859,
+      "decision_to_gm_seconds": 26.859,
+      "role_finish_to_gm_seconds": 0.068
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790140319999-233-1-81558324.json",
+      "decision_time_ms": 1790140319999,
+      "call_count": 2,
+      "api_call_seconds": 32.421,
+      "role_wall_seconds": 32.436,
+      "role_simulation_start_ms": 1790140319999,
+      "role_simulation_finish_ms": 1790140352567,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790140352637,
+      "decision_to_gm_seconds": 32.638,
+      "role_finish_to_gm_seconds": 0.07
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790141400000-113-1-f168707c.json",
+      "decision_time_ms": 1790141400000,
+      "call_count": 2,
+      "api_call_seconds": 27.558,
+      "role_wall_seconds": 27.577,
+      "role_simulation_start_ms": 1790141400000,
+      "role_simulation_finish_ms": 1790141427818,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790141427857,
+      "decision_to_gm_seconds": 27.857,
+      "role_finish_to_gm_seconds": 0.039
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790142179999-234-1-e2606ee1.json",
+      "decision_time_ms": 1790142179999,
+      "call_count": 2,
+      "api_call_seconds": 31.894,
+      "role_wall_seconds": 31.909,
+      "role_simulation_start_ms": 1790142179999,
+      "role_simulation_finish_ms": 1790142212049,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790142212099,
+      "decision_to_gm_seconds": 32.1,
+      "role_finish_to_gm_seconds": 0.05
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790143200000-114-1-101ccca3.json",
+      "decision_time_ms": 1790143200000,
+      "call_count": 2,
+      "api_call_seconds": 40.254,
+      "role_wall_seconds": 40.269,
+      "role_simulation_start_ms": 1790143200000,
+      "role_simulation_finish_ms": 1790143240470,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790143240516,
+      "decision_to_gm_seconds": 40.516,
+      "role_finish_to_gm_seconds": 0.046
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790144039999-235-1-d84af173.json",
+      "decision_time_ms": 1790144039999,
+      "call_count": 2,
+      "api_call_seconds": 27.199,
+      "role_wall_seconds": 27.214,
+      "role_simulation_start_ms": 1790144039999,
+      "role_simulation_finish_ms": 1790144067339,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790144067407,
+      "decision_to_gm_seconds": 27.408,
+      "role_finish_to_gm_seconds": 0.068
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790145000000-115-1-89ea17ea.json",
+      "decision_time_ms": 1790145000000,
+      "call_count": 2,
+      "api_call_seconds": 37.908,
+      "role_wall_seconds": 37.924,
+      "role_simulation_start_ms": 1790145000000,
+      "role_simulation_finish_ms": 1790145038038,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790145038160,
+      "decision_to_gm_seconds": 38.16,
+      "role_finish_to_gm_seconds": 0.122
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790145899999-236-1-4def02f5.json",
+      "decision_time_ms": 1790145899999,
+      "call_count": 2,
+      "api_call_seconds": 32.227,
+      "role_wall_seconds": 32.239,
+      "role_simulation_start_ms": 1790145899999,
+      "role_simulation_finish_ms": 1790145932365,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790145934954,
+      "decision_to_gm_seconds": 34.955,
+      "role_finish_to_gm_seconds": 2.589
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790146800000-116-1-3276026a.json",
+      "decision_time_ms": 1790146800000,
+      "call_count": 2,
+      "api_call_seconds": 34.805,
+      "role_wall_seconds": 34.815,
+      "role_simulation_start_ms": 1790146800000,
+      "role_simulation_finish_ms": 1790146835275,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790146835302,
+      "decision_to_gm_seconds": 35.302,
+      "role_finish_to_gm_seconds": 0.027
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790147759999-237-1-09987b3b.json",
+      "decision_time_ms": 1790147759999,
+      "call_count": 2,
+      "api_call_seconds": 35.513,
+      "role_wall_seconds": 35.529,
+      "role_simulation_start_ms": 1790147759999,
+      "role_simulation_finish_ms": 1790147795596,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790147795741,
+      "decision_to_gm_seconds": 35.742,
+      "role_finish_to_gm_seconds": 0.145
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790148600000-117-1-b581eaf4.json",
+      "decision_time_ms": 1790148600000,
+      "call_count": 2,
+      "api_call_seconds": 28.059,
+      "role_wall_seconds": 28.075,
+      "role_simulation_start_ms": 1790148600000,
+      "role_simulation_finish_ms": 1790148628191,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790148628334,
+      "decision_to_gm_seconds": 28.334,
+      "role_finish_to_gm_seconds": 0.143
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790149619999-238-1-1db412ac.json",
+      "decision_time_ms": 1790149619999,
+      "call_count": 2,
+      "api_call_seconds": 33.887,
+      "role_wall_seconds": 33.902,
+      "role_simulation_start_ms": 1790149619999,
+      "role_simulation_finish_ms": 1790149654005,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790149654115,
+      "decision_to_gm_seconds": 34.116,
+      "role_finish_to_gm_seconds": 0.11
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790150400000-118-1-5380c3ef.json",
+      "decision_time_ms": 1790150400000,
+      "call_count": 2,
+      "api_call_seconds": 30.935,
+      "role_wall_seconds": 30.947,
+      "role_simulation_start_ms": 1790150400000,
+      "role_simulation_finish_ms": 1790150431071,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790150431255,
+      "decision_to_gm_seconds": 31.255,
+      "role_finish_to_gm_seconds": 0.184
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790151479999-240-1-ea22839a.json",
+      "decision_time_ms": 1790151479999,
+      "call_count": 2,
+      "api_call_seconds": 30.053,
+      "role_wall_seconds": 30.068,
+      "role_simulation_start_ms": 1790151479999,
+      "role_simulation_finish_ms": 1790151510189,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790151510265,
+      "decision_to_gm_seconds": 30.266,
+      "role_finish_to_gm_seconds": 0.076
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790152200000-119-1-06b76044.json",
+      "decision_time_ms": 1790152200000,
+      "call_count": 2,
+      "api_call_seconds": 29.084,
+      "role_wall_seconds": 29.099,
+      "role_simulation_start_ms": 1790152200000,
+      "role_simulation_finish_ms": 1790152229233,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790152229392,
+      "decision_to_gm_seconds": 29.392,
+      "role_finish_to_gm_seconds": 0.159
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790153339999-241-1-2429aef0.json",
+      "decision_time_ms": 1790153339999,
+      "call_count": 2,
+      "api_call_seconds": 27.773,
+      "role_wall_seconds": 27.787,
+      "role_simulation_start_ms": 1790153339999,
+      "role_simulation_finish_ms": 1790153367985,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790153368035,
+      "decision_to_gm_seconds": 28.036,
+      "role_finish_to_gm_seconds": 0.05
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790154000000-120-1-38f047a6.json",
+      "decision_time_ms": 1790154000000,
+      "call_count": 2,
+      "api_call_seconds": 29.681,
+      "role_wall_seconds": 29.697,
+      "role_simulation_start_ms": 1790154000000,
+      "role_simulation_finish_ms": 1790154029843,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790154029983,
+      "decision_to_gm_seconds": 29.983,
+      "role_finish_to_gm_seconds": 0.14
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790155199999-242-1-6a4f5f7d.json",
+      "decision_time_ms": 1790155199999,
+      "call_count": 2,
+      "api_call_seconds": 28.728,
+      "role_wall_seconds": 28.743,
+      "role_simulation_start_ms": 1790155199999,
+      "role_simulation_finish_ms": 1790155228880,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790155229869,
+      "decision_to_gm_seconds": 29.87,
+      "role_finish_to_gm_seconds": 0.989
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790155800000-121-1-9911c066.json",
+      "decision_time_ms": 1790155800000,
+      "call_count": 2,
+      "api_call_seconds": 33.141,
+      "role_wall_seconds": 33.156,
+      "role_simulation_start_ms": 1790155800000,
+      "role_simulation_finish_ms": 1790155833252,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790155833442,
+      "decision_to_gm_seconds": 33.442,
+      "role_finish_to_gm_seconds": 0.19
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790157059999-243-1-55d93a69.json",
+      "decision_time_ms": 1790157059999,
+      "call_count": 2,
+      "api_call_seconds": 29.933,
+      "role_wall_seconds": 29.946,
+      "role_simulation_start_ms": 1790157059999,
+      "role_simulation_finish_ms": 1790157090087,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790157090160,
+      "decision_to_gm_seconds": 30.161,
+      "role_finish_to_gm_seconds": 0.073
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790157600000-122-1-0d5a9ce0.json",
+      "decision_time_ms": 1790157600000,
+      "call_count": 2,
+      "api_call_seconds": 29.756,
+      "role_wall_seconds": 29.772,
+      "role_simulation_start_ms": 1790157600000,
+      "role_simulation_finish_ms": 1790157629935,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790157630051,
+      "decision_to_gm_seconds": 30.051,
+      "role_finish_to_gm_seconds": 0.116
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790158919999-244-1-20bc619d.json",
+      "decision_time_ms": 1790158919999,
+      "call_count": 2,
+      "api_call_seconds": 31.571,
+      "role_wall_seconds": 31.589,
+      "role_simulation_start_ms": 1790158919999,
+      "role_simulation_finish_ms": 1790158951826,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790158951876,
+      "decision_to_gm_seconds": 31.877,
+      "role_finish_to_gm_seconds": 0.05
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790159400000-123-1-4b1522bf.json",
+      "decision_time_ms": 1790159400000,
+      "call_count": 2,
+      "api_call_seconds": 33.757,
+      "role_wall_seconds": 33.772,
+      "role_simulation_start_ms": 1790159400000,
+      "role_simulation_finish_ms": 1790159434024,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790159434067,
+      "decision_to_gm_seconds": 34.067,
+      "role_finish_to_gm_seconds": 0.043
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790160779999-245-1-7639b62d.json",
+      "decision_time_ms": 1790160779999,
+      "call_count": 2,
+      "api_call_seconds": 30.464,
+      "role_wall_seconds": 30.479,
+      "role_simulation_start_ms": 1790160779999,
+      "role_simulation_finish_ms": 1790160810560,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790160810674,
+      "decision_to_gm_seconds": 30.675,
+      "role_finish_to_gm_seconds": 0.114
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790161200000-124-1-566bc5e3.json",
+      "decision_time_ms": 1790161200000,
+      "call_count": 2,
+      "api_call_seconds": 28.505,
+      "role_wall_seconds": 28.52,
+      "role_simulation_start_ms": 1790161200000,
+      "role_simulation_finish_ms": 1790161228657,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790161228817,
+      "decision_to_gm_seconds": 28.817,
+      "role_finish_to_gm_seconds": 0.16
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790162639999-246-1-8ff62e8c.json",
+      "decision_time_ms": 1790162639999,
+      "call_count": 2,
+      "api_call_seconds": 35.873,
+      "role_wall_seconds": 35.889,
+      "role_simulation_start_ms": 1790162639999,
+      "role_simulation_finish_ms": 1790162676066,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790162676114,
+      "decision_to_gm_seconds": 36.115,
+      "role_finish_to_gm_seconds": 0.048
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790163000000-125-1-ceb1b9fa.json",
+      "decision_time_ms": 1790163000000,
+      "call_count": 2,
+      "api_call_seconds": 32.874,
+      "role_wall_seconds": 32.888,
+      "role_simulation_start_ms": 1790163000000,
+      "role_simulation_finish_ms": 1790163033077,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790163033203,
+      "decision_to_gm_seconds": 33.203,
+      "role_finish_to_gm_seconds": 0.126
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790164499999-247-1-d96d9e46.json",
+      "decision_time_ms": 1790164499999,
+      "call_count": 2,
+      "api_call_seconds": 64.807,
+      "role_wall_seconds": 64.822,
+      "role_simulation_start_ms": 1790164499999,
+      "role_simulation_finish_ms": 1790164564974,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790164565040,
+      "decision_to_gm_seconds": 65.041,
+      "role_finish_to_gm_seconds": 0.066
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790164800000-126-1-bb993549.json",
+      "decision_time_ms": 1790164800000,
+      "call_count": 2,
+      "api_call_seconds": 37.838,
+      "role_wall_seconds": 37.854,
+      "role_simulation_start_ms": 1790164800000,
+      "role_simulation_finish_ms": 1790164838094,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790164838148,
+      "decision_to_gm_seconds": 38.148,
+      "role_finish_to_gm_seconds": 0.054
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790166419999-249-1-5b3bd0f3.json",
+      "decision_time_ms": 1790166419999,
+      "call_count": 2,
+      "api_call_seconds": 37.812,
+      "role_wall_seconds": 37.821,
+      "role_simulation_start_ms": 1790166419999,
+      "role_simulation_finish_ms": 1790166457811,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790166458020,
+      "decision_to_gm_seconds": 38.021,
+      "role_finish_to_gm_seconds": 0.209
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790166600000-127-1-56532847.json",
+      "decision_time_ms": 1790166600000,
+      "call_count": 2,
+      "api_call_seconds": 26.355,
+      "role_wall_seconds": 26.37,
+      "role_simulation_start_ms": 1790166600000,
+      "role_simulation_finish_ms": 1790166626587,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790166626633,
+      "decision_to_gm_seconds": 26.633,
+      "role_finish_to_gm_seconds": 0.046
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790168279999-250-1-5a7bf47c.json",
+      "decision_time_ms": 1790168279999,
+      "call_count": 2,
+      "api_call_seconds": 35.241,
+      "role_wall_seconds": 35.265,
+      "role_simulation_start_ms": 1790168279999,
+      "role_simulation_finish_ms": 1790168315392,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790168315482,
+      "decision_to_gm_seconds": 35.483,
+      "role_finish_to_gm_seconds": 0.09
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790168400000-128-1-e66d1449.json",
+      "decision_time_ms": 1790168400000,
+      "call_count": 2,
+      "api_call_seconds": 26.783,
+      "role_wall_seconds": 26.799,
+      "role_simulation_start_ms": 1790168400000,
+      "role_simulation_finish_ms": 1790168427039,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790168427105,
+      "decision_to_gm_seconds": 27.105,
+      "role_finish_to_gm_seconds": 0.066
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790170139999-251-1-c0eface0.json",
+      "decision_time_ms": 1790170139999,
+      "call_count": 2,
+      "api_call_seconds": 45.296,
+      "role_wall_seconds": 45.311,
+      "role_simulation_start_ms": 1790170139999,
+      "role_simulation_finish_ms": 1790170185435,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790170185512,
+      "decision_to_gm_seconds": 45.513,
+      "role_finish_to_gm_seconds": 0.077
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790170200000-129-1-37d0419a.json",
+      "decision_time_ms": 1790170200000,
+      "call_count": 2,
+      "api_call_seconds": 63.13,
+      "role_wall_seconds": 63.146,
+      "role_simulation_start_ms": 1790170200000,
+      "role_simulation_finish_ms": 1790170263273,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790170263470,
+      "decision_to_gm_seconds": 63.47,
+      "role_finish_to_gm_seconds": 0.197
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790171999999-252-1-97130c21.json",
+      "decision_time_ms": 1790171999999,
+      "call_count": 2,
+      "api_call_seconds": 22.704,
+      "role_wall_seconds": 22.719,
+      "role_simulation_start_ms": 1790171999999,
+      "role_simulation_finish_ms": 1790172022713,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790172025042,
+      "decision_to_gm_seconds": 25.043,
+      "role_finish_to_gm_seconds": 2.329
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790172000000-130-1-82989127.json",
+      "decision_time_ms": 1790172025042,
+      "call_count": 1,
+      "api_call_seconds": 18.823,
+      "role_wall_seconds": 18.825,
+      "role_simulation_start_ms": 1790172025042,
+      "role_simulation_finish_ms": 1790172044246,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790172044395,
+      "decision_to_gm_seconds": 19.353,
+      "role_finish_to_gm_seconds": 0.149
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790173800000-131-1-fb1d8a44.json",
+      "decision_time_ms": 1790173800000,
+      "call_count": 2,
+      "api_call_seconds": 58.483,
+      "role_wall_seconds": 58.498,
+      "role_simulation_start_ms": 1790173800000,
+      "role_simulation_finish_ms": 1790173858600,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790173858778,
+      "decision_to_gm_seconds": 58.778,
+      "role_finish_to_gm_seconds": 0.178
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790175600000-132-1-6e90d77d.json",
+      "decision_time_ms": 1790175600000,
+      "call_count": 2,
+      "api_call_seconds": 37.723,
+      "role_wall_seconds": 37.738,
+      "role_simulation_start_ms": 1790175600000,
+      "role_simulation_finish_ms": 1790175637863,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790175638013,
+      "decision_to_gm_seconds": 38.013,
+      "role_finish_to_gm_seconds": 0.15
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790175659999-253-1-5380a0c8.json",
+      "decision_time_ms": 1790175659999,
+      "call_count": 2,
+      "api_call_seconds": 40.641,
+      "role_wall_seconds": 40.65,
+      "role_simulation_start_ms": 1790175659999,
+      "role_simulation_finish_ms": 1790175700818,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790175700854,
+      "decision_to_gm_seconds": 40.855,
+      "role_finish_to_gm_seconds": 0.036
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790177400000-133-1-7ae71cbf.json",
+      "decision_time_ms": 1790177400000,
+      "call_count": 2,
+      "api_call_seconds": 92.802,
+      "role_wall_seconds": 92.815,
+      "role_simulation_start_ms": 1790177400000,
+      "role_simulation_finish_ms": 1790177493081,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790177493177,
+      "decision_to_gm_seconds": 93.177,
+      "role_finish_to_gm_seconds": 0.096
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790177519999-254-1-a2ce176c.json",
+      "decision_time_ms": 1790177519999,
+      "call_count": 2,
+      "api_call_seconds": 62.281,
+      "role_wall_seconds": 62.298,
+      "role_simulation_start_ms": 1790177519999,
+      "role_simulation_finish_ms": 1790177582392,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790177582510,
+      "decision_to_gm_seconds": 62.511,
+      "role_finish_to_gm_seconds": 0.118
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790179200000-134-1-3b2cd623.json",
+      "decision_time_ms": 1790179200000,
+      "call_count": 2,
+      "api_call_seconds": 31.07,
+      "role_wall_seconds": 31.084,
+      "role_simulation_start_ms": 1790179200000,
+      "role_simulation_finish_ms": 1790179231206,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790179231323,
+      "decision_to_gm_seconds": 31.323,
+      "role_finish_to_gm_seconds": 0.117
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790179439999-255-1-743de0f8.json",
+      "decision_time_ms": 1790179439999,
+      "call_count": 2,
+      "api_call_seconds": 39.434,
+      "role_wall_seconds": 39.449,
+      "role_simulation_start_ms": 1790179439999,
+      "role_simulation_finish_ms": 1790179479605,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790179479651,
+      "decision_to_gm_seconds": 39.652,
+      "role_finish_to_gm_seconds": 0.046
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790181000000-135-1-496a4b84.json",
+      "decision_time_ms": 1790181000000,
+      "call_count": 2,
+      "api_call_seconds": 51.03,
+      "role_wall_seconds": 51.046,
+      "role_simulation_start_ms": 1790181000000,
+      "role_simulation_finish_ms": 1790181051177,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790181051282,
+      "decision_to_gm_seconds": 51.282,
+      "role_finish_to_gm_seconds": 0.105
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790181299999-257-1-1827bd51.json",
+      "decision_time_ms": 1790181299999,
+      "call_count": 2,
+      "api_call_seconds": 28.843,
+      "role_wall_seconds": 28.857,
+      "role_simulation_start_ms": 1790181299999,
+      "role_simulation_finish_ms": 1790181328964,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790181329079,
+      "decision_to_gm_seconds": 29.08,
+      "role_finish_to_gm_seconds": 0.115
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790182800000-136-1-ff6532ac.json",
+      "decision_time_ms": 1790182800000,
+      "call_count": 2,
+      "api_call_seconds": 35.225,
+      "role_wall_seconds": 35.24,
+      "role_simulation_start_ms": 1790182800000,
+      "role_simulation_finish_ms": 1790182835432,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790182835491,
+      "decision_to_gm_seconds": 35.491,
+      "role_finish_to_gm_seconds": 0.059
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790183159999-258-1-396f1186.json",
+      "decision_time_ms": 1790183159999,
+      "call_count": 2,
+      "api_call_seconds": 31.409,
+      "role_wall_seconds": 31.426,
+      "role_simulation_start_ms": 1790183159999,
+      "role_simulation_finish_ms": 1790183191586,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790183191652,
+      "decision_to_gm_seconds": 31.653,
+      "role_finish_to_gm_seconds": 0.066
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790184600000-137-1-83124a92.json",
+      "decision_time_ms": 1790184600000,
+      "call_count": 2,
+      "api_call_seconds": 34.845,
+      "role_wall_seconds": 34.86,
+      "role_simulation_start_ms": 1790184600000,
+      "role_simulation_finish_ms": 1790184635037,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790184635125,
+      "decision_to_gm_seconds": 35.125,
+      "role_finish_to_gm_seconds": 0.088
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790185019999-259-1-92b26307.json",
+      "decision_time_ms": 1790185019999,
+      "call_count": 2,
+      "api_call_seconds": 31.011,
+      "role_wall_seconds": 31.027,
+      "role_simulation_start_ms": 1790185019999,
+      "role_simulation_finish_ms": 1790185051176,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790185051217,
+      "decision_to_gm_seconds": 31.218,
+      "role_finish_to_gm_seconds": 0.041
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790186400000-138-1-e7bd516c.json",
+      "decision_time_ms": 1790186400000,
+      "call_count": 2,
+      "api_call_seconds": 35.748,
+      "role_wall_seconds": 35.764,
+      "role_simulation_start_ms": 1790186400000,
+      "role_simulation_finish_ms": 1790186435914,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790186436082,
+      "decision_to_gm_seconds": 36.082,
+      "role_finish_to_gm_seconds": 0.168
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790186879999-260-1-3f15582a.json",
+      "decision_time_ms": 1790186879999,
+      "call_count": 2,
+      "api_call_seconds": 34.862,
+      "role_wall_seconds": 34.879,
+      "role_simulation_start_ms": 1790186879999,
+      "role_simulation_finish_ms": 1790186915026,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790186915126,
+      "decision_to_gm_seconds": 35.127,
+      "role_finish_to_gm_seconds": 0.1
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790188200000-139-1-a429b046.json",
+      "decision_time_ms": 1790188200000,
+      "call_count": 2,
+      "api_call_seconds": 35.503,
+      "role_wall_seconds": 35.519,
+      "role_simulation_start_ms": 1790188200000,
+      "role_simulation_finish_ms": 1790188235662,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790188235801,
+      "decision_to_gm_seconds": 35.801,
+      "role_finish_to_gm_seconds": 0.139
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790188739999-261-1-bca35af5.json",
+      "decision_time_ms": 1790188739999,
+      "call_count": 2,
+      "api_call_seconds": 30.218,
+      "role_wall_seconds": 30.234,
+      "role_simulation_start_ms": 1790188739999,
+      "role_simulation_finish_ms": 1790188770395,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790188770437,
+      "decision_to_gm_seconds": 30.438,
+      "role_finish_to_gm_seconds": 0.042
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790190000000-140-1-ae388287.json",
+      "decision_time_ms": 1790190000000,
+      "call_count": 2,
+      "api_call_seconds": 35.672,
+      "role_wall_seconds": 35.688,
+      "role_simulation_start_ms": 1790190000000,
+      "role_simulation_finish_ms": 1790190035922,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790190035965,
+      "decision_to_gm_seconds": 35.965,
+      "role_finish_to_gm_seconds": 0.043
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790190599999-262-1-42851a5e.json",
+      "decision_time_ms": 1790190599999,
+      "call_count": 2,
+      "api_call_seconds": 36.248,
+      "role_wall_seconds": 36.264,
+      "role_simulation_start_ms": 1790190599999,
+      "role_simulation_finish_ms": 1790190636412,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790190636480,
+      "decision_to_gm_seconds": 36.481,
+      "role_finish_to_gm_seconds": 0.068
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790191800000-141-1-3d4db7bb.json",
+      "decision_time_ms": 1790191800000,
+      "call_count": 2,
+      "api_call_seconds": 36.387,
+      "role_wall_seconds": 36.403,
+      "role_simulation_start_ms": 1790191800000,
+      "role_simulation_finish_ms": 1790191836671,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790191836722,
+      "decision_to_gm_seconds": 36.722,
+      "role_finish_to_gm_seconds": 0.051
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790192459999-263-1-298d7c67.json",
+      "decision_time_ms": 1790192459999,
+      "call_count": 2,
+      "api_call_seconds": 31.363,
+      "role_wall_seconds": 31.374,
+      "role_simulation_start_ms": 1790192459999,
+      "role_simulation_finish_ms": 1790192491362,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790192491576,
+      "decision_to_gm_seconds": 31.577,
+      "role_finish_to_gm_seconds": 0.214
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790193600000-142-1-310cf990.json",
+      "decision_time_ms": 1790193600000,
+      "call_count": 2,
+      "api_call_seconds": 34.477,
+      "role_wall_seconds": 34.494,
+      "role_simulation_start_ms": 1790193600000,
+      "role_simulation_finish_ms": 1790193634569,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790193634704,
+      "decision_to_gm_seconds": 34.704,
+      "role_finish_to_gm_seconds": 0.135
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790194319999-265-1-74aa14af.json",
+      "decision_time_ms": 1790194319999,
+      "call_count": 2,
+      "api_call_seconds": 30.969,
+      "role_wall_seconds": 30.985,
+      "role_simulation_start_ms": 1790194319999,
+      "role_simulation_finish_ms": 1790194351396,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790194351429,
+      "decision_to_gm_seconds": 31.43,
+      "role_finish_to_gm_seconds": 0.033
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790195400000-143-1-f2b2293c.json",
+      "decision_time_ms": 1790195400000,
+      "call_count": 2,
+      "api_call_seconds": 34.09,
+      "role_wall_seconds": 34.106,
+      "role_simulation_start_ms": 1790195400000,
+      "role_simulation_finish_ms": 1790195434338,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790195434384,
+      "decision_to_gm_seconds": 34.384,
+      "role_finish_to_gm_seconds": 0.046
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790196179999-266-1-74bd620c.json",
+      "decision_time_ms": 1790196179999,
+      "call_count": 3,
+      "api_call_seconds": 47.394,
+      "role_wall_seconds": 47.418,
+      "role_simulation_start_ms": 1790196179999,
+      "role_simulation_finish_ms": 1790196227585,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790196227644,
+      "decision_to_gm_seconds": 47.645,
+      "role_finish_to_gm_seconds": 0.059
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790197200000-144-1-a4a0a4d9.json",
+      "decision_time_ms": 1790197200000,
+      "call_count": 2,
+      "api_call_seconds": 34.783,
+      "role_wall_seconds": 34.796,
+      "role_simulation_start_ms": 1790197200000,
+      "role_simulation_finish_ms": 1790197235004,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790197235083,
+      "decision_to_gm_seconds": 35.083,
+      "role_finish_to_gm_seconds": 0.079
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790198039999-267-1-914f53e7.json",
+      "decision_time_ms": 1790198039999,
+      "call_count": 1,
+      "api_call_seconds": 42.699,
+      "role_wall_seconds": 42.701,
+      "role_simulation_start_ms": 1790198039999,
+      "role_simulation_finish_ms": 1790198082830,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790198082908,
+      "decision_to_gm_seconds": 42.909,
+      "role_finish_to_gm_seconds": 0.078
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790199000000-145-1-52599836.json",
+      "decision_time_ms": 1790199000000,
+      "call_count": 2,
+      "api_call_seconds": 33.203,
+      "role_wall_seconds": 33.22,
+      "role_simulation_start_ms": 1790199000000,
+      "role_simulation_finish_ms": 1790199033460,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790199033512,
+      "decision_to_gm_seconds": 33.512,
+      "role_finish_to_gm_seconds": 0.052
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790199899999-268-1-d4eb35a9.json",
+      "decision_time_ms": 1790199899999,
+      "call_count": 2,
+      "api_call_seconds": 32.373,
+      "role_wall_seconds": 32.385,
+      "role_simulation_start_ms": 1790199899999,
+      "role_simulation_finish_ms": 1790199932575,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790199932603,
+      "decision_to_gm_seconds": 32.604,
+      "role_finish_to_gm_seconds": 0.028
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790200800000-146-1-b2ce32cd.json",
+      "decision_time_ms": 1790200800000,
+      "call_count": 2,
+      "api_call_seconds": 28.867,
+      "role_wall_seconds": 28.884,
+      "role_simulation_start_ms": 1790200800000,
+      "role_simulation_finish_ms": 1790200829103,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790200830800,
+      "decision_to_gm_seconds": 30.8,
+      "role_finish_to_gm_seconds": 1.697
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790201759999-269-1-d561afe2.json",
+      "decision_time_ms": 1790201759999,
+      "call_count": 2,
+      "api_call_seconds": 36.518,
+      "role_wall_seconds": 36.534,
+      "role_simulation_start_ms": 1790201759999,
+      "role_simulation_finish_ms": 1790201796832,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790201796993,
+      "decision_to_gm_seconds": 36.994,
+      "role_finish_to_gm_seconds": 0.161
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790202600000-147-1-bcf6158c.json",
+      "decision_time_ms": 1790202600000,
+      "call_count": 2,
+      "api_call_seconds": 24.533,
+      "role_wall_seconds": 24.546,
+      "role_simulation_start_ms": 1790202600000,
+      "role_simulation_finish_ms": 1790202624799,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790202624833,
+      "decision_to_gm_seconds": 24.833,
+      "role_finish_to_gm_seconds": 0.034
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790203619999-270-1-4ecd71d3.json",
+      "decision_time_ms": 1790203619999,
+      "call_count": 2,
+      "api_call_seconds": 36.022,
+      "role_wall_seconds": 36.038,
+      "role_simulation_start_ms": 1790203619999,
+      "role_simulation_finish_ms": 1790203656192,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790203656250,
+      "decision_to_gm_seconds": 36.251,
+      "role_finish_to_gm_seconds": 0.058
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790204400000-148-1-208689f9.json",
+      "decision_time_ms": 1790204400000,
+      "call_count": 2,
+      "api_call_seconds": 35.983,
+      "role_wall_seconds": 35.999,
+      "role_simulation_start_ms": 1790204400000,
+      "role_simulation_finish_ms": 1790204436083,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790204436297,
+      "decision_to_gm_seconds": 36.297,
+      "role_finish_to_gm_seconds": 0.214
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790205479999-271-1-9553c96d.json",
+      "decision_time_ms": 1790205479999,
+      "call_count": 2,
+      "api_call_seconds": 32.793,
+      "role_wall_seconds": 32.808,
+      "role_simulation_start_ms": 1790205479999,
+      "role_simulation_finish_ms": 1790205512963,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790205513007,
+      "decision_to_gm_seconds": 33.008,
+      "role_finish_to_gm_seconds": 0.044
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790206200000-149-1-1da9fedb.json",
+      "decision_time_ms": 1790206200000,
+      "call_count": 2,
+      "api_call_seconds": 30.98,
+      "role_wall_seconds": 31.002,
+      "role_simulation_start_ms": 1790206200000,
+      "role_simulation_finish_ms": 1790206231296,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790206231329,
+      "decision_to_gm_seconds": 31.329,
+      "role_finish_to_gm_seconds": 0.033
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790207339999-272-1-06754fec.json",
+      "decision_time_ms": 1790207339999,
+      "call_count": 2,
+      "api_call_seconds": 41.193,
+      "role_wall_seconds": 41.211,
+      "role_simulation_start_ms": 1790207339999,
+      "role_simulation_finish_ms": 1790207381263,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790207381406,
+      "decision_to_gm_seconds": 41.407,
+      "role_finish_to_gm_seconds": 0.143
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790208000000-150-1-2385807f.json",
+      "decision_time_ms": 1790208000000,
+      "call_count": 2,
+      "api_call_seconds": 30.79,
+      "role_wall_seconds": 30.807,
+      "role_simulation_start_ms": 1790208000000,
+      "role_simulation_finish_ms": 1790208031051,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790208031210,
+      "decision_to_gm_seconds": 31.21,
+      "role_finish_to_gm_seconds": 0.159
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790209199999-275-1-9007a1b6.json",
+      "decision_time_ms": 1790209199999,
+      "call_count": 2,
+      "api_call_seconds": 31.37,
+      "role_wall_seconds": 31.386,
+      "role_simulation_start_ms": 1790209199999,
+      "role_simulation_finish_ms": 1790209231555,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790209231588,
+      "decision_to_gm_seconds": 31.589,
+      "role_finish_to_gm_seconds": 0.033
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790209800000-151-1-6bd8c2b9.json",
+      "decision_time_ms": 1790209800000,
+      "call_count": 2,
+      "api_call_seconds": 50.603,
+      "role_wall_seconds": 50.62,
+      "role_simulation_start_ms": 1790209800000,
+      "role_simulation_finish_ms": 1790209850771,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790209850924,
+      "decision_to_gm_seconds": 50.924,
+      "role_finish_to_gm_seconds": 0.153
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790211059999-276-1-9cc9d489.json",
+      "decision_time_ms": 1790211059999,
+      "call_count": 2,
+      "api_call_seconds": 32.285,
+      "role_wall_seconds": 32.302,
+      "role_simulation_start_ms": 1790211059999,
+      "role_simulation_finish_ms": 1790211092379,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790211092511,
+      "decision_to_gm_seconds": 32.512,
+      "role_finish_to_gm_seconds": 0.132
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790211600000-152-1-ef597b63.json",
+      "decision_time_ms": 1790211600000,
+      "call_count": 2,
+      "api_call_seconds": 37.25,
+      "role_wall_seconds": 37.266,
+      "role_simulation_start_ms": 1790211600000,
+      "role_simulation_finish_ms": 1790211637533,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790211637602,
+      "decision_to_gm_seconds": 37.602,
+      "role_finish_to_gm_seconds": 0.069
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790212919999-277-1-e10b1116.json",
+      "decision_time_ms": 1790212919999,
+      "call_count": 2,
+      "api_call_seconds": 27.344,
+      "role_wall_seconds": 27.357,
+      "role_simulation_start_ms": 1790212919999,
+      "role_simulation_finish_ms": 1790212947363,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790212947565,
+      "decision_to_gm_seconds": 27.566,
+      "role_finish_to_gm_seconds": 0.202
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790213400000-153-1-8ded877b.json",
+      "decision_time_ms": 1790213400000,
+      "call_count": 2,
+      "api_call_seconds": 27.462,
+      "role_wall_seconds": 27.478,
+      "role_simulation_start_ms": 1790213400000,
+      "role_simulation_finish_ms": 1790213427787,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790213428709,
+      "decision_to_gm_seconds": 28.709,
+      "role_finish_to_gm_seconds": 0.922
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790214779999-278-1-c36a44f1.json",
+      "decision_time_ms": 1790214779999,
+      "call_count": 2,
+      "api_call_seconds": 36.918,
+      "role_wall_seconds": 36.933,
+      "role_simulation_start_ms": 1790214779999,
+      "role_simulation_finish_ms": 1790214817068,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790214817142,
+      "decision_to_gm_seconds": 37.143,
+      "role_finish_to_gm_seconds": 0.074
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790215200000-154-1-79d89d03.json",
+      "decision_time_ms": 1790215200000,
+      "call_count": 2,
+      "api_call_seconds": 33.206,
+      "role_wall_seconds": 33.224,
+      "role_simulation_start_ms": 1790215200000,
+      "role_simulation_finish_ms": 1790215233462,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790215233518,
+      "decision_to_gm_seconds": 33.518,
+      "role_finish_to_gm_seconds": 0.056
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790216639999-279-1-db24b39a.json",
+      "decision_time_ms": 1790216639999,
+      "call_count": 2,
+      "api_call_seconds": 41.903,
+      "role_wall_seconds": 41.92,
+      "role_simulation_start_ms": 1790216639999,
+      "role_simulation_finish_ms": 1790216682029,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790216682136,
+      "decision_to_gm_seconds": 42.137,
+      "role_finish_to_gm_seconds": 0.107
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790217000000-155-1-95980b72.json",
+      "decision_time_ms": 1790217000000,
+      "call_count": 2,
+      "api_call_seconds": 39.012,
+      "role_wall_seconds": 39.032,
+      "role_simulation_start_ms": 1790217000000,
+      "role_simulation_finish_ms": 1790217039330,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790217039381,
+      "decision_to_gm_seconds": 39.381,
+      "role_finish_to_gm_seconds": 0.051
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790218499999-280-1-89ebef66.json",
+      "decision_time_ms": 1790218499999,
+      "call_count": 2,
+      "api_call_seconds": 33.02,
+      "role_wall_seconds": 33.036,
+      "role_simulation_start_ms": 1790218499999,
+      "role_simulation_finish_ms": 1790218533187,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790218533263,
+      "decision_to_gm_seconds": 33.264,
+      "role_finish_to_gm_seconds": 0.076
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790218800000-156-1-0bad1b9b.json",
+      "decision_time_ms": 1790218800000,
+      "call_count": 2,
+      "api_call_seconds": 36.401,
+      "role_wall_seconds": 36.417,
+      "role_simulation_start_ms": 1790218800000,
+      "role_simulation_finish_ms": 1790218836685,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790218836711,
+      "decision_to_gm_seconds": 36.711,
+      "role_finish_to_gm_seconds": 0.026
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790220359999-281-1-576a0284.json",
+      "decision_time_ms": 1790220359999,
+      "call_count": 2,
+      "api_call_seconds": 29.93,
+      "role_wall_seconds": 29.947,
+      "role_simulation_start_ms": 1790220359999,
+      "role_simulation_finish_ms": 1790220389947,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790220390668,
+      "decision_to_gm_seconds": 30.669,
+      "role_finish_to_gm_seconds": 0.721
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790220600000-157-1-a25bf923.json",
+      "decision_time_ms": 1790220600000,
+      "call_count": 2,
+      "api_call_seconds": 31.76,
+      "role_wall_seconds": 31.776,
+      "role_simulation_start_ms": 1790220600000,
+      "role_simulation_finish_ms": 1790220631853,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790220632069,
+      "decision_to_gm_seconds": 32.069,
+      "role_finish_to_gm_seconds": 0.216
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790222219999-282-1-001043da.json",
+      "decision_time_ms": 1790222219999,
+      "call_count": 2,
+      "api_call_seconds": 30.782,
+      "role_wall_seconds": 30.799,
+      "role_simulation_start_ms": 1790222219999,
+      "role_simulation_finish_ms": 1790222250955,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790222251000,
+      "decision_to_gm_seconds": 31.001,
+      "role_finish_to_gm_seconds": 0.045
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790222400000-158-1-41c66a2f.json",
+      "decision_time_ms": 1790222400000,
+      "call_count": 2,
+      "api_call_seconds": 27.926,
+      "role_wall_seconds": 27.942,
+      "role_simulation_start_ms": 1790222400000,
+      "role_simulation_finish_ms": 1790222428076,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790222428245,
+      "decision_to_gm_seconds": 28.245,
+      "role_finish_to_gm_seconds": 0.169
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790224079999-284-1-fb08deab.json",
+      "decision_time_ms": 1790224079999,
+      "call_count": 2,
+      "api_call_seconds": 32.476,
+      "role_wall_seconds": 32.492,
+      "role_simulation_start_ms": 1790224079999,
+      "role_simulation_finish_ms": 1790224112553,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790224112684,
+      "decision_to_gm_seconds": 32.685,
+      "role_finish_to_gm_seconds": 0.131
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790224200000-159-1-f20abbb7.json",
+      "decision_time_ms": 1790224200000,
+      "call_count": 2,
+      "api_call_seconds": 28.287,
+      "role_wall_seconds": 28.304,
+      "role_simulation_start_ms": 1790224200000,
+      "role_simulation_finish_ms": 1790224228467,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790224228644,
+      "decision_to_gm_seconds": 28.644,
+      "role_finish_to_gm_seconds": 0.177
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790225939999-285-1-d038b4de.json",
+      "decision_time_ms": 1790225939999,
+      "call_count": 2,
+      "api_call_seconds": 32.166,
+      "role_wall_seconds": 32.182,
+      "role_simulation_start_ms": 1790225939999,
+      "role_simulation_finish_ms": 1790225972411,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790225972440,
+      "decision_to_gm_seconds": 32.441,
+      "role_finish_to_gm_seconds": 0.029
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790226000000-160-1-d5029c1e.json",
+      "decision_time_ms": 1790226000000,
+      "call_count": 2,
+      "api_call_seconds": 31.056,
+      "role_wall_seconds": 31.072,
+      "role_simulation_start_ms": 1790226000000,
+      "role_simulation_finish_ms": 1790226031456,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790226031536,
+      "decision_to_gm_seconds": 31.536,
+      "role_finish_to_gm_seconds": 0.08
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790227799999-286-1-7269d3b1.json",
+      "decision_time_ms": 1790227799999,
+      "call_count": 2,
+      "api_call_seconds": 29.858,
+      "role_wall_seconds": 29.874,
+      "role_simulation_start_ms": 1790227799999,
+      "role_simulation_finish_ms": 1790227830026,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790227830068,
+      "decision_to_gm_seconds": 30.069,
+      "role_finish_to_gm_seconds": 0.042
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790227800000-161-1-afd6b4be.json",
+      "decision_time_ms": 1790227830068,
+      "call_count": 2,
+      "api_call_seconds": 26.99,
+      "role_wall_seconds": 27.008,
+      "role_simulation_start_ms": 1790227830068,
+      "role_simulation_finish_ms": 1790227857325,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790227857402,
+      "decision_to_gm_seconds": 27.334,
+      "role_finish_to_gm_seconds": 0.077
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790229600000-162-1-03cff492.json",
+      "decision_time_ms": 1790229600000,
+      "call_count": 2,
+      "api_call_seconds": 27.717,
+      "role_wall_seconds": 27.728,
+      "role_simulation_start_ms": 1790229600000,
+      "role_simulation_finish_ms": 1790229627853,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790229627973,
+      "decision_to_gm_seconds": 27.973,
+      "role_finish_to_gm_seconds": 0.12
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790229659999-287-1-a6ddf6c7.json",
+      "decision_time_ms": 1790229659999,
+      "call_count": 2,
+      "api_call_seconds": 29.091,
+      "role_wall_seconds": 29.106,
+      "role_simulation_start_ms": 1790229659999,
+      "role_simulation_finish_ms": 1790229689254,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790229689306,
+      "decision_to_gm_seconds": 29.307,
+      "role_finish_to_gm_seconds": 0.052
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790231400000-163-1-16e269a4.json",
+      "decision_time_ms": 1790231400000,
+      "call_count": 2,
+      "api_call_seconds": 28.415,
+      "role_wall_seconds": 28.431,
+      "role_simulation_start_ms": 1790231400000,
+      "role_simulation_finish_ms": 1790231428661,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790231428708,
+      "decision_to_gm_seconds": 28.708,
+      "role_finish_to_gm_seconds": 0.047
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790231519999-288-1-426cfeee.json",
+      "decision_time_ms": 1790231519999,
+      "call_count": 2,
+      "api_call_seconds": 29.994,
+      "role_wall_seconds": 30.01,
+      "role_simulation_start_ms": 1790231519999,
+      "role_simulation_finish_ms": 1790231550220,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790231551221,
+      "decision_to_gm_seconds": 31.222,
+      "role_finish_to_gm_seconds": 1.001
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790233200000-164-1-3a465b0d.json",
+      "decision_time_ms": 1790233200000,
+      "call_count": 2,
+      "api_call_seconds": 30.465,
+      "role_wall_seconds": 30.481,
+      "role_simulation_start_ms": 1790233200000,
+      "role_simulation_finish_ms": 1790233230831,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790233230969,
+      "decision_to_gm_seconds": 30.969,
+      "role_finish_to_gm_seconds": 0.138
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790233379999-289-1-f662e6e1.json",
+      "decision_time_ms": 1790233379999,
+      "call_count": 2,
+      "api_call_seconds": 30.175,
+      "role_wall_seconds": 30.192,
+      "role_simulation_start_ms": 1790233379999,
+      "role_simulation_finish_ms": 1790233410381,
+      "role_start_lag_seconds": 0.0,
+      "matched_outcomes": 1,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "gm_outcome_time_ms": 1790233410431,
+      "decision_to_gm_seconds": 30.432,
+      "role_finish_to_gm_seconds": 0.05
+    }
+  ]
+}

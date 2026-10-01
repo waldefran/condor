@@ -1,0 +1,14 @@
+{
+  "reason": "Fix incomplete duration event producer; no model/policy/TP change",
+  "from_git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+  "to_git_head": "06c6677581d038d32c9567bcfa376ba8d27ae548",
+  "from_script_sha256": "47741afb559d87f9a85bb85cd788cb3b78075e6cb2ebf3f20850ac9039a0d321",
+  "to_script_sha256": "7ae42d7f605e47571260f2658958c3bf2710d62abe56d7c97e442510d7383b7a",
+  "resume_at_ms": 1790091029898,
+  "preserved_pm_runs": 50,
+  "last_checkpoint_archive": "interruption_24h/walkforward_checkpoint.json",
+  "original_journal_suffix_archive": "interruption_24h/events_after_uncheckpointed_wake.jsonl",
+  "sealed_prefix_file": "interruption_24h/SEALED_MODEL_PREFIX.json",
+  "state_source": "/tmp/brooks-pm-1790002799999-5R-20261001-state",
+  "state_resume_copy": "/tmp/brooks-pm-1790002799999-5R-20261001-resumed-state"
+}

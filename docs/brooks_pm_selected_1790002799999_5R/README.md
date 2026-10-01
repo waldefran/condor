@@ -79,3 +79,11 @@ código será documentada em RESUME_LINEAGE.json, sem relaxar o gate de restart.
 A pausa real de manutenção não avança o relógio histórico. Não há nova
 entrada ou repetição das 50 decisões. O packet do wake vencido é capturado
 na sua hora histórica, sem candles posteriores ou alteração da política.
+
+## Parada solicitada pelo usuário
+
+Replay pausado em 2026-09-24 07:03:30.431 UTC histórico, após 203 decisões HOLD aceitas. A janela prevista de 72h foi interrompida por pedido explícito, com MAIN aberta e checkpoint preservado. O processo está encerrado e não retomará automaticamente.
+
+- [Resumo completo e capturas por avaliação](FINAL_REPORT.md)
+- [Registro da parada](PAUSE_RECORD.json)
+- [Exposição líquida](NET_EXPOSURE_AUDIT.json), [snapshot/fidelidade](SNAPSHOT_AUDIT.json), [tempos](TIMING_AUDIT.json).

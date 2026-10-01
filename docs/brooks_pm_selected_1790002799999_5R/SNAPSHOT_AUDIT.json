@@ -1,0 +1,4893 @@
+{
+  "schema": "brooks.replay-investigation.snapshot-audit.v3",
+  "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+  "pm_runs_checked": 203,
+  "closed_bars_checked": 5348,
+  "future_bar_violations": 0,
+  "scope_mismatches": 0,
+  "scope_mismatch_details": [],
+  "policy_mismatches": 0,
+  "policy_mismatch_details": [],
+  "unavailable_inputs": [],
+  "unparsed_tool_responses": [],
+  "context_time_violations": [],
+  "limitations": "Checks OHLC objects delivered in captured first inputs and read-tool replies. Does not grade market reasoning or reconstruct unobserved tool requests.",
+  "sealed_model_prefix": {
+    "file": "interruption_24h/SEALED_MODEL_PREFIX.json",
+    "role_count": 50,
+    "expected_count": 153,
+    "verified_count": 153,
+    "missing": [],
+    "mismatches": [],
+    "all_match": true,
+    "role_file_count": 50,
+    "wire_file_count": 103
+  },
+  "resume_lineage": {
+    "file": "RESUME_LINEAGE.json",
+    "from_git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+    "to_git_head": "06c6677581d038d32c9567bcfa376ba8d27ae548",
+    "resume_at_ms": 1790091029898,
+    "preserved_pm_runs": 50,
+    "crash_status": "failed_before_duration_PM_dispatch",
+    "crash_error_type": "KeyError",
+    "failed_wake_model_calls": 0,
+    "venue_writes_after_checkpoint": 0
+  },
+  "duration_lifecycle": {
+    "duration_requests": 74,
+    "published_duration_pm_timer_events": 74,
+    "published_periodic_pm_timer_events": 0,
+    "hold_extensions": 77,
+    "events": [
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790092079999,
+        "expires_at_ms": 1790092079999,
+        "observed_at_ms": 1790092079999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790092118002,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790093918002
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790093939999,
+        "expires_at_ms": 1790093918002,
+        "observed_at_ms": 1790093939999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790093969496,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790095769496
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790095799999,
+        "expires_at_ms": 1790095769496,
+        "observed_at_ms": 1790095799999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790095837262,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790097637262
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790097659999,
+        "expires_at_ms": 1790097637262,
+        "observed_at_ms": 1790097659999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790097689154,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790099489154
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790099519999,
+        "expires_at_ms": 1790099489154,
+        "observed_at_ms": 1790099519999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790099552244,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790101352244
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790101379999,
+        "expires_at_ms": 1790101352244,
+        "observed_at_ms": 1790101379999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790101413009,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790103213009
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790103239999,
+        "expires_at_ms": 1790103213009,
+        "observed_at_ms": 1790103239999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790103272100,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790105072100
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790105099999,
+        "expires_at_ms": 1790105072100,
+        "observed_at_ms": 1790105099999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790105147602,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790106947602
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790106959999,
+        "expires_at_ms": 1790106947602,
+        "observed_at_ms": 1790106959999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790106996661,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790108796661
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790108819999,
+        "expires_at_ms": 1790108796661,
+        "observed_at_ms": 1790108819999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790108853248,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790110653248
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790110679999,
+        "expires_at_ms": 1790110653248,
+        "observed_at_ms": 1790110679999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790110715520,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790112515520
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790112539999,
+        "expires_at_ms": 1790112515520,
+        "observed_at_ms": 1790112539999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790112575683,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790114375683
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790114399999,
+        "expires_at_ms": 1790114375683,
+        "observed_at_ms": 1790114399999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790114429786,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790116229786
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790116234198,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790118034198
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790118037748,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790119837748
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790119859999,
+        "expires_at_ms": 1790119837748,
+        "observed_at_ms": 1790119859999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790119898173,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790121698173
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790121719999,
+        "expires_at_ms": 1790121698173,
+        "observed_at_ms": 1790121719999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790121751332,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790123551332
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790123579999,
+        "expires_at_ms": 1790123551332,
+        "observed_at_ms": 1790123579999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790123611177,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790125411177
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790125439999,
+        "expires_at_ms": 1790125411177,
+        "observed_at_ms": 1790125439999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790125482722,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790127282722
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790127299999,
+        "expires_at_ms": 1790127282722,
+        "observed_at_ms": 1790127299999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790127329399,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790129129399
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790129159999,
+        "expires_at_ms": 1790129129399,
+        "observed_at_ms": 1790129159999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790129194376,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790130994376
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790131019999,
+        "expires_at_ms": 1790130994376,
+        "observed_at_ms": 1790131019999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790131049512,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790132849512
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790132879999,
+        "expires_at_ms": 1790132849512,
+        "observed_at_ms": 1790132879999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790132920139,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790134720139
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790134739999,
+        "expires_at_ms": 1790134720139,
+        "observed_at_ms": 1790134739999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790134771632,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790136571632
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790136599999,
+        "expires_at_ms": 1790136571632,
+        "observed_at_ms": 1790136599999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790136637519,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790138437519
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790138459999,
+        "expires_at_ms": 1790138437519,
+        "observed_at_ms": 1790138459999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790138490970,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790140290970
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790140319999,
+        "expires_at_ms": 1790140290970,
+        "observed_at_ms": 1790140319999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790140352637,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790142152637
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790142179999,
+        "expires_at_ms": 1790142152637,
+        "observed_at_ms": 1790142179999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790142212099,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790144012099
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790144039999,
+        "expires_at_ms": 1790144012099,
+        "observed_at_ms": 1790144039999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790144067407,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790145867407
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790145899999,
+        "expires_at_ms": 1790145867407,
+        "observed_at_ms": 1790145899999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790145934954,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790147734954
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790147759999,
+        "expires_at_ms": 1790147734954,
+        "observed_at_ms": 1790147759999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790147795741,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790149595741
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790149619999,
+        "expires_at_ms": 1790149595741,
+        "observed_at_ms": 1790149619999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790149654115,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790151454115
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790151479999,
+        "expires_at_ms": 1790151454115,
+        "observed_at_ms": 1790151479999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790151510265,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790153310265
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790153339999,
+        "expires_at_ms": 1790153310265,
+        "observed_at_ms": 1790153339999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790153368035,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790155168035
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790155199999,
+        "expires_at_ms": 1790155168035,
+        "observed_at_ms": 1790155199999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790155229869,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790157029869
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790157059999,
+        "expires_at_ms": 1790157029869,
+        "observed_at_ms": 1790157059999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790157090160,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790158890160
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790158919999,
+        "expires_at_ms": 1790158890160,
+        "observed_at_ms": 1790158919999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790158951876,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790160751876
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790160779999,
+        "expires_at_ms": 1790160751876,
+        "observed_at_ms": 1790160779999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790160810674,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790162610674
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790162639999,
+        "expires_at_ms": 1790162610674,
+        "observed_at_ms": 1790162639999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790162676114,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790164476114
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790164499999,
+        "expires_at_ms": 1790164476114,
+        "observed_at_ms": 1790164499999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790164565040,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790166365040
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790166419999,
+        "expires_at_ms": 1790166365040,
+        "observed_at_ms": 1790166419999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790166458020,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790168258020
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790168279999,
+        "expires_at_ms": 1790168258020,
+        "observed_at_ms": 1790168279999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790168315482,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790170115482
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790170139999,
+        "expires_at_ms": 1790170115482,
+        "observed_at_ms": 1790170139999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790170185512,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790171985512
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790171999999,
+        "expires_at_ms": 1790171985512,
+        "observed_at_ms": 1790171999999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790172025042,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790173825042
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790173858778,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790175658778
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790175659999,
+        "expires_at_ms": 1790175658778,
+        "observed_at_ms": 1790175659999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790175700854,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790177500854
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790177519999,
+        "expires_at_ms": 1790177500854,
+        "observed_at_ms": 1790177519999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790177582510,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790179382510
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790179439999,
+        "expires_at_ms": 1790179382510,
+        "observed_at_ms": 1790179439999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790179479651,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790181279651
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790181299999,
+        "expires_at_ms": 1790181279651,
+        "observed_at_ms": 1790181299999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790181329079,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790183129079
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790183159999,
+        "expires_at_ms": 1790183129079,
+        "observed_at_ms": 1790183159999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790183191652,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790184991652
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790185019999,
+        "expires_at_ms": 1790184991652,
+        "observed_at_ms": 1790185019999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790185051217,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790186851217
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790186879999,
+        "expires_at_ms": 1790186851217,
+        "observed_at_ms": 1790186879999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790186915126,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790188715126
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790188739999,
+        "expires_at_ms": 1790188715126,
+        "observed_at_ms": 1790188739999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790188770437,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790190570437
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790190599999,
+        "expires_at_ms": 1790190570437,
+        "observed_at_ms": 1790190599999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790190636480,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790192436480
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790192459999,
+        "expires_at_ms": 1790192436480,
+        "observed_at_ms": 1790192459999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790192491576,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790194291576
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790194319999,
+        "expires_at_ms": 1790194291576,
+        "observed_at_ms": 1790194319999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790194351429,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790196151429
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790196179999,
+        "expires_at_ms": 1790196151429,
+        "observed_at_ms": 1790196179999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790196227644,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790198027644
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790198039999,
+        "expires_at_ms": 1790198027644,
+        "observed_at_ms": 1790198039999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790198082908,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790199882908
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790199899999,
+        "expires_at_ms": 1790199882908,
+        "observed_at_ms": 1790199899999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790199932603,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790201732603
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790201759999,
+        "expires_at_ms": 1790201732603,
+        "observed_at_ms": 1790201759999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790201796993,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790203596993
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790203619999,
+        "expires_at_ms": 1790203596993,
+        "observed_at_ms": 1790203619999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790203656250,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790205456250
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790205479999,
+        "expires_at_ms": 1790205456250,
+        "observed_at_ms": 1790205479999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790205513007,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790207313007
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790207339999,
+        "expires_at_ms": 1790207313007,
+        "observed_at_ms": 1790207339999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790207381406,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790209181406
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790209199999,
+        "expires_at_ms": 1790209181406,
+        "observed_at_ms": 1790209199999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790209231588,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790211031588
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790211059999,
+        "expires_at_ms": 1790211031588,
+        "observed_at_ms": 1790211059999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790211092511,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790212892511
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790212919999,
+        "expires_at_ms": 1790212892511,
+        "observed_at_ms": 1790212919999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790212947565,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790214747565
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790214779999,
+        "expires_at_ms": 1790214747565,
+        "observed_at_ms": 1790214779999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790214817142,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790216617142
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790216639999,
+        "expires_at_ms": 1790216617142,
+        "observed_at_ms": 1790216639999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790216682136,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790218482136
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790218499999,
+        "expires_at_ms": 1790218482136,
+        "observed_at_ms": 1790218499999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790218533263,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790220333263
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790220359999,
+        "expires_at_ms": 1790220333263,
+        "observed_at_ms": 1790220359999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790220390668,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790222190668
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790222219999,
+        "expires_at_ms": 1790222190668,
+        "observed_at_ms": 1790222219999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790222251000,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790224051000
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790224079999,
+        "expires_at_ms": 1790224051000,
+        "observed_at_ms": 1790224079999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790224112684,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790225912684
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790225939999,
+        "expires_at_ms": 1790225912684,
+        "observed_at_ms": 1790225939999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790225972440,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790227772440
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790227799999,
+        "expires_at_ms": 1790227772440,
+        "observed_at_ms": 1790227799999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790227830068,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790229630068
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790229659999,
+        "expires_at_ms": 1790229630068,
+        "observed_at_ms": 1790229659999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790229689306,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790231489306
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790231519999,
+        "expires_at_ms": 1790231489306,
+        "observed_at_ms": 1790231519999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790231551221,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790233351221
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "bar_close_time_ms": 1790233379999,
+        "expires_at_ms": 1790233351221,
+        "observed_at_ms": 1790233379999
+      },
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "simulation_time_ms": 1790233410431,
+        "action": "HOLD_EXTENSION",
+        "expires_at_ms": 1790235210431
+      }
+    ],
+    "role_run_trigger_counts": {
+      "periodic_timer": 127,
+      "duration_wake": 74,
+      "lifecycle_wake": 2
+    }
+  },
+  "entry_lifecycle": {
+    "TRADER_INTENT_CREATED": {
+      "rows": 1,
+      "unique_identities": 1,
+      "duplicate_rows": 0,
+      "duplicate_identities": {}
+    },
+    "GM_ENTRY_APPROVED": {
+      "rows": 1,
+      "unique_identities": 1,
+      "duplicate_rows": 0,
+      "duplicate_identities": {}
+    },
+    "MAIN_OPEN_fills": {
+      "rows": 1,
+      "unique_identities": 1,
+      "duplicate_rows": 0,
+      "duplicate_identities": {}
+    }
+  },
+  "final_snapshot": {
+    "as_of_ms": 1790233410431,
+    "binding": {
+      "account_name": "walkforward",
+      "connector_name": "binance_perpetual_demo",
+      "controller_id": "brooks-walkforward-10d",
+      "correlation_id": "ETH-USDT-1h-1790002799999",
+      "executor_id": "wf-exec-1",
+      "main_executor_id": "wf-exec-1",
+      "main_position_id": "wf-main-1",
+      "main_side": "LONG",
+      "planned_quantity": "0.159",
+      "schema": "condor.brooks.trade-binding.v1",
+      "status": "reconciled",
+      "symbol": "ETH-USDT"
+    },
+    "open_legs": [
+      {
+        "correlation_id": "ETH-USDT-1h-1790002799999",
+        "entry_fees": "0.1748818704384",
+        "entry_price": "2749.714944",
+        "executor_id": "wf-exec-1",
+        "exit_fees": "0",
+        "leverage": 5,
+        "opened_at_ms": 1790005679999,
+        "original_quantity": "0.159",
+        "position_id": "wf-main-1",
+        "quantity": "0.159",
+        "realized_gross": "0",
+        "role": "MAIN",
+        "side": "LONG",
+        "slippage_cost": "0.043716096",
+        "stop_price": "2718.090000000000000000000000",
+        "symbol": "ETH-USDT",
+        "target_price": "2812.139999999999999999999999",
+        "time_limit_sec": 86400
+      }
+    ],
+    "trade": {
+      "ambiguous_bar_count": 0,
+      "close_reason": null,
+      "closed_at_ms": null,
+      "correlation_id": "ETH-USDT-1h-1790002799999",
+      "duration_expires_at_ms": 1790235210431,
+      "duration_notified_at_ms": null,
+      "entry_price": "2749.714944",
+      "exit_price": null,
+      "fees": "0.1748818704384",
+      "initial_quantity": "0.159",
+      "initial_risk_usd": "4.984650000000000000000000000",
+      "last_lock_proof": null,
+      "mae_price": "2641.37",
+      "mae_r": "3.455979074960127591706539075",
+      "management_actions": [
+        {
+          "action": "OPEN_MAIN",
+          "at_ms": 1790005679999,
+          "fill_price": "2749.714944",
+          "mark_at_submission": "2749.44",
+          "order_type": "MARKET",
+          "quantity": "0.159",
+          "trigger_kind": "stop",
+          "trigger_status": "triggered"
+        }
+      ],
+      "mfe_price": "2804.59",
+      "mfe_r": "1.750400510366826156299840510",
+      "net_pnl_including_open": "-11.4026579664384",
+      "net_realized_pnl": "-0.1748818704384",
+      "opened_at_ms": 1790005679999,
+      "partial_entry_bar_count": 0,
+      "protection_armed": true,
+      "protection_limit": "2718.090000000000000000000000",
+      "r_multiple": "-2.287554385250398724082934609",
+      "realized_gross_pnl": "0",
+      "remaining_main_quantity": "0.159",
+      "side": "LONG",
+      "slippage_cost": "0.043716096",
+      "status": "open",
+      "stop_price": "2718.090000000000000000000000",
+      "submission_mark": "2749.44",
+      "submitted_order_type": "MARKET",
+      "symbol": "ETH-USDT",
+      "target_price": "2812.139999999999999999999999",
+      "trigger_kind": "stop",
+      "trigger_status": "triggered",
+      "unrealized_pnl": "-11.227776096"
+    },
+    "trade_realized_net_pnl": "-0.1748818704384",
+    "trade_marked_net_including_open": "-11.4026579664384",
+    "latest_pm_projection": {
+      "decision_time_ms": 1790233379999,
+      "projection_scope": "MAIN_PLUS_HEDGE_NET",
+      "projected_exit_net": "-11.6156293773624",
+      "funding_mode": "not_modeled"
+    },
+    "account_realized_gross_pnl": "0",
+    "account_unrealized_pnl": "-11.227776096",
+    "funding": "0",
+    "funding_mode": "not modeled; reported as 0"
+  },
+  "runs": [
+    {
+      "role_file": "role_runs/pm-pm-1790005679999-195-1-64b0fba8.json",
+      "decision_time_ms": 1790005679999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "8a73b80a8b7f25123ecccc6325278de770714514234fa5590d7b320e555e86cf",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790005679999-196-1-f65306da.json",
+      "decision_time_ms": 1790005710422,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "2c43fa8bb680dcfd99ab8cb991eb5c99abf49c0e167c85d90620f65de0198e01",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790092079999-204-1-7c42135f.json",
+      "decision_time_ms": 1790092079999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "24c93f44cd5a9fa90bf2cbf393e1080e2ef20efe2cbb75db7919872615d6cb0f",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790091899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790093939999-206-1-3855886b.json",
+      "decision_time_ms": 1790093939999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "0fa81cf083d4c81c9247ea5a60763af877bb5ee24129bd93967faa294ed464dd",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790095799999-207-1-30f1d104.json",
+      "decision_time_ms": 1790095799999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "3c2ab676bc6d2969db5d2959832fc6c9c8b4108e5f44a6d10e8a8f5597e356ab",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790095499999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790097659999-208-1-a9832cd0.json",
+      "decision_time_ms": 1790097659999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "419ece169fea085b2b398941fffa2fc0d6f7d12ffb50df1d8dfdaa6b9789cab4",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790097299999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790099519999-209-1-6e8b7237.json",
+      "decision_time_ms": 1790099519999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "abc929456ec0ed28303ee75ce8d7c09fd2d892ef72abfdb26ae425cb588844fe",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790099099999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790101379999-210-1-8be37c2a.json",
+      "decision_time_ms": 1790101379999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "cb75e6d61e7e4740d9bb4dcb9e294dd5098dc813842abc38bcd978e826663b05",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790100899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790103239999-211-1-793a664d.json",
+      "decision_time_ms": 1790103239999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "be3948045efe28052b7c176e6290536d73863abc24341f2d739bad0a9497be1b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790102699999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790105099999-212-1-d86b6a5f.json",
+      "decision_time_ms": 1790105099999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c833bd50da2340d220797318b9ff1a1a5d549ded00136ac825786b405f5d445f",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790104499999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790106959999-213-1-10fb5501.json",
+      "decision_time_ms": 1790106959999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "37d223cca2cdf9bb745da7d744f1dfe3c803aaddaf2eb9f94823c0a09c8462ca",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790106299999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790108819999-215-1-5c8a818e.json",
+      "decision_time_ms": 1790108819999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "6a73ec600e9ee98713d0273729acb3b7974df118ffad49aceefd64964bb00b8d",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790108099999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790110679999-216-1-c35bfbd1.json",
+      "decision_time_ms": 1790110679999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c687a313c8640cb10ea5a699e60ba728a11a1b422f36600d87fa17780f830a76",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790109899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790112539999-217-1-509f189c.json",
+      "decision_time_ms": 1790112539999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "640818c3975b355fcc9c9b71c5b9361b0c63da89dc2d104817c6b4e151afc1c4",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790111699999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790114399999-218-1-1fd320d4.json",
+      "decision_time_ms": 1790114399999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c1d9e55cc46d0141ee64605bc87fce46c5b939c36f54f74ef29ffee7c70e94cb",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790114399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790119859999-219-1-246d1a49.json",
+      "decision_time_ms": 1790119859999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "62672d77e39caf6c132bba6a3adefdcd78f03a88d3596cb37341bdbfebca3e5b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790119799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790121719999-220-1-f2e16429.json",
+      "decision_time_ms": 1790121719999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "1abda8744613b1b6e49cb2f5020961e1629350665412017e2d12e9e0c7d54943",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790121599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790123579999-223-1-b2773150.json",
+      "decision_time_ms": 1790123579999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "091283e1c26a9affc2ff9a7e57a7e77a3bab3b55c3768835f45f0bddb42851ee",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790125439999-224-1-848ec2b3.json",
+      "decision_time_ms": 1790125439999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "57652adc30566b1b444407608e002ccce5eea99334f403901f968c7aee691999",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790125199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790127299999-225-1-1cdaf4c5.json",
+      "decision_time_ms": 1790127299999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "ff59e7a1b36901a5c01067bf3a94494288f7183fb917e7c8c1ff95fae699a3e7",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790126999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790129159999-226-1-b48ef4bd.json",
+      "decision_time_ms": 1790129159999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "3eb228a1adbf7279087f4b40d2ee9c75d825fa122edc363f75d57350f0df3cda",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790128799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790131019999-227-1-f119b6c7.json",
+      "decision_time_ms": 1790131019999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "15f0680d224334716d28d0b0f636ce2476dc46814e1555803f28198d6f03a9ff",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790130599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790132879999-228-1-aeb6b3d3.json",
+      "decision_time_ms": 1790132879999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5d10e4ec5529f6191c8af4f4d2bd26866a30013120fa973bd8742deb8317b364",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790132399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790134739999-229-1-d35e5bb8.json",
+      "decision_time_ms": 1790134739999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "fdf7033b5fc65fda39d4056ead68628d3194af5cabb6b337efd6d1959c5253bc",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790134199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790136599999-231-1-69fb4ae6.json",
+      "decision_time_ms": 1790136599999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "1b1dc7200507aff4471b875c7c2e6dfc1ccc82e30604c1f30a2a5e15dcda1f3b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790135999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790138459999-232-1-a77728ef.json",
+      "decision_time_ms": 1790138459999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "70c7ffaf64d9535f63e1e209877b9484a2a009abcf4985e3e0d08e484c79bf1b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790137799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790140319999-233-1-81558324.json",
+      "decision_time_ms": 1790140319999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7fbfc7953be722aefd19c69cb65292f845d8311165f83440751b12fe8fc59730",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790139599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790142179999-234-1-e2606ee1.json",
+      "decision_time_ms": 1790142179999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "9f827248a1ea847cc82e4b1707d142bc4c0b6f8ba8315eb4150121439efb03b7",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790141399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790144039999-235-1-d84af173.json",
+      "decision_time_ms": 1790144039999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "308d48c4b9ceb4ca5f44a3aaaceec74107de20e656667ccdf1752c9172e7c004",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790143199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790145899999-236-1-4def02f5.json",
+      "decision_time_ms": 1790145899999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "ca77d5223c0d2cb96bd05d7743f5af6192dc2a4f187db4808fd628f8f64429c3",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790145899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790147759999-237-1-09987b3b.json",
+      "decision_time_ms": 1790147759999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "dc2040213ede44964a524c7d8ca38ceb0038e61c66d94314cc72737f65b108ba",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790147699999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790149619999-238-1-1db412ac.json",
+      "decision_time_ms": 1790149619999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "64767ba8566acdd88bbe63922706971beae9e4b21eac6ab5c387b0880e2f9ba5",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790149499999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790151479999-240-1-ea22839a.json",
+      "decision_time_ms": 1790151479999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "770ea2d4c67d905e21d1b657d4d2477e9a2685ebf10fbc283eaa6f93f2418c37",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790151299999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790153339999-241-1-2429aef0.json",
+      "decision_time_ms": 1790153339999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "e3c42d171441e6576d85b7357e5ef618a195e3c6a3a5d9bdd906bb0852031e36",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790153099999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790155199999-242-1-6a4f5f7d.json",
+      "decision_time_ms": 1790155199999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "29c89c38269053ee188c3d4152e4bbbfbaf1a3ae70d7fe4ff2fe12b43215f526",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790154899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790157059999-243-1-55d93a69.json",
+      "decision_time_ms": 1790157059999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "fa21edc1943998813a069a5b68033af318c313ee209448f77b84737ad42fabef",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790158919999-244-1-20bc619d.json",
+      "decision_time_ms": 1790158919999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "477bb168f8515f716715fbd5806ffb86ff4f72f37e2331b5da15c6c1e37405ba",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790158499999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790160779999-245-1-7639b62d.json",
+      "decision_time_ms": 1790160779999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "8a768f98320a8dc790a102a78582488a98904a408c205135c9d9e3a2dc98f44a",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790160299999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790162639999-246-1-8ff62e8c.json",
+      "decision_time_ms": 1790162639999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "42d20929e3304dac2db9afc574600966207c1fb061ef0faddc2c120b15db8a99",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790162099999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790164499999-247-1-d96d9e46.json",
+      "decision_time_ms": 1790164499999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "bb591b629d90b251472f2247f2bc0d955780a39ec2d1ddfdd2c9e1976e15ed73",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790163899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790166419999-249-1-5b3bd0f3.json",
+      "decision_time_ms": 1790166419999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "af9883f4ac5c4bc359132883e963467c69720bda8905ead579187f288d83cfba",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790165699999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790168279999-250-1-5a7bf47c.json",
+      "decision_time_ms": 1790168279999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "42d346cb65192261f0310f3a01fd2ca66c3d5044385675ee1a8fc045dd3feda8",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790167499999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790170139999-251-1-c0eface0.json",
+      "decision_time_ms": 1790170139999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "a0273bcbfe4ea26de32391236137042546cd7a49222c447a467425bd15ecd0a4",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790169299999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790171999999-252-1-97130c21.json",
+      "decision_time_ms": 1790171999999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "6b183c7e20838a5bc1653e454d72a4491cd13e7888da254635846e9287fc342b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790171999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790175659999-253-1-5380a0c8.json",
+      "decision_time_ms": 1790175659999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "3fc5f91368d11313295e4fbf755bd4cf1887f1649a2fa22d797dc2f2d759f8c4",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790175599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790177519999-254-1-a2ce176c.json",
+      "decision_time_ms": 1790177519999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d1bb3652479f8836f0916c474431450f06e6589d3722a2f9d6b10ac4162464db",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790177399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790179439999-255-1-743de0f8.json",
+      "decision_time_ms": 1790179439999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "414bb53cc2477d39d074acfdfdc9cfade314800fb580988b04e53ab8b4f2c039",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790179199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790181299999-257-1-1827bd51.json",
+      "decision_time_ms": 1790181299999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5298dc9b4590b5c22372a6ca16a86235e6bd22f0f0423fb81b1cbd9946590428",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790183159999-258-1-396f1186.json",
+      "decision_time_ms": 1790183159999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "1a61bff9204b449e4ee02214bceda8a886d826d51c84234e8bde32f93f1f64ba",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790182799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790185019999-259-1-92b26307.json",
+      "decision_time_ms": 1790185019999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "47caa6aba92758452a0a4b0680d56f4676c1bff835568e8b95d24132d9c51f7f",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790184599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790186879999-260-1-3f15582a.json",
+      "decision_time_ms": 1790186879999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "494f20ff4910633dc7948d24b01ffbb4f7c6f78a86e2b270766a6be5c3a801ca",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790186399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790188739999-261-1-bca35af5.json",
+      "decision_time_ms": 1790188739999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "e32cd6daa8b0f83a7cdba083459da071676f22a692dcb5464762d5770f9fb26a",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790188199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790190599999-262-1-42851a5e.json",
+      "decision_time_ms": 1790190599999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "19bc76a9dd5e5d44e9e12621b5b9745e363c08ff71461e285ba92605527bad27",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790189999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790192459999-263-1-298d7c67.json",
+      "decision_time_ms": 1790192459999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5c4a45626bfb9f26b02fc4394eae0664559265e8b80c0504fa011b2a532e78d2",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790191799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790194319999-265-1-74aa14af.json",
+      "decision_time_ms": 1790194319999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d4501458f299c574edde3ef35c83c1e55e5ad028a9a3c829b06f4ce828639f69",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790193599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790196179999-266-1-74bd620c.json",
+      "decision_time_ms": 1790196179999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "61ee198c4a03936838cdf49d263d608db3361dffd33c682ef6e3f905fb877ced",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790195399999,
+      "tools": {
+        "get_candles": 1,
+        "read_brooks_reference": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790198039999-267-1-914f53e7.json",
+      "decision_time_ms": 1790198039999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5a06b8304026232931103b09105e57add09415d691c6e78a8dcf1bf7c961d194",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790199899999-268-1-d4eb35a9.json",
+      "decision_time_ms": 1790199899999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7e27acdbc7fdde2ad20bee1d82c9c8dae8d70ba58011010438d56a3ee72d2e06",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790199899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790201759999-269-1-d561afe2.json",
+      "decision_time_ms": 1790201759999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "572711f3a9c60eb1d92c8dc24d0dcb239444ec7175d27794621f533e7bf5f905",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790201699999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790203619999-270-1-4ecd71d3.json",
+      "decision_time_ms": 1790203619999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "338b2cc6c84e0b5561c49b993b70def940c25562a8a790acc1e017bfd8410f1d",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790203499999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790205479999-271-1-9553c96d.json",
+      "decision_time_ms": 1790205479999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "fafdcc26e032c300d2bf201f27e15c8848ee9dc1928a19a56b33e5c835ed157f",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790205299999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790207339999-272-1-06754fec.json",
+      "decision_time_ms": 1790207339999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "40d6ddf034f91f8da7493276260eff975a1cfc651ad5546d99bd9b9702d02723",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790207099999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790209199999-275-1-9007a1b6.json",
+      "decision_time_ms": 1790209199999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5a249fa966b993e4892706672ea65c06271fdb79644a468aea2b23e1a5419852",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790208899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790211059999-276-1-9cc9d489.json",
+      "decision_time_ms": 1790211059999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "ac63da7d19a4b26e36a179f2a1d225be93715194cab493e232518c55a55215ea",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790210699999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790212919999-277-1-e10b1116.json",
+      "decision_time_ms": 1790212919999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f12e715a824e657e76eb1e83379e09be09b674416d11cbfd2d1c18b3019df83e",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790214779999-278-1-c36a44f1.json",
+      "decision_time_ms": 1790214779999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "2214bc5d4eedbf6d7864d67b26be0b9fdd2edf3d23d3e7e669c88cd6bef71461",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790214299999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790216639999-279-1-db24b39a.json",
+      "decision_time_ms": 1790216639999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "3bd21871bfd4ef902c69e8e82bffd99b6d115cc38c67f7645034cf196d073ad0",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790216099999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790218499999-280-1-89ebef66.json",
+      "decision_time_ms": 1790218499999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "50f3afc84face98bf797c63946d7a4fcd1b2fd5fbe666dfd6f5f55992c862ada",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790217899999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790220359999-281-1-576a0284.json",
+      "decision_time_ms": 1790220359999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d1ad6e317408f7600c9bab95c6f13eb7011b3bee35886352d23ad7f8149a56bc",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790219699999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790222219999-282-1-001043da.json",
+      "decision_time_ms": 1790222219999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "154b8894fd7dfd266b8f5468efc27e50205658ccde0faafe088c0beeee1a8868",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790221499999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790224079999-284-1-fb08deab.json",
+      "decision_time_ms": 1790224079999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "3b2924b76c1fe7a24dd4f19c87f672cd7cb01a5d1f6a71d008d70cde836f1b93",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790223299999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790225939999-285-1-d038b4de.json",
+      "decision_time_ms": 1790225939999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "53de7c94d8bab069334d23cff975374ad758f404c2b9885c58582ee6d81dedb8",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790225099999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790227799999-286-1-7269d3b1.json",
+      "decision_time_ms": 1790227799999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "b4f4132a3baae016628abd716a71ac88448e147733b22f8485eb18cf3bde92ff",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790227799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790229659999-287-1-a6ddf6c7.json",
+      "decision_time_ms": 1790229659999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d7ed19932281957a131a2a3ed97b74adbb71f4534838e5dfeb16bd0f2a758a40",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790229599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790231519999-288-1-426cfeee.json",
+      "decision_time_ms": 1790231519999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7124114b185374793923d9ec5e77b98e01db6615e34e82391d375768ed703c2f",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790231399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/pm-pm-1790233379999-289-1-f662e6e1.json",
+      "decision_time_ms": 1790233379999,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "acac03365507319350e0d9e1c656eba87963eb37d566fb3e681815dfceaa16fe",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790233199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790006400000-38-1-2c83487e.json",
+      "decision_time_ms": 1790006400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "344369938c5518388f1cc684b09837e28860a81b36e63548e517065b71c3bb15",
+      "observed_closed_bars_checked": 12,
+      "latest_observed_close_ms": 1790006399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790008200000-39-1-3642573c.json",
+      "decision_time_ms": 1790008200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "e4f4d570dacc8e4d49827d13c503b4995e76d81a2f13f3a8d3a72e7fc163a273",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790006399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790010000000-40-1-1aee49f1.json",
+      "decision_time_ms": 1790010000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "515ecf40354f3f836902daece3833e791fe4df58541760d1949c357ee40f98ea",
+      "observed_closed_bars_checked": 20,
+      "latest_observed_close_ms": 1790009999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790011800000-41-1-483a79eb.json",
+      "decision_time_ms": 1790011800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c791b7fe53dc98fb8a067a06afa0b8c203a4427dd877286fc37f4ac247d406e6",
+      "observed_closed_bars_checked": 6,
+      "latest_observed_close_ms": 1790009999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790013600000-42-1-652ed528.json",
+      "decision_time_ms": 1790013600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "113db1684ee0c5cb64d2a9c7eac06b1c9efd9f63b779cd8a8d201f52103543a9",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790015400000-43-1-d63a06db.json",
+      "decision_time_ms": 1790015400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "31f0246ea4273b1825e5de3386c924b6c76ca0b4d9918e8162365ee2c3a23325",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790013599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790017200000-44-1-8c11b5a8.json",
+      "decision_time_ms": 1790017200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "4a57adc212b509e0e760b05e7502148b000dc01601b0387e4794137f7f86606f",
+      "observed_closed_bars_checked": 10,
+      "latest_observed_close_ms": 1790017199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790019000000-45-1-c62d7608.json",
+      "decision_time_ms": 1790019000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "6cda9d8033bd5b86c970a74a0535372c6ee1632b0f803146c262780bf70b8648",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790018999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790020800000-46-1-24d44255.json",
+      "decision_time_ms": 1790020800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "a4ffb23ecc2aaf26c212c74e107d81e9f4cca95aee026def1a1a722896a4dec6",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790020799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790022600000-47-1-2270dc2e.json",
+      "decision_time_ms": 1790022600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "b7c6e5bd171af162fbc0b75c114caa34d476bc28f54c836be6824739577628cf",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790020799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790024400000-48-1-62310cbe.json",
+      "decision_time_ms": 1790024400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "cc080a85711fe22c36ab3a4c7a03e64181adad773c7f0d0d3c70eaeb53d54c91",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790024399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790026200000-49-1-faf23459.json",
+      "decision_time_ms": 1790026200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "99f5c50b3152c586cfc03f4d0ef4624ecf74c38b0cf4cbbbe4cd401ddef61792",
+      "observed_closed_bars_checked": 20,
+      "latest_observed_close_ms": 1790026199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790028000000-50-1-014734e2.json",
+      "decision_time_ms": 1790028000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7044e31882320b6b7d025f9cba6d1a1aac1fa5cef337800110fecfafc68d7f8e",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790027999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790029800000-51-1-1079d85a.json",
+      "decision_time_ms": 1790029800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7be97945684dc507627a7da689676c528176a119bdab277a38880821cbc15d29",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790029799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790031600000-52-1-d224b060.json",
+      "decision_time_ms": 1790031600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "cb5050f5910029d2817c1ac59b36556474fb08202c0ec96429d24b43e7838b68",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790031599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790033400000-53-1-fa653018.json",
+      "decision_time_ms": 1790033400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d1406021f87be7910ed3297c2ee7c949c23b0b20e2056fc5c2a8d65f34f0c52e",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790033399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790035200000-54-1-6e1f4683.json",
+      "decision_time_ms": 1790035200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "3f85f736463d2f24a192737e3b10b41343e0cb8f4df3b09a8e0d5779a4012de8",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790035199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790037000000-55-1-877fb993.json",
+      "decision_time_ms": 1790037000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f7b35fe3989b38f945dfa37de97d80c749b7c7c9a1a0e08510bcecf540614fac",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790036999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790038800000-56-1-b9f4fba0.json",
+      "decision_time_ms": 1790038800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "dea8840bb0037a2fa8a5593d09da057bb4b096a27ff5dfdb3811935f42a3c791",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790038799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790040600000-57-1-067e982a.json",
+      "decision_time_ms": 1790040600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "b402e0614d7781364eba16d6360b10d26f4545ed5438a775c43bb2903a135efc",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790040599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790042400000-58-1-cee436b5.json",
+      "decision_time_ms": 1790042400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "cf032e716837d9b8f7bd2f8911c02ceda3381be3b2b9b1ce2d1df29d33495366",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790042399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790044200000-59-1-4d679a76.json",
+      "decision_time_ms": 1790044200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "a1416a807b61a67257713110d9295d2c5d23b49e0e5c0e9db42f9db673c77881",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790044199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790046000000-60-1-f5b4a4c3.json",
+      "decision_time_ms": 1790046000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "cd648b7dd38e36d133680828760d36148d442a6a23522d535ab37f7bb907d9ab",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790045999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790047800000-61-1-92092389.json",
+      "decision_time_ms": 1790047800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "386d3dd5c40ef51f100a7ce79249454fe16c1b8c1591ab39f35614c5058bf982",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790047799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790049600000-62-1-05a707a3.json",
+      "decision_time_ms": 1790049600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "97c3c27cdc2b321a7d5b291e868eb19680ca6ec30489ea63b6475894db45bd78",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790049599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790051400000-63-1-3240054e.json",
+      "decision_time_ms": 1790051400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "9f38c8a8fb08114bfda3718c3e93ca134b28f69a631637a2d82e37ade3227b28",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790051399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790053200000-64-1-922d0ee7.json",
+      "decision_time_ms": 1790053200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "61ae1f1bb5c73a0bf8b389edaa993c06771ef57d5ee16458ecb7ad5b1eb66d40",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790053199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790055000000-65-1-64597178.json",
+      "decision_time_ms": 1790055000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "10e61d79e3f3eb147eb41f41f8f883dcf6cac0133626450f135c1d00018132fd",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790056800000-66-1-2478cf97.json",
+      "decision_time_ms": 1790056800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f6708ed1cf65521d14562e1da2eaa5b9899036abcdf63ab4bb2c46cab77cf4c5",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790056799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790058600000-67-1-26a05167.json",
+      "decision_time_ms": 1790058600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "91fc7d7df23b0813aa74fae13d102b4b9d622e8cbcbe236019eb46b07e913d42",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790058599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790060400000-68-1-598a2ada.json",
+      "decision_time_ms": 1790060400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "3326e445fd7715d6cf4d3d1b8f0581873e00db8a1369de5dd63708f73021501b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790060399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790062200000-69-1-63500d60.json",
+      "decision_time_ms": 1790062200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "47361945fd65efa6fd8a41bc85363d71fd888a9aad9492f5f25ec0ea5650181a",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790062199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790064000000-70-1-8d36ab31.json",
+      "decision_time_ms": 1790064000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f7d86d34cb27ae8f56cd83b88193a7022e392e787d26da8b90742883783fbd78",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790063999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790065800000-71-1-bff51f55.json",
+      "decision_time_ms": 1790065800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5c7db522746ffdd7f22ea0ba550e4b71ade3f55200e8e5c66f9e7750c0163f83",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790065799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790067600000-72-1-0cf19008.json",
+      "decision_time_ms": 1790067600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "db07b35b4c94f31bf856c6fac0cc901d8265ebce722dd318946fee43f266170b",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790069400000-73-1-5ef85aef.json",
+      "decision_time_ms": 1790069400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c0baa74ae6c1191e4c4d870e0a0180686ad1a0591a518fb6d8d108f3302c46d5",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790069399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790071200000-74-1-3be139bc.json",
+      "decision_time_ms": 1790071200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5c7349156e70ed0effaa84c6f84df95e3b2b8c3d7f1f7a4b30ddab2fbf0b9b28",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790071199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790073000000-75-1-5400ea25.json",
+      "decision_time_ms": 1790073000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "e25ce2929a37c56f1aa76dbbc2b67d14277b913d4639540cc967c3ead4b65e2d",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790072999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790074800000-76-1-42b96c71.json",
+      "decision_time_ms": 1790074800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "59d84b89d8a97fa3b1630dc2585d482799b8bea9a7d94d801c7bba374e7906b9",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790074799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790076600000-77-1-729c09c3.json",
+      "decision_time_ms": 1790076600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "693e81b43fc47e68bdf738fb248c3e323109037ea0f95752bd9dec637ddce050",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790076599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790078400000-78-1-6f9e17ea.json",
+      "decision_time_ms": 1790078400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "0b88df1b8aed42b5b24b9e2cc030eacb55708913be2a3212216e0e4e9e0f35bf",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790078399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790080200000-79-1-e7328b4d.json",
+      "decision_time_ms": 1790080200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5398b09c348d338364826f942a9e2fe7358cc0654caa7707ea67d490da4450b8",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790080199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790082000000-80-1-648cf814.json",
+      "decision_time_ms": 1790082000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "64b6d2133a625a82ec23487d354c43e33f38480717b7e3ac3b2365e1c877661e",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790081999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790083800000-81-1-52e784d5.json",
+      "decision_time_ms": 1790083800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d091f9b157eea7eaca2048069e724490645c41a2c63b9c3e692d8e12c07020c0",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790083799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790085600000-82-1-048cbb98.json",
+      "decision_time_ms": 1790085600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7a1639eb8b04334db63d6c474688781bb417ad99094aa286779f3681d2b890d8",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790085599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790087400000-83-1-e4082bd0.json",
+      "decision_time_ms": 1790087400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "10ecb481fa533ccfe23c277eb3d0a26b1872da84ebb6395bc88d330c09eb2928",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790087399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790089200000-84-1-9d12c491.json",
+      "decision_time_ms": 1790089200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "47a0d5671375800a589186b3fac3876987f7cec91547aa880da83a5cf5e59534",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790089199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790091000000-85-1-72a4c971.json",
+      "decision_time_ms": 1790091000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "914c23e70d619f532bcae2aa2e20ba83684fc6e29dbf9fd3242848b9f982b59b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790090999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790092800000-86-1-b46f9125.json",
+      "decision_time_ms": 1790092800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "17f07ba54fb74f153cfc6bbbdcd690bce35140f902a983cce7e8577f60559174",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790092799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790094600000-87-1-5b8520bd.json",
+      "decision_time_ms": 1790094600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "30b10d67be51e552b1c306e70a48aaa0716efd97157b3044f60839f01fda1332",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790094599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790096400000-88-1-8d44aa97.json",
+      "decision_time_ms": 1790096400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f9f342ecd054a348f36fe62d5504ab3705fde9fee675b84e4f95cda1a9ba3573",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790096399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790098200000-89-1-fe791db4.json",
+      "decision_time_ms": 1790098200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "54f6e0c726af7010e8a20624ca1e81a86f68b6d91dc31c353a91f69d3b33282c",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790098199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790100000000-90-1-46a1c64e.json",
+      "decision_time_ms": 1790100000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "239f232bbccc01f103499e08e02ca5b10b4abf46903e651ddc86a5f16b4eb405",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790099999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790101800000-91-1-87ccd2b3.json",
+      "decision_time_ms": 1790101800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "83d9074a6d39fb320efdbca0cac9b667719c78d02263c81c8827a78b45c0ea12",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790103600000-92-1-ad43f294.json",
+      "decision_time_ms": 1790103600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c6157a4e3e5f1c82bebed06ad4ab86a611020e592446c243671ba7decf523bfb",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790103599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790105400000-93-1-e5a23593.json",
+      "decision_time_ms": 1790105400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "fb453907eede9e2cbf6cfee56867c725bcc9f342d589409ff874f482c76404b3",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790105399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790107200000-94-1-82b4f590.json",
+      "decision_time_ms": 1790107200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "6107b597a32ceb435dfc7a11024a2e02fc1bba5dcf5e1d1c1ee7dc1e5bdf3eef",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790107199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790109000000-95-1-e2c3df84.json",
+      "decision_time_ms": 1790109000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "627483055cb6c67dec6edb63657797f3b732578c08f4fbff778b2a8182d2b38c",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790108999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790110800000-96-1-a34e5eef.json",
+      "decision_time_ms": 1790110800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5d9c073cfe46fab6489b90b912a127853426659d63b2d4e9bd0af7870aeec210",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790110799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790112600000-97-1-8b6aa828.json",
+      "decision_time_ms": 1790112600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "8876aa3abec527c60597659f2fc885b8472cea31d621756e53e0effb9c439a3d",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790112599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790114400000-98-1-b29de368.json",
+      "decision_time_ms": 1790114429786,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "ef3906a30f03579b8b33c6416853a93384b32168bc31bcb9561ef7acb30fcb11",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790114399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790116200000-99-1-5f8f2fd2.json",
+      "decision_time_ms": 1790116200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "1b5698cb67623019393b614038e506adf9f666a6e582ed07f54dadde42a801b9",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790116199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790118000000-100-1-28ca520c.json",
+      "decision_time_ms": 1790118000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "68fcefa17a798390dbecf8ff764e53aaf720ce9737bfc96810c3a4bd60c4c563",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790117999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790119800000-101-1-120c0f54.json",
+      "decision_time_ms": 1790119800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "e04215657feb0a89f7583390f27ffe9d3b33d18d7eb0d5a2f4d93e006c695143",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790121600000-102-1-f7f3a8cc.json",
+      "decision_time_ms": 1790121600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "766924157a50bc356485f974d66b6153a6f957b741899689fc1af368aedfd7ad",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790121599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790123400000-103-1-ae8bf95f.json",
+      "decision_time_ms": 1790123400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "cdf8d3630ee1e766c43fccafd720cc34bae9d2b431a4c159f84655d7b60ecc3b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790123399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790125200000-104-1-ad8bbed7.json",
+      "decision_time_ms": 1790125200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "36e17516e7a0fc7df42dadc50462996ca7362d4e84373ad49f295565480b6f9f",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790125199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790127000000-105-1-5500e1ea.json",
+      "decision_time_ms": 1790127000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "73861baf433e57d001f149d21ddaa05459891a641dac6a1da326fe4cb0fbe59b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790126999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790128800000-106-1-187926e1.json",
+      "decision_time_ms": 1790128800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "428fe661e6e289e3d57a816f9c0d23ac193814a644e2cf13a44c3d607e29f1e4",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790128799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790130600000-107-1-9402a7e4.json",
+      "decision_time_ms": 1790130600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "b77e8413804b99606cb55b56eb20da4f79d26ff9cc992cc14ed8199a40356b00",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790130599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790132400000-108-1-43a02272.json",
+      "decision_time_ms": 1790132400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "ba1654496c3554ca6ac230a5fed7eb230d8f5f04334c518e577fe93433cec789",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790132399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790134200000-109-1-bce4b5ea.json",
+      "decision_time_ms": 1790134200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "2b40f9b61e2c0836f4f4b278c77649cc4485bec2c3831491600e3fc371c035e0",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790136000000-110-1-3a1029a6.json",
+      "decision_time_ms": 1790136000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "b32f039e2d12885418c07a5cd3514106afbb1b7067383c25543e1814666902b0",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790135999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790137800000-111-1-55d66176.json",
+      "decision_time_ms": 1790137800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "9fa261e8f4569c7dd2c4297afd7c9c65bbcfb3da7aa1d470d843e44a25ced010",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790137799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790139600000-112-1-d6546746.json",
+      "decision_time_ms": 1790139600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "9e58f864986890d1f7f090a441f97ad53a29db6643e050a88282c6a90f0aa0c3",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790139599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790141400000-113-1-f168707c.json",
+      "decision_time_ms": 1790141400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "1051f93f2d4831c27ebb473c48984ce796e117628168d9766b417dcffe71c7bf",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790141399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790143200000-114-1-101ccca3.json",
+      "decision_time_ms": 1790143200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "62a33cecf3d818345c0b61dbf97b85600d6afd3be624931f20bdf8a12676e3a6",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790143199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790145000000-115-1-89ea17ea.json",
+      "decision_time_ms": 1790145000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "9801e0917d694229020f28c34f9c00f1a4b3f2ce2ae005f2a963501325a02698",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790144999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790146800000-116-1-3276026a.json",
+      "decision_time_ms": 1790146800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "21cb6d6a82ea6a02dd9de4384beede91ba658737eaa79a31719626cf68664e4a",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790146799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790148600000-117-1-b581eaf4.json",
+      "decision_time_ms": 1790148600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "4b454ab614505f95988645ed4bae2a9afacc742a0046d21519a12fc34a8fb293",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790148599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790150400000-118-1-5380c3ef.json",
+      "decision_time_ms": 1790150400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "a2bbaec9e65b659050dad8ca815ae79d8c6f40e771574c33aff58d99bb1ffd72",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790152200000-119-1-06b76044.json",
+      "decision_time_ms": 1790152200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "dc0a2faab944bf70453c32474624dd0f6323b3e7bc1317648aa7ef2f263cfa37",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790152199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790154000000-120-1-38f047a6.json",
+      "decision_time_ms": 1790154000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "581e76a3f7ac132ed33fe6a0975127e5f7fcb5fd9b1aba85595f01e92d0a346b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790153999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790155800000-121-1-9911c066.json",
+      "decision_time_ms": 1790155800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "1f13feb0cca18b3bc33f5767f5e53cc7991c194a6dff44043df9d6eb5f0f7b60",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790155799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790157600000-122-1-0d5a9ce0.json",
+      "decision_time_ms": 1790157600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "85e8bb8c707890c9722ac4d61b10859fcee23d49d316337f30f7f571c3974e38",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790157599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790159400000-123-1-4b1522bf.json",
+      "decision_time_ms": 1790159400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "006337ea1b91353ca0cc58b71ba52c58207042ac21f6e852f3b10bcbd8212dbb",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790159399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790161200000-124-1-566bc5e3.json",
+      "decision_time_ms": 1790161200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "cbb2d321d4cd473a83fb06b216d57de9079b58f6659927cf7064087da3df2f08",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790161199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790163000000-125-1-ceb1b9fa.json",
+      "decision_time_ms": 1790163000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d3f1863771e4fed77494547c39ec36f6e3e7c04a3428749384dcbdd1572efeb4",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790164800000-126-1-bb993549.json",
+      "decision_time_ms": 1790164800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "2d0315ca15d022ccfd93c338dc97ba157c264076db7207c5c92f4722144091ed",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790164799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790166600000-127-1-56532847.json",
+      "decision_time_ms": 1790166600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "bad4d73a5f4609d3623e58364f57681ad9a3852534a9d170a93e3ff41c89fcff",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790166599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790168400000-128-1-e66d1449.json",
+      "decision_time_ms": 1790168400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d42071644caa661f337aa4eed4135285fa2ed83d0654095eecef0fe0953b201d",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790168399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790170200000-129-1-37d0419a.json",
+      "decision_time_ms": 1790170200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7778bc922b05f8e5c18c82b7c7dc644f32472d86f2f96e77517f2f489b026bf5",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790170199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790172000000-130-1-82989127.json",
+      "decision_time_ms": 1790172025042,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f82d00743e9628174cab923ea63fefa6887221bcfcc9874c87551aea59c4f4c8",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790173800000-131-1-fb1d8a44.json",
+      "decision_time_ms": 1790173800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7d1103fe3d0927c8f51c5d93a64898d76164a71f4c08ee556261868e03bdcce0",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790173799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790175600000-132-1-6e90d77d.json",
+      "decision_time_ms": 1790175600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "5724ba414e82c430dcd5ce21bb44cb22332d397904459245f63357b2545991c7",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790175599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790177400000-133-1-7ae71cbf.json",
+      "decision_time_ms": 1790177400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "53e13f72e5e7ac71cb3d17734ef20505ab41d6a46291ecdfea89583e6598fc3f",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790179200000-134-1-3b2cd623.json",
+      "decision_time_ms": 1790179200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "adeae846ea9ad1935b0cfbf4037b96c59e5ed014b099d37c351b664cb6170be3",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790181000000-135-1-496a4b84.json",
+      "decision_time_ms": 1790181000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "9a15f77b70038388bc7fe7adc536e7356dfbb3c2592a93f963f412a54291d379",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790180999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790182800000-136-1-ff6532ac.json",
+      "decision_time_ms": 1790182800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "d3bfb6cb58a6d89e2eb94445106bf390b531429b1ea0363579b06de6e20f123b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790182799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790184600000-137-1-83124a92.json",
+      "decision_time_ms": 1790184600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "957aa5f940b59210550ebbda5eb1123d135c8b78a18554e32c69d1c6e75f52ac",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790184599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790186400000-138-1-e7bd516c.json",
+      "decision_time_ms": 1790186400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "babcfcfc556695736dba0ae2818867168d0c8f04895ec476c7343ee2ac163623",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790186399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790188200000-139-1-a429b046.json",
+      "decision_time_ms": 1790188200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "df5c0b4794f487d2637193a453c767a686b09fcd916285e250886aa75bc5b807",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790188199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790190000000-140-1-ae388287.json",
+      "decision_time_ms": 1790190000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f31d10487502b52d535fb9c4ab826af18efb9c2cce716dd4641752814df5f4f0",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790189999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790191800000-141-1-3d4db7bb.json",
+      "decision_time_ms": 1790191800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7e223c3f53f1f3b36992b214ea6c89bdcd856ae10cbeb2a6902f0a222e3f9ca8",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790191799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790193600000-142-1-310cf990.json",
+      "decision_time_ms": 1790193600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c26f333537471d0b6aaf1f549860acf9136d79e845e177b52c3c8b1eded096d2",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790193599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790195400000-143-1-f2b2293c.json",
+      "decision_time_ms": 1790195400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "4b21af015c2d251d459a22f582fb542300780df839731f464d2a47787d428c79",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790195399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790197200000-144-1-a4a0a4d9.json",
+      "decision_time_ms": 1790197200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "da7ebd4c5bc4e3e0ae3c3160f49295e4ba4f42af8e584d63a2192e70956fce09",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790199000000-145-1-52599836.json",
+      "decision_time_ms": 1790199000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f284aefbf993d5152aa5b49fca3b6875e836c451d48832e14acdce42708bd194",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790198999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790200800000-146-1-b2ce32cd.json",
+      "decision_time_ms": 1790200800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "2a9e579a215d462abcc4df221326191ed2b47fecd969595c8663098b28d8e488",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790200799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790202600000-147-1-bcf6158c.json",
+      "decision_time_ms": 1790202600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "55b7ddff6a4300ab61e3c3d03ad714b64037322139d6f0d34b0c0a02b8066c00",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790204400000-148-1-208689f9.json",
+      "decision_time_ms": 1790204400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "7ca5eecd43ecbb5f7df46c06b0f46d1a0de882248e9c984957f2ced82573b35b",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790204399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790206200000-149-1-1da9fedb.json",
+      "decision_time_ms": 1790206200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "6a73df25d6a01cc3b1b5c9045b2d74486f8960c164e13d2b1a00c3a7cad1abf9",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790206199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790208000000-150-1-2385807f.json",
+      "decision_time_ms": 1790208000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "cc672cafd7247c1d3c4e4af8c1744fc003b9fed5e3ee0c7c5e6860886b081868",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790207999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790209800000-151-1-6bd8c2b9.json",
+      "decision_time_ms": 1790209800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "42c9b47a9dc1d30fa3fe1b1e0768ba8994a3e9e62d57eae6354314765a997ced",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790209799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790211600000-152-1-ef597b63.json",
+      "decision_time_ms": 1790211600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "50a0d33e9c5d0d8bcae98061f7b5d3542f5fbb2bb4dbbda0189629a253206333",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790211599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790213400000-153-1-8ded877b.json",
+      "decision_time_ms": 1790213400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c9accfde7a91f921b69a8ad72b54292da7bbd1b19a6931f75ea0ce00934c5928",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790213399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790215200000-154-1-79d89d03.json",
+      "decision_time_ms": 1790215200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "f6edb96ad465e4fe152f3467dfacefcc75a4fe932a6eca796988d61109d5a302",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790215199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790217000000-155-1-95980b72.json",
+      "decision_time_ms": 1790217000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "27a97635b9bfd861922491b941c6c5e95052c09902afbd4e44066b6f51f8a715",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790216999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790218800000-156-1-0bad1b9b.json",
+      "decision_time_ms": 1790218800000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "026ed4a03de4b19f348aa4aaaa16897af79f9baa0571498688ba8e7ced2233a2",
+      "observed_closed_bars_checked": 0,
+      "latest_observed_close_ms": null,
+      "tools": {},
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790220600000-157-1-a25bf923.json",
+      "decision_time_ms": 1790220600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "1b6e67924d98c8cd35ceca99f9ecec9cf6a89085add0572f7cb810e6a3b788b8",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790220599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790222400000-158-1-41c66a2f.json",
+      "decision_time_ms": 1790222400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "50b6d2b46c148a384f74f5c89b2de81aa4e78402e791eee154512a51661587af",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790222399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790224200000-159-1-f20abbb7.json",
+      "decision_time_ms": 1790224200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "82e50670af3e29a512a287d6e006e679394b74f9c2f08efd3069df0853006741",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790224199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790226000000-160-1-d5029c1e.json",
+      "decision_time_ms": 1790226000000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "47f9ad4116b7ec2a61ab5bdfa000d7664401829210a7e09f9ed0e5cdfba86431",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790225999999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790227800000-161-1-afd6b4be.json",
+      "decision_time_ms": 1790227830068,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "bfe685475287e004acc7d78c7514696ead6e34ebc701aed86ada20c510cfc6b2",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790227799999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790229600000-162-1-03cff492.json",
+      "decision_time_ms": 1790229600000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "c41b308adaaee16e8337dc23bae4d18a151b26d1dd19f294fd12c75c59d7a62f",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790229599999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790231400000-163-1-16e269a4.json",
+      "decision_time_ms": 1790231400000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "3958d8e894f0653322435542dfec8b47ce2bb30a22877773610978317f12ce6a",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790231399999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    },
+    {
+      "role_file": "role_runs/timer-pm-1790233200000-164-1-3a465b0d.json",
+      "decision_time_ms": 1790233200000,
+      "operation_correlation_id": "ETH-USDT-1h-1790002799999",
+      "scope_verified": true,
+      "policy_verified": true,
+      "canonical_packet_sha256": "0874b88d4d4f9717c88478f4e2804d9b281f3a2eba9413e24f5eeee195a10363",
+      "observed_closed_bars_checked": 30,
+      "latest_observed_close_ms": 1790233199999,
+      "tools": {
+        "get_candles": 1
+      },
+      "tool_error_count": 0,
+      "host": {
+        "status": "completed",
+        "accepted": true
+      },
+      "future_bar_violations": 0
+    }
+  ]
+}

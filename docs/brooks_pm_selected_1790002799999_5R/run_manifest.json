@@ -1,5 +1,5 @@
 {
-  "status": "running",
+  "status": "paused",
   "symbol": "ETH-USDT",
   "model": "custom@opencode-go:deepseek-v4.1-flash",
   "start_ms": 1790002800000,
@@ -8,9 +8,9 @@
   "end_exclusive_utc": "2026-09-24T15:00:00Z",
   "expected_trader_cycles": 1,
   "started_at_ms": 1790863535518,
-  "git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+  "git_head": "06c6677581d038d32c9567bcfa376ba8d27ae548",
   "script_sha256": {
-    "brooks_walkforward.py": "47741afb559d87f9a85bb85cd788cb3b78075e6cb2ebf3f20850ac9039a0d321",
+    "brooks_walkforward.py": "7ae42d7f605e47571260f2658958c3bf2710d62abe56d7c97e442510d7383b7a",
     "brooks_walkforward_data.py": "6a4a1bd3ab96a2160f81da1f9fd12882b912bdac8072b5896aeca27820246ce8",
     "brooks_walkforward_simulation.py": "c5c5e6a431966bfc6625c11af8be634050749e12267ce3251c822de2448efce7",
     "brooks_walkforward_report.py": "d0ecf5c686d68d5038137b6b060b7145c81ff759daa1537382836136f017412d",
@@ -56,6 +56,22 @@
   "source_trader_cycles": 1,
   "source_context_updates": 35,
   "only_trade": "ETH-USDT-1h-1790002799999",
-  "simulation_time_ms": 1790091029898,
-  "updated_at_ms": 1790865310470
+  "simulation_time_ms": 1790233410431,
+  "updated_at_ms": 1790871698118,
+  "resumed_segments": [
+    {
+      "reason": "Fix incomplete duration event producer; no model/policy/TP change",
+      "from_git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+      "to_git_head": "06c6677581d038d32c9567bcfa376ba8d27ae548",
+      "from_script_sha256": "47741afb559d87f9a85bb85cd788cb3b78075e6cb2ebf3f20850ac9039a0d321",
+      "to_script_sha256": "7ae42d7f605e47571260f2658958c3bf2710d62abe56d7c97e442510d7383b7a",
+      "resume_at_ms": 1790091029898,
+      "preserved_pm_runs": 50,
+      "last_checkpoint_archive": "interruption_24h/walkforward_checkpoint.json",
+      "original_journal_suffix_archive": "interruption_24h/events_after_uncheckpointed_wake.jsonl",
+      "sealed_prefix_file": "interruption_24h/SEALED_MODEL_PREFIX.json",
+      "state_source": "/tmp/brooks-pm-1790002799999-5R-20261001-state",
+      "state_resume_copy": "/tmp/brooks-pm-1790002799999-5R-20261001-resumed-state"
+    }
+  ]
 }

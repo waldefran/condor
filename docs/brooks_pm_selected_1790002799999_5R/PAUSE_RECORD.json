@@ -1,0 +1,17 @@
+{
+  "schema": "brooks.replay-investigation.user-stop.v1",
+  "reason": "user_requested_stop",
+  "request": "Pare os testes... pode me passar um resumo do que aconteceu?",
+  "signal": "SIGTERM (graceful stop flag)",
+  "pid": 3584870,
+  "pid_exit_verified_by": "pidfd event watcher and paused durable manifest",
+  "recorded_at_utc": "2026-10-01T16:26:43.629966+00:00",
+  "simulation_time_ms": 1790233410431,
+  "simulation_time_utc": "2026-09-24T07:03:30.431000+00:00",
+  "elapsed_from_window_start_hours": 64.05845305555556,
+  "configured_end_ms_not_reached": 1790262000000,
+  "accepted_pm_decisions": 203,
+  "position_status": "open",
+  "forced_close_on_stop": false,
+  "will_resume_automatically": false
+}

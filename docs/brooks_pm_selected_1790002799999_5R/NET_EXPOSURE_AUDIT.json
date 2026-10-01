@@ -1,0 +1,41 @@
+{
+  "correlation_id": "ETH-USDT-1h-1790002799999",
+  "initial_R_usdt": "4.984650000000000000000000000",
+  "allowed_loss_usdt": "24.92325000000000000000000000",
+  "modeled_funding": "not_modeled",
+  "method": "Ex-post audit over observed closed M1 only; never supplied to PM ahead of time. Entry M1 is excluded because entry is at its close. Slippage embedded in fills; no double deduction.",
+  "status": "audited_main_only",
+  "observed_m1_bars": 3795,
+  "worst": {
+    "projected_exit_net": "-17.6117000823252",
+    "bar": {
+      "close": "2648",
+      "close_time_ms": 1790179439999,
+      "closed": true,
+      "high": "2659.02",
+      "low": "2641.37",
+      "open": "2642.42",
+      "open_time_ms": 1790179380000,
+      "volume": "31906.307"
+    },
+    "field": "low"
+  },
+  "best": {
+    "projected_exit_net": "8.3273049657540",
+    "bar": {
+      "close": "2804.58",
+      "close_time_ms": 1790022539999,
+      "closed": true,
+      "high": "2804.59",
+      "low": "2799.97",
+      "open": "2802.69",
+      "open_time_ms": 1790022480000,
+      "volume": "93787.835"
+    },
+    "field": "high"
+  },
+  "worst_net_loss_R": "3.533186900248803827751196172",
+  "threshold_crossed": false,
+  "final_mark_price": "2679.1",
+  "final_projected_exit_net": "-11.6156293773624"
+}

@@ -1,18 +1,18 @@
 {
-  "pid": 3504236,
-  "git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
-  "runtime_snapshot": "/tmp/brooks-pm-1790002799999-5R-runtime-93b449b6",
-  "state": "/tmp/brooks-pm-1790002799999-5R-20261001-state",
-  "log": "/tmp/brooks-pm-1790002799999-5R-20261001-state/runner.log",
+  "pid": 3584870,
+  "git_head": "06c6677581d038d32c9567bcfa376ba8d27ae548",
+  "runtime_snapshot": "/tmp/brooks-pm-1790002799999-5R-runtime-06c66775",
+  "state": "/tmp/brooks-pm-1790002799999-5R-20261001-resumed-state",
+  "log": "/tmp/brooks-pm-1790002799999-5R-20261001-resumed-state/runner.log",
   "args": [
     "/home/valdemaster/brooks-condor/condor/.venv/bin/python",
-    "/tmp/brooks-pm-1790002799999-5R-runtime-93b449b6/scripts/brooks_walkforward.py",
+    "/tmp/brooks-pm-1790002799999-5R-runtime-06c66775/scripts/brooks_walkforward.py",
     "--dataset",
     "/tmp/brooks-walkforward-10d-data",
     "--output",
     "/home/valdemaster/brooks-condor/condor/docs/brooks_pm_selected_1790002799999_5R",
     "--state",
-    "/tmp/brooks-pm-1790002799999-5R-20261001-state",
+    "/tmp/brooks-pm-1790002799999-5R-20261001-resumed-state",
     "--recorded-run",
     "/home/valdemaster/brooks-condor/condor/docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29",
     "--start",
@@ -22,7 +22,7 @@
     "--agent-key",
     "custom@opencode-go:deepseek-v4.1-flash",
     "--git-head",
-    "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+    "06c6677581d038d32c9567bcfa376ba8d27ae548",
     "--only-trade",
     "ETH-USDT-1h-1790002799999",
     "--long-lock-policy",
@@ -30,5 +30,19 @@
     "5",
     "--pm-timeout-sec",
     "180"
-  ]
+  ],
+  "resumed_from": {
+    "reason": "Fix incomplete duration event producer; no model/policy/TP change",
+    "from_git_head": "93b449b6318d0816d89f8ddc9bd3a411dba80338",
+    "to_git_head": "06c6677581d038d32c9567bcfa376ba8d27ae548",
+    "from_script_sha256": "47741afb559d87f9a85bb85cd788cb3b78075e6cb2ebf3f20850ac9039a0d321",
+    "to_script_sha256": "7ae42d7f605e47571260f2658958c3bf2710d62abe56d7c97e442510d7383b7a",
+    "resume_at_ms": 1790091029898,
+    "preserved_pm_runs": 50,
+    "last_checkpoint_archive": "interruption_24h/walkforward_checkpoint.json",
+    "original_journal_suffix_archive": "interruption_24h/events_after_uncheckpointed_wake.jsonl",
+    "sealed_prefix_file": "interruption_24h/SEALED_MODEL_PREFIX.json",
+    "state_source": "/tmp/brooks-pm-1790002799999-5R-20261001-state",
+    "state_resume_copy": "/tmp/brooks-pm-1790002799999-5R-20261001-resumed-state"
+  }
 }
