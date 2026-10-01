@@ -62,12 +62,14 @@ the typed management policy, authoritative hedge ownership, and reconciliation
 rules when applying any price-action judgment.
 
 For the first-operation `lock_and_wait_nonnegative_net` experiment, follow the
-opt-in procedure in the parent position-management skill. The original
-protection limit stays fixed; the host locks/re-locks the hedge at 100% on its
-closed-M1 trigger, while PM unlock requires Brooks-supported resumption and a
-closed-M15 reclaim of that limit. Judge exit net across MAIN and HEDGE together;
-do not treat either leg's individual PnL as the operation result. These rules
-are Condor policy, not Al Brooks teachings.
+opt-in procedure in the parent position-management skill. With
+`max_unhedged_loss_r: "5"`, the host locks at 100% when combined projected exit
+net reaches the five frozen initial-R loss on a closed M1 bar; the original
+structural limit is informational and is used for PM unlock only after
+Brooks-supported resumption and a closed-M15 reclaim. If the max-loss field is
+absent, use only the explicitly defined legacy 1R fallback. Judge exit net
+across both legs and costs; disclose that funding is not modeled and do not
+promise an exact cap. These are Condor rules, not Al Brooks teachings.
 
 ## Action evidence
 

@@ -566,6 +566,7 @@ class WalkForwardVenueAdapter:
         now_fn: Any | None = None,
         long_lock_policy: bool = False,
         on_hedge_write: Callable[[], None] | None = None,
+        max_unhedged_loss_r: Decimal | str | None = None,
     ) -> None:
         if not isinstance(symbol, str) or not symbol.strip():
             raise ValueError("symbol is required")
@@ -592,6 +593,10 @@ class WalkForwardVenueAdapter:
         self.controller_id = controller_id
         self.candle_source = candle_source
         self.long_lock_policy = bool(long_lock_policy)
+        self.max_unhedged_loss_r = (
+            _decimal(max_unhedged_loss_r, "max_unhedged_loss_r", positive=True)
+            if max_unhedged_loss_r is not None else None
+        )
         self.on_hedge_write = on_hedge_write
         self.long_lock_requests: list[dict[str, Any]] = []
         self.duration_requests: list[dict[str, Any]] = []
@@ -906,6 +911,13 @@ class WalkForwardVenueAdapter:
             "protection_armed": trade.protection_armed,
             "last_lock_proof": trade.last_lock_proof,
             "duration_expires_at_ms": trade.duration_expires_at_ms,
+            "initial_R_usdt": str(trade.initial_risk_usd),
+            "max_unhedged_loss_r": str(self.max_unhedged_loss_r) if self.max_unhedged_loss_r is not None else None,
+            "allowed_loss_usdt": str(trade.initial_risk_usd * self.max_unhedged_loss_r)
+                if self.max_unhedged_loss_r is not None else None,
+            "original_structural_limit": str(trade.stop_price),
+            "stop_limit_is_informational": self.max_unhedged_loss_r is not None,
+            "lock_trigger_basis": "combined_net_loss_in_R" if self.max_unhedged_loss_r is not None else "structural_stop",
         }
 
     def rearm_long_protection(self, correlation_id: str, limit: Decimal | str | None = None) -> None:
@@ -1123,7 +1135,20 @@ class WalkForwardVenueAdapter:
         elif locked_long:
             hedge_quantity = sum((pos.quantity for pos in self._positions.values()
                 if pos.role == "HEDGE" and pos.correlation_id == main.correlation_id), _D0)
-            if stop_hit and trade.protection_armed and hedge_quantity < main.quantity:
+            worst_projected = None
+            if self.max_unhedged_loss_r is not None:
+                legs = [(pos.side, pos.quantity, pos.entry_price)
+                    for pos in self._positions.values()
+                    if pos.correlation_id == main.correlation_id and pos.quantity > 0]
+                worst_projected = min(
+                    projected_operation_exit_net(trade.realized_gross_pnl, trade.fees,
+                        legs, mark, self.taker_fee_rate, self.slippage_bps)
+                    for mark in (low, high)
+                )
+                lock_hit = worst_projected <= -(self.max_unhedged_loss_r * trade.initial_risk_usd)
+            else:
+                lock_hit = stop_hit
+            if lock_hit and trade.protection_armed and hedge_quantity < main.quantity:
                 proof = {
                     "correlation_id": trade.correlation_id,
                     "bar_open_time_ms": open_ms,
@@ -1134,6 +1159,12 @@ class WalkForwardVenueAdapter:
                     "close": str(bar.get("close")),
                     "ambiguous_target_touch": ambiguous,
                     "observed_at_ms": close_ms,
+                    "initial_R_usdt": str(trade.initial_risk_usd),
+                    "max_unhedged_loss_r": str(self.max_unhedged_loss_r) if self.max_unhedged_loss_r is not None else None,
+                    "allowed_loss_usdt": str(self.max_unhedged_loss_r * trade.initial_risk_usd)
+                        if self.max_unhedged_loss_r is not None else None,
+                    "worst_projected_exit_net": str(worst_projected) if worst_projected is not None else None,
+                    "lock_trigger_basis": "combined_net_loss_in_R" if self.max_unhedged_loss_r is not None else "structural_stop",
                 }
                 self.long_lock_requests.append(proof)
                 trade.last_lock_proof = proof
@@ -1270,6 +1301,7 @@ class WalkForwardVenueAdapter:
             "entry_submissions": list(self.entry_submissions),
             "pending_intents": list(self.pending_intents),
             "long_lock_policy": self.long_lock_policy,
+            "max_unhedged_loss_r": str(self.max_unhedged_loss_r) if self.max_unhedged_loss_r is not None else None,
             "long_lock_requests": list(self.long_lock_requests),
             "duration_requests": list(self.duration_requests),
             "open_position_count": sum(pos.quantity > 0 for pos in self._positions.values()),
@@ -1388,6 +1420,7 @@ class WalkForwardVenueAdapter:
                 "connector_name": self.connector_name,
                 "controller_id": self.controller_id,
                 "long_lock_policy": self.long_lock_policy,
+                "max_unhedged_loss_r": str(self.max_unhedged_loss_r) if self.max_unhedged_loss_r is not None else None,
             },
             "now_ms": self.now_ms,
             "time_ms": self._time_ms,
@@ -1439,10 +1472,13 @@ class WalkForwardVenueAdapter:
             "connector_name": self.connector_name,
             "controller_id": self.controller_id,
             "long_lock_policy": self.long_lock_policy,
+            "max_unhedged_loss_r": str(self.max_unhedged_loss_r) if self.max_unhedged_loss_r is not None else None,
         }
         checkpoint_config = dict(payload.get("config") or {})
         if "long_lock_policy" not in checkpoint_config and not self.long_lock_policy:
             checkpoint_config["long_lock_policy"] = False
+        if "max_unhedged_loss_r" not in checkpoint_config and self.max_unhedged_loss_r is None:
+            checkpoint_config["max_unhedged_loss_r"] = None
         if checkpoint_config != expected:
             raise ValueError("checkpoint config differs from the active simulation")
         self._time_ms = int(payload.get("time_ms", payload.get("now_ms", 0)))

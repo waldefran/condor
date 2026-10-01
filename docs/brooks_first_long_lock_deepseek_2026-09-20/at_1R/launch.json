@@ -1,0 +1,30 @@
+{
+  "pid": 3347553,
+  "git_head": "5cd9678379893d8c55f2b1a910dfc3bdcfacb24b",
+  "runtime_snapshot": "/tmp/brooks-first-long-lock-runtime-5cd96783",
+  "state": "/tmp/brooks-first-long-lock-20261001-state",
+  "log": "/tmp/brooks-first-long-lock-20261001-state/runner.log",
+  "args": [
+    "/home/valdemaster/brooks-condor/condor/.venv/bin/python",
+    "/tmp/brooks-first-long-lock-runtime-5cd96783/scripts/brooks_walkforward.py",
+    "--dataset",
+    "/tmp/brooks-walkforward-10d-data",
+    "--output",
+    "/home/valdemaster/brooks-condor/condor/docs/brooks_first_long_lock_deepseek_2026-09-20",
+    "--state",
+    "/tmp/brooks-first-long-lock-20261001-state",
+    "--recorded-run",
+    "/home/valdemaster/brooks-condor/condor/docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29",
+    "--start",
+    "2026-09-20T06:00:00Z",
+    "--end",
+    "2026-09-21T12:00:00Z",
+    "--agent-key",
+    "custom@opencode-go:deepseek-v4.1-flash",
+    "--git-head",
+    "5cd9678379893d8c55f2b1a910dfc3bdcfacb24b",
+    "--only-trade",
+    "ETH-USDT-1h-1789883999999",
+    "--long-lock-policy"
+  ]
+}

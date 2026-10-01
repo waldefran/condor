@@ -1,0 +1,11 @@
+{
+  "stop_reason": "user permitted unhedged exposure up to 5R; stage paused before implementing new ceiling",
+  "decisions": {
+    "HOLD": 21
+  },
+  "failures": 16,
+  "trade_status": "open",
+  "marked_net": "-6.6523656039104",
+  "realized_net": "-1.2436845239104",
+  "main_remaining": "0.604"
+}

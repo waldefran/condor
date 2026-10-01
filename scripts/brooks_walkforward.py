@@ -16,6 +16,7 @@ import fcntl
 import hashlib
 import json
 import logging
+import math
 from pathlib import Path
 import signal
 import shutil
@@ -155,6 +156,12 @@ class WalkForward:
         self.recorded_run = getattr(args, "recorded_run", None)
         self.only_trade = getattr(args, "only_trade", None)
         self.long_lock_policy = getattr(args, "long_lock_policy", False)
+        self.max_unhedged_loss_r = getattr(args, "max_unhedged_loss_r", None)
+        if self.max_unhedged_loss_r is not None and not self.long_lock_policy:
+            raise ValueError("Unhedged loss ceiling requires --long-lock-policy")
+        pm_timeout = getattr(args, "pm_timeout_sec", 60)
+        if not math.isfinite(pm_timeout) or pm_timeout <= 0:
+            raise ValueError("PM timeout must be finite and positive")
         if self.long_lock_policy and (self.recorded_run is None or not self.only_trade):
             raise ValueError("Long lock experiment requires --recorded-run and --only-trade")
         self.pending_entries: dict[str, PendingStopState] = {}
@@ -178,6 +185,7 @@ class WalkForward:
             controller_id="brooks-walkforward-10d", now_fn=lambda: self.now,
             candle_source=self.source,
             long_lock_policy=self.long_lock_policy,
+            max_unhedged_loss_r=self.max_unhedged_loss_r,
             on_hedge_write=self.observe_hedge_write,
         )
         known_bar = next(bar for bar in reversed(self.minute_bars) if bar["close_time_ms"] <= self.now)
@@ -197,7 +205,8 @@ class WalkForward:
         self.pm_interval_sec = BrooksConfig().pm.frequency_sec
         self.pm = PositionManager(load_context=self.load_pm_context, save_decision=self.save_pm,
             publish=self.events, candle_source=self.source, record_market_read=self.record_pm_read,
-            list_active_correlations=self.active_correlations, agent_key=args.agent_key)
+            list_active_correlations=self.active_correlations, agent_key=args.agent_key,
+            timeout_sec=getattr(args, "pm_timeout_sec", 60))
         self.watcher = PositionWatcher(
             build_watcher_provider(
                 self.venue.client,
@@ -275,11 +284,14 @@ class WalkForward:
             self.manifest["script_sha256"]["brooks_long_lock_policy.py"] = hashlib.sha256(
                 (REPO / "scripts/brooks_long_lock_policy.py").read_bytes()).hexdigest()
             self.manifest["assumptions"]["long_exit_policy"] = (
-                "lock_and_wait_nonnegative_net: no automatic LONG stop or time-limit exit; "
-                "observed closed M1 stop touch requests full hedge through existing GM; "
+                "lock_and_wait_nonnegative_net: no automatic LONG stop or time-limit exit; " +
+                ("observed closed M1 combined net loss at 5 original R requests full hedge through existing GM; "
+                 if self.max_unhedged_loss_r == "5" else
+                 "observed closed M1 stop touch requests full hedge through existing GM; ") +
                 "MAIN close/reduction blocked if projected MAIN+HEDGE liquidation net is negative; "
                 "SHORT MAIN barriers unchanged; management horizon is finite"
             )
+            self.manifest["assumptions"]["max_unhedged_loss_r"] = self.max_unhedged_loss_r
         checkpoint = self.args.state / "walkforward_checkpoint.json"
         if checkpoint.exists():
             state = json.loads(checkpoint.read_text())
@@ -288,6 +300,8 @@ class WalkForward:
             if (state.get("only_trade") != self.only_trade
                 or state.get("long_lock_policy", False) != self.long_lock_policy):
                 raise ValueError("Checkpoint selected trade or exit policy differs")
+            if state.get("max_unhedged_loss_r") != self.max_unhedged_loss_r:
+                raise ValueError("Checkpoint unhedged R limit differs")
             self.now, self.minute_index = state["now"], state["minute_index"]
             self.agenda, self.sequence = state["agenda"], state["sequence"]
             self.manifest = state["manifest"]
@@ -504,7 +518,8 @@ class WalkForward:
                 "funding_mode": "not_modeled",
                 "short_stop_policy": "normal",
                 "duration_policy": "pm_managed_long",
-                "lock_trigger": "observed_closed_m1", "lock_ratio": "1",
+                "lock_trigger": "observed_closed_m1_combined_net_5R" if self.max_unhedged_loss_r == "5" else "observed_closed_m1",
+                "lock_ratio": "1", "max_unhedged_loss_r": self.max_unhedged_loss_r,
                 "policy_state": state,
             })
         return context
@@ -755,6 +770,7 @@ class WalkForward:
             "pending_entries": {cid: value.model_dump(mode="json") for cid, value in self.pending_entries.items()},
             "pending_events": self.pending_events,
             "only_trade": self.only_trade, "long_lock_policy": self.long_lock_policy,
+            "max_unhedged_loss_r": self.max_unhedged_loss_r,
             "watcher_snapshots": list(self.watcher._previous.values())})
         render_report(self.root)
 
@@ -899,6 +915,10 @@ def main():
     parser.add_argument("--only-trade", help="Reproduce only this source Trader correlation id; stop after its position closes")
     parser.add_argument("--long-lock-policy", action="store_true",
         help="Simulated first-operation experiment: LONG limit locks a hedge and negative combined net MAIN exits are blocked")
+    parser.add_argument("--max-unhedged-loss-r", choices=["5"],
+        help="Permit unhedged LONG operation loss up to 5 times the original GM risk; lock at observed combined net ceiling")
+    parser.add_argument("--pm-timeout-sec", type=float, default=60,
+        help="Explicit PM role timeout for this replay; production and default replay policy unchanged")
     args = parser.parse_args()
     args.state.mkdir(parents=True, exist_ok=True)
     lock = (args.state / "runner.lock").open("a")

@@ -1,0 +1,80 @@
+{
+  "schema": "brooks.trade-intent.v2",
+  "role": "TRADER",
+  "decision": "ENTER_LONG",
+  "symbol": "ETH-USDT",
+  "decision_time_ms": 1789883999999,
+  "market_context": {
+    "regime": "H4 bull-trend (channel) with an unconfirmed reversal candidate; M15/H1 in a tight 12-bar range at the low of a strong bear breakout",
+    "h4_context": "current, as-of 1789876799999: primary_regime bull-trend, phase channel, always_in long (medium relevance); bars 111-112 broke out with closes near highs (2578.60 of 2585.50; 2636.28 of 2643.52) and held above 2604.75 for eight bars to 2700.00 (bar 116 high); its newest content is the H1 bar 117 close 2586.68 - used as location context, not as a vote",
+    "h1_raw": "bar 116 (open_time 1789869600000) open 2617.83, low 2571, close 2573.13 broke the range low 2604.75; bar 117 bull reversal close 2586.68; bars 118-119 close 2580.35 and 2577.06, the last close below bar 118's low 2578.33",
+    "m15_raw": "120 closed bars; bear spike bar 107 (open 2603.75, low 2571, close 2573.13), then a 12-bar tight range 2569.8-2594.57 (bars 108-119) with falling highs and a held double bottom at 2570.27/2569.8",
+    "location": "2577.06 is in the lower third of the M15 range, at/above the prior H1 base (bar 81 low 2569.16, high 2585.5) and above the H4 pre-breakout top 2544.63, so the higher-timeframe breakout structure is not broken",
+    "opposing_case": "a large H1/H4 bear bar closed below the 7-bar H4 tight range low 2604.75; the 12-bar M15 range can be a bear flag and the first reversal after such a spike often fails"
+  },
+  "setup": {
+    "type": "breakout_pullback",
+    "trigger_status": "triggered",
+    "signal_quality": "weak",
+    "location_assessment": "favorable",
+    "no_trade_reason": null
+  },
+  "decision_timeframe": "M15",
+  "context_timeframes_used": [
+    "M15",
+    "H1",
+    "H4"
+  ],
+  "entry_mechanism": "breakout_pullback",
+  "trigger": {
+    "reference": "M15 bar 119 high (bull reversal bar at the range low)",
+    "price_field": "high",
+    "price": "2577.99",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 119,
+      "open_time_ms": 1789883100000,
+      "close_time_ms": 1789883999999
+    },
+    "kind": "stop",
+    "direction": "above"
+  },
+  "invalidation": {
+    "reference": "M15 bar 109 low - pullback double-bottom low",
+    "price_field": "low",
+    "price": "2569.8",
+    "source": {
+      "timeframe": "M15",
+      "bar_index": 109,
+      "open_time_ms": 1789874100000,
+      "close_time_ms": 1789874999999
+    }
+  },
+  "evidence_for": [
+    "Broader structure is a bull trend on H4 (current context): bars 111-112 closed near their highs (2578.60 of a 2585.50 high; 2636.28 of a 2643.52 high) and the break above 2537.57/2544.63/2609.02 held above 2604.75 for eight bars to 2700.00 (bar 116 high); the last raw close 2577.06 is still above the H4 pre-breakout top 2544.63 (context, not a vote).",
+    "The M15 pullback came back to the prior H1 breakout base and held: M15 bar 109 (open_time 1789874100000) low 2569.8 versus H1 bar 81 (open_time 1789743600000) low 2569.16 and high 2585.5; H1 bar 117 (open_time 1789873200000) open 2572.94, low 2569.8, close 2586.68 - a bull reversal bar closing back above 2585.5.",
+    "After the M15 bear spike bar 107 (open 2603.75, low 2571, close 2573.13) there is no new low: bars 108 and 109 set 2570.27 and 2569.8, and the last three lows are 2574.41 (bar 117), 2573.82 (bar 118), 2574.18 (bar 119) with no close below 2573.13 - a double bottom that keeps holding.",
+    "M15 bar 119 (open_time 1789883100000) open 2574.40, high 2577.99, low 2574.18, close 2577.06 is a bull reversal bar closing near its high that reverses bar 118's bear bar (open 2577.21, low 2573.82, close 2574.40) at the low of the 12-bar range 2569.8-2594.57.",
+    "Location and equation: the pending stop sits in the lower third of a 24.77-point tight range, 8.19 above the structural low 2569.8, while the first resistance at 2594.57 (bars 108/109 high) is 16.58 away."
+  ],
+  "evidence_against": [
+    "Strongest counter: the large recent bars are bear breakouts that broke structure - M15 bar 107 (open 2603.75, low 2571, close 2573.13) and H1 bar 116 (open 2617.83, low 2571, close 2573.13) closed near their lows well below the H1/H4 7-bar range low 2604.75, so the 12-bar M15 range is at least as easily read as a bear flag, and the first reversal attempt after such a spike often fails with a second leg down.",
+    "The range's highs keep falling: 2594.57 (bars 108/109), 2587.03 (110), 2586.73 (112), 2585.39 (113), 2583.44 (116/117), 2580.56 (118), 2577.99 (119) - the 2577.99 trigger must clear three lower highs before the 2594.57 top is even tested.",
+    "H1 bar 119 (open 2578.56, low 2573.82, close 2577.06) closed below H1 bar 118's low 2578.33, so the newest H1 close is bearish and under the prior bar's low; the H4 context's last close 2586.68 predates these two H1 closes.",
+    "H4 context flags a buy climax: bar 116's 2700.00 exceeded 2680.00 by only 20.00 and closed 61.51 below its high, and its final bar closed under the 7-bar range low 2604.75 and under the lows of bars 113-119; this long is the first pullback of a possibly unconfirmed MTR, with 2537.57-2544.63 as deeper support.",
+    "The entry is not the range's extreme low (2569.8) and no bull breakout above 2594.57 has occurred, so the stop can be filled while the 12-bar range is still undecided."
+  ],
+  "qualitative_confidence": "low",
+  "uncertainty": [
+    "The 12-bar M15 range 2569.8-2594.57 has not resolved; a break below 2569.8 (bear flag) and a break above 2594.57 (bull flag) are both live.",
+    "The buy stop at 2577.99 is pending and untriggered at the 2577.06 close; if price closes below 2569.8 first the setup is void.",
+    "The H4 context's content ends at the H1 bar 117 close 2586.68 (as-of 1789876799999) and excludes H1 bars 118-119 (closes 2580.35, 2577.06), so its bullish 'final close above 2585.50' point is older than the raw bars.",
+    "The 2700.00 buy climax with a 61.51 upper tail raises the chance the pullback extends toward 2537.57-2544.63 before any resumption, which would invalidate this entry even if the larger trend stays up."
+  ],
+  "conditions_that_change_market_read": [
+    "An M15 close below 2569.8 (bar 109 low) breaks the pullback's double bottom and voids the long; next references are the H4 pre-breakout top 2544.63/2537.57 and then 2495.82.",
+    "Acceptance above 2594.57 (bars 108/109 high) confirms the range as a bull flag and puts 2604.75 and 2643.52 in play.",
+    "Two consecutive M15 closes below 2569.8 would confirm the bear flag and shift the read toward the H4 range breakdown described in the H4 transition conditions.",
+    "If price makes a lower high under 2577.99 and closes below 2573.82 (bar 118 low) without triggering, the bull signal is stale and the 12-bar range reads as a bear flag."
+  ]
+}
