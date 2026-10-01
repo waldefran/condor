@@ -317,6 +317,17 @@ class MarketContextV2(Contract):
         return self
 
 
+class MacroContextSnapshot(Contract):
+    freshness: Literal["current", "stale", "missing"]
+    context: MarketContextV2 | None
+
+    @model_validator(mode="after")
+    def context_matches_availability(self) -> MacroContextSnapshot:
+        if (self.context is None) != (self.freshness == "missing"):
+            raise ValueError("missing macro context must be null")
+        return self
+
+
 class MarketAnalysisRequestV1(Contract):
     schema: Literal["brooks.market-analysis-request.v1"]
     request_id: NonEmpty
@@ -512,6 +523,8 @@ class PositionManagementInputV2(Contract):
     original_trade_intent: TradeIntentV2 | None = None
     latest_trader_intent: TradeIntentV2 | None = None
     latest_market_context: MarketContextV1 | None = None
+    macro_contexts: dict[Literal["D1", "H4"], MacroContextSnapshot] = Field(default_factory=dict)
+    latest_trader_intent_freshness: Literal["current", "stale", "missing"] | None = None
 
 
 class HedgePlanV2(Contract):

@@ -146,6 +146,8 @@ class PMReadTools:
         return timeframe
 
     async def get_market_context(self) -> Any:
+        if "macro_contexts" in self.context:
+            return self.context["macro_contexts"]
         return self.context.get("latest_market_context")
 
     async def get_latest_trader_intent(self) -> Any:
@@ -275,6 +277,8 @@ def _small_context(context: Mapping[str, Any]) -> dict[str, Any]:
         "original_trade_intent",
         "latest_trader_intent",
         "latest_market_context",
+        "macro_contexts",
+        "latest_trader_intent_freshness",
         "management_history",
         "management_policy",
         "hedge_state",

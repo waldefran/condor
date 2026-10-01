@@ -11,11 +11,15 @@ metadata:
 ## Operation
 
 Use Al Brooks price-action reasoning to manage existing exposure together with
-Condor's operational, account, and protection rules. Given the current account,
-position, order, fill, cost, and management state, choose the safest coherent
-next action. This remains management of an open position, not a source of fresh
-entries. Return one structured decision; do not place an order or forecast a
-future price.
+Condor's operational, account, and protection rules. Aim to maximize the
+existing operation's net profit: preserve favorable exposure when current
+structure supports it, protect open gains, and contain deterioration through
+admissible partial or full hedges. A hedge is available at any management wake
+when policy permits; reaching 5R is never a prerequisite. Compare the available
+actions using current closed price action, exposure, and operation-level net.
+Costs must be accounted for, but alone must not veto a supported hedge.
+Return one structured management decision; do not open a fresh trade, place an
+order, or forecast a future price.
 
 ## Current contract
 
@@ -55,6 +59,8 @@ Use one immutable snapshot at `decision_time_ms`:
   sides, sizes, ratio, signed net exposure, and gross USD exposure;
 - V2 categorical `margin_health` (`SAFE`, `WARNING`, or `CRITICAL`) and the
   typed governing `management_policy`;
+- complete `macro_contexts` for D1/H4 with freshness metadata and
+  `latest_trader_intent_freshness`, when supplied;
 - an optional independent `market_analysis` response from a fresh Trader;
 - an authoritative governing `management_policy` defining strategy stop
   requirements, allowed actions, and protection semantics.
@@ -63,11 +69,21 @@ Every state item must be timestamped at or before the decision time. Treat
 missing, contradictory, stale, or future-dated account, position ownership,
 order/fill, margin, or policy facts that affect the action as a management
 problem; do not silently repair them from assumptions. Candles and a separate
-market-analysis response are optional. When price evidence is useful, the PM
-may request up to 30 closed OHLC bars through its read tools; it need not fetch
-candles for every action or reproduce a Trader's full analysis. Missing volume
+market-analysis response are not account-state facts. For every discretionary
+action, including `HOLD`, use adequate recent closed M15 bars already present in
+the input or request them through the read tools; up to 30 closed OHLC bars may
+be requested. The PM need not reproduce a Trader's full analysis. Missing volume
 profile, order flow, footprint/delta, DOM/Level II, news, or indicator values
 (including EMA) alone is not missing state and is not a reason to block or wait.
+
+Treat D1/H4 macro contexts and Trader freshness as fallible summaries, not a
+vote. Current, decision-time-bounded closed OHLC bars are authoritative for
+price structure; when the input lacks adequate fresh M15 bars, fetch them before
+each discretionary action, including `HOLD`. A historical Trader report
+describes the entry context, not today's market. A recent `NO_TRADE` does not
+command closing an existing position; a contrary `ENTER_*` does not authorize
+opening another one. Read freshness labels and timestamps explicitly; stale or
+missing summaries are uncertainty, not evidence of a current setup.
 
 ## Read tools
 
@@ -88,6 +104,9 @@ surface is:
   timeframe; volatility's window is 1 to 30.
 - For the evidence checklist and source notes, call
   `read_brooks_reference(resource="position_management.management_evidence")`.
+
+`get_market_context()` returns the frozen D1/H4 bundle with freshness labels
+when available, or the legacy single context for older snapshots.
 
 For example, a candle request is
 `{"tool":"get_candles","arguments":{"symbol":"BTCUSDT","timeframe":"1h","limit":30}}`.
@@ -118,15 +137,24 @@ size, array order, or PnL.
 1. **Freeze and reconcile.** Confirm the snapshot time, position/order
    identifiers, quantities, statuses, partial fills, and whether protective
    orders cover the live quantity. If the state cannot safely establish what
-   exists, choose `RECONCILE_STATE` or `MANAGEMENT_BLOCKED`.
+   exists, choose `RECONCILE_STATE` or `MANAGEMENT_BLOCKED`. Use
+   `management_history` to audit prior actions and fills, not as a command to
+   repeat an earlier `HOLD`.
 
 2. **Separate facts from management inference.** Record observable state in
    `evidence.observations`. Assess exposure, protection, execution risk,
    funding/fee drag, and the effect of the proposed action. Use the documented
-   premise and current structural price evidence to assess the trade; a losing
-   position, a move through entry, or PnL alone is not a reason to hedge, hold,
-   close, or declare the premise failed. Account and margin risk still follow
-   the governing policy.
+   premise and current structural price evidence to assess the trade. A losing
+   position, a move through entry, or PnL alone does not establish thesis
+   failure. At each wake, explicitly compare leaving MAIN at its current
+   exposure with partial/full `HEDGE` or `INCREASE_HEDGE`, hedge unwind, and
+   any allowed operation-net-positive MAIN reduction/close. Under the scoped
+   long experiment, a fresh structure-based hedge may protect open profit or
+   limit deterioration while combined PnL is green, near zero, or negative,
+   before the 5R guard. Report modeled
+   costs and include them in operation-level net; cost alone is not a reason to
+   reject or discourage a hedge. Account, margin, product-mode, and ownership
+   constraints remain hard guards.
 
 3. **Apply policy-aware risk containment.** Respect the authoritative
    `management_policy` and position `stop_protection`:
@@ -135,8 +163,9 @@ size, array order, or PnL.
      allowed by `management_policy.allowed_management_actions`.
    - When the governing policy does not mandate stops (`strategy_stop_required: false`),
      the absence of an open stop order is policy-compliant; do not force `PROTECT`
-     simply because `protective_order_ids` is empty. If margin and account risk
-     remain healthy, `HOLD` is legitimate.
+     simply because `protective_order_ids` is empty. A `SAFE` margin label or
+     being below the 5R guard does not by itself justify `HOLD`; use current
+     structure and the active profit/risk objective at every wake.
    - The PM cannot place or move a stop. If a required stop is absent, select a
      policy-allowed `REDUCE`, `CLOSE`, `RECONCILE_STATE`, or
      `MANAGEMENT_BLOCKED` as appropriate; request market analysis only when a
@@ -154,10 +183,12 @@ size, array order, or PnL.
    because it was requested. Partial fills change the remaining quantity and
    must be reconciled before another action.
 
-5. **Read price action when it matters.** If a discretionary action depends on
-   current price structure and the snapshot has no adequate market evidence,
-   the PM may request up to 30 closed OHLC candles with the signatures above.
-   State the timeframe and latest close time when using those bars. A separate
+5. **Read current price action for each discretionary decision.** For every
+   discretionary action, including `HOLD`, use adequate recent closed M15 OHLC
+   evidence, either already present in the input or fetched through the read
+   tools. State the timeframe and latest close time when using those bars. Raw
+   closed bars govern current structure; D1/H4 and Trader summaries add context
+   only when their freshness supports it. A separate
    Trader report is optional; request `REQUEST_MARKET_ANALYSIS` only when a
    fresh independent read is still needed to resolve a material management
    question. Its `market_analysis_request` must have schema
@@ -181,9 +212,10 @@ size, array order, or PnL.
    not by itself make every transition admissible: `REDUCE_HEDGE` requires a
    target greater than zero and below the current hedge ratio; use
    `REMOVE_HEDGE` with exactly `"0"` to remove the hedge. Fresh hedge state and
-   policy checks still govern the action. A hedge must reduce a named risk for
-   a defined period; it must not hide a losing trade or postpone a decision
-   indefinitely. Do not use the historical V1 `size` field.
+   policy checks still govern the action. A hedge must address a named risk
+   with a defined review/unlock condition; it may protect open profit or limit
+   giveback as well as reduce adverse exposure. Do not use it to postpone
+   review indefinitely. Do not use the historical V1 `size` field.
 
    **Opted-in long exit experiment.** Apply only when the authoritative
    `management_policy.applicable_risk_behavior.long_exit_policy` is exactly
@@ -196,17 +228,34 @@ size, array order, or PnL.
    reconcile or block.
    Neither branch authorizes the PM to place or move a stop.
 
+   When supplied alongside this scope in the host's typed management-policy
+   context, honor
+   `management_objective: "maximize_operation_net_profit"`,
+   `discretionary_hedge_timing: "any_management_wake"`,
+   `hedge_cost_policy: "account_in_net_never_standalone_veto"`,
+   `hedge_objectives: ["protect_open_profit", "limit_structural_deterioration"]`,
+   and `unlock_policy: "fresh_closed_m15_recovery_structure"`. These set a
+   profit-oriented objective and permit evidence-supported hedging at any PM
+   wake; they do not promise profit or override GM, margin, product-mode,
+   ownership, or V2 action constraints. Costs still count in combined net and
+   the nonnegative MAIN-exit floor, but never deter a supported hedge by
+   themselves.
+
    - **5R mode:** when
      `management_policy.applicable_risk_behavior.max_unhedged_loss_r` is
-     exactly `"5"`, operation may remain unhedged until the combined loss
-     threshold. GM freezes `policy_state.initial_R_usdt` and supplies
+     exactly `"5"`, the host lock is the final mandatory backstop at the
+     combined loss threshold; it is not a target or reason for PM to wait.
+     GM freezes `policy_state.initial_R_usdt` and supplies
      `policy_state.allowed_loss_usdt` for five initial R. Never recalculate or
      reset R because a hedge is widened, loses value, or is unwound. The
      supplied R and loss values must be coherent; if missing or conflicting,
      reconcile or block instead of deriving them. The original 1R/stop is now
-     only `policy_state.original_structural_limit` for
-     context and later unlock; it is not a stop or lock trigger. Do not create,
-     move, widen, or re-arm a stop.
+     only `policy_state.original_structural_limit` for context; it may inform
+     later structure assessment, but is not a mandatory reclaim level, stop,
+     or lock trigger. This does not make the separate host take-profit
+     informational: TP remains active and fixed at its submitted value. Do not
+     describe it as informational, move it, or create, move, widen, or re-arm a
+     stop.
    - In 5R mode, the host's
      `lock_trigger: "observed_closed_m1_combined_net_5R"` and
      `lock_ratio: "1"` mean a deterministic 100% hedge lock when the
@@ -219,13 +268,23 @@ size, array order, or PnL.
      or wait for the normal PM/Trader cycle. Reconcile the new snapshot; if
      MAIN exposure remains after the trigger, use `HEDGE` or `INCREASE_HEDGE`
      at target ratio `"1"` when allowed and state is coherent.
-   - Before the 5R trigger, a justified `HEDGE` is allowed, but is not
-     mandatory at the original 1R structural limit. State the specific risk
-     evidence and bounded objective. A combined projected loss short of 5R
-     may remain unhedged under this policy. A closed-M1 observation, gap, fills, or
-     slippage can overshoot the threshold; never promise an exact 5R cap.
-     After an unlock, the host re-arms the same 5R guard with the original
-     frozen R; it does not reset the threshold.
+   - Treat 5R as the final mandatory host backstop, never as a profit target,
+     hedge objective, or prerequisite for PM action. At every wake compare
+     `HOLD`, `HEDGE`/`INCREASE_HEDGE`, `REDUCE_HEDGE`/`REMOVE_HEDGE`, and
+     allowed MAIN actions using the latest closed structure and current net
+     exposure. Before the host trigger, `HEDGE` or `INCREASE_HEDGE` may target
+     any supported ratio through `"1"`, including while combined PnL is green,
+     near zero, or negative, to protect gains or limit a Brooks-evidenced
+     deterioration. Do not wait for 5R, cite `SAFE` margin or sub-5R loss as a
+     sufficient reason to hold, or reject a supported hedge solely because of
+     fees, spread, funding, or other modeled costs. Record those costs and
+     assess their effect on combined operation net; they are not standalone
+     vetoes. Margin, product mode, authoritative ownership, and coherent hedge
+     state remain hard guards. A combined loss short of 5R may remain
+     unhedged only when fresh structure and the explicit objective support
+     that choice. A closed-M1 observation, gap, fills, or slippage can overshoot
+     the threshold; never promise an exact 5R cap. After an unwind, the host
+     re-arms the same guard with the original frozen R.
    - If `max_unhedged_loss_r` is absent, retain the legacy 1R lock behavior
      only when the old fields coherently specify
      `lock_trigger: "observed_closed_m1"`, `lock_ratio: "1"`, and the original
@@ -237,13 +296,14 @@ size, array order, or PnL.
      supported `HOLD` while policy permits and reassess from fresh state; do
      not invent a deadline or treat unsupervised duration as permission to
      close.
-   - Unlock only after fresh OHLC evidence shows Brooks-style resumption of
-     the recorded long premise and a closed M15 bar reclaiming
-     `policy_state.original_structural_limit`. This is the original structural
-     reference, not a price inferred from the 5R loss. State the structure and
-     bar time in `unlock_condition`; “will rise” is not evidence. If the
-     original structural reference is missing, do not unlock or invent it. The
-     5R host guard remains armed after unwind.
+   - Reduce or remove a hedge only when fresh closed M15 evidence shows
+     Brooks-style resumption or another admissible current structure that
+     supports restoring some MAIN exposure. Name the observable structure,
+     bar time, intended exposure change, and concrete failure condition in the
+     plan; avoid churn when no new evidence changes the case. The original
+     structural limit is context, not a mandatory reclaim price for unlocking.
+     Do not infer a new threshold from the 5R loss. The host guard remains
+     armed after unwind.
    - Before MAIN LONG `REDUCE` or `CLOSE`, require a known,
      nonnegative `policy_state.projected_exit_net` for the complete operation
      (MAIN plus HEDGE). Include both legs, applicable realized/unrealized
@@ -263,7 +323,10 @@ size, array order, or PnL.
    state why holding, not intervening, or taking the opposite management step
    could be reasonable. For every `HOLD`, state what would make holding unsafe.
    Keep the decision summary concise and evidence-linked; when candles informed
-   it, name the timeframe, latest closed-bar time, and relevant structure. Keep
+   it, name the timeframe, latest closed-bar time, and relevant structure.
+   Cite only the account/position facts material to the decision; do not restate
+   every quantity or dump the full candle history. Do not repeat a prior `HOLD`
+   without re-evaluating current structure and the profit objective. Keep
    uncertainty qualitative and do not manufacture probabilities.
 
 ## V2 output contract
@@ -283,11 +346,11 @@ actions. Do not put order requests there.
   "decision_time_ms": 0,
   "action": "HOLD",
   "position_ids": ["p1"],
-  "reason": "The live position and its protection are coherent.",
+  "reason": "Fresh closed M15 bars support continuation; retain exposure and reassess a hedge if opposing follow-through develops.",
   "evidence": {
-    "observations": ["The supplied position quantity matches its active stop quantity."],
-    "evidence_for": ["Protection covers the currently open quantity."],
-    "evidence_against": ["The position remains exposed if the stop is canceled or rejected."]
+    "observations": ["Recent closed M15 bars retain higher lows and bull follow-through; live position and protection are coherent."],
+    "evidence_for": ["Continuation structure supports retaining exposure for further profit."],
+    "evidence_against": ["Opposing closes or a failed breakout could justify hedging to protect gains."]
   },
   "risk": {
     "exposure_before": ["BTCUSDT LONG 0.10"],
@@ -303,7 +366,7 @@ actions. Do not put order requests there.
   },
   "hedge_plan": null,
   "market_analysis_request": null,
-  "conditions_that_change_action": ["A fill, cancellation, or quantity mismatch requires reconciliation."],
+  "conditions_that_change_action": ["Fresh opposing M15 follow-through calls for reassessing a partial/full hedge; a state mismatch requires reconciliation."],
   "reduce_fraction": null,
   "shadow_mode": false
 }
@@ -345,9 +408,11 @@ V1 actions, execution order objects, or `hedge_plan.size`.
   standalone directional forecast. Keep Brooks-style context reading limited
   to management of existing exposure.
 - Never use future fills, candles, outcomes, or final PnL in a decision at T.
-- Outside the exact opted-in long exit experiment above, never widen protection
-  or add a hedge merely to avoid realizing a loss. In that experiment, honor
-  the deterministic host lock and the operation-level nonnegative exit rule.
+- Outside the exact opted-in long exit experiment above, follow the typed
+  policy and current evidence before hedging; never widen protection or add a
+  hedge solely to avoid realizing a loss. In that experiment, honor the
+  deterministic host backstop and operation-level nonnegative exit rule while
+  evaluating profit protection and giveback at every wake.
 - Never conflate a requested order with an executed fill.
 - Never expose private position/account fields in a market-analysis request.
 - Never emit direct protection, order cancellation, replacement, or executable

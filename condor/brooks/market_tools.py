@@ -317,6 +317,13 @@ class PMMarketTools(_MarketTools):
                 raise ValueError("future or cross-symbol trade intent")
         if context and (context.symbol != symbol or context.decision_time_ms > snapshot.decision_time_ms):
             raise ValueError("future or cross-symbol market context")
+        for timeframe, entry in snapshot.macro_contexts.items():
+            macro = entry.context
+            if macro and (
+                macro.symbol != symbol or macro.timeframe != timeframe
+                or macro.decision_time_ms > snapshot.decision_time_ms
+            ):
+                raise ValueError("future or cross-symbol macro context")
         try:
             json.dumps(executor_state or {}, allow_nan=False)
         except (TypeError, ValueError) as exc:
@@ -355,6 +362,11 @@ class PMMarketTools(_MarketTools):
 
     def get_market_context(self, symbol: str) -> dict[str, Any] | None:
         self._check_symbol(symbol)
+        if self._snapshot.macro_contexts:
+            return {
+                label: entry.model_dump(mode="json")
+                for label, entry in self._snapshot.macro_contexts.items()
+            }
         return super().get_market_context(symbol)
 
     async def get_recent_structure(self, symbol: str, timeframe: str, *, window: int = 20) -> dict[str, Any]:

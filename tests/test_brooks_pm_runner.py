@@ -439,6 +439,8 @@ def test_pm_context_happy_path(tmp_path):
         "original_trade_intent",
         "latest_trader_intent",
         "latest_market_context",
+        "macro_contexts",
+        "latest_trader_intent_freshness",
         "management_history",
         "management_policy",
         "hedge_state",

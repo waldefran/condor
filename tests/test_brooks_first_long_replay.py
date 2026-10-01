@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+import shutil
 from types import SimpleNamespace
 
 import pytest
@@ -14,17 +15,40 @@ from tests.brooks_e2e_harness import hold_decision
 
 
 CID = "ETH-USDT-1h-1789883999999"
+SELECTED_CID = "ETH-USDT-1h-1790002799999"
 REPO = Path(__file__).resolve().parents[1]
+RECORDED_SOURCE = REPO / "docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29"
 
 
 def _args(tmp_path):
     return SimpleNamespace(output=tmp_path / "output", state=tmp_path / "state",
         dataset=Path("/tmp/brooks-walkforward-10d-data"), symbol="ETH-USDT",
-        recorded_run=REPO / "docs/brooks_walkforward_deepseek_v4_1_flash_corrected_2026-09-20_2026-09-29",
+        recorded_run=RECORDED_SOURCE,
         start="2026-09-20T06:00:00Z", end="2026-09-21T06:00:00Z",
         agent_key="custom@opencode-go:deepseek-v4.1-flash", initial_equity="10000",
         fee_rate="0.0004", slippage_bps="1", git_head="test", only_trade=CID,
         long_lock_policy=True)
+
+
+def _trader_source_subset(tmp_path):
+    source = tmp_path / "source"
+    (source / "role_runs").mkdir(parents=True)
+    (source / "frozen_packets").mkdir()
+    (source / "wire_requests").mkdir()
+    rows = [json.loads(line) for line in (RECORDED_SOURCE / "cycles.jsonl").read_text().splitlines()]
+    selected_index = next(i for i, row in enumerate(rows) if row["correlation_id"] == SELECTED_CID)
+    selected, next_accepted, failed = (dict(row) for row in rows[selected_index:selected_index + 3])
+    failed.update(status="failed", intent=None)
+    failed["cycle"] = {**failed["cycle"], "status": "failed", "intent": None}
+    subset = [selected, next_accepted, failed]
+    for row in subset:
+        packet = row["frozen_packet_file"]
+        target = source / packet
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(RECORDED_SOURCE / packet, target)
+    (source / "cycles.jsonl").write_text("".join(json.dumps(row) + "\n" for row in subset))
+    (source / "run_manifest.json").write_text(json.dumps({"model": "immutable-fixture"}) + "\n")
+    return source
 
 
 @pytest.mark.asyncio
@@ -149,6 +173,62 @@ async def test_selected_long_policy_scope_and_duration_wake(tmp_path, monkeypatc
     assert runner.venue.long_policy_context(args.only_trade)["initial_R_usdt"] == str(trade.initial_risk_usd)
     runner.events.close()
     runner.store.flush()
+
+
+@pytest.mark.asyncio
+@pytest.mark.skipif(not Path("/tmp/brooks-walkforward-10d-data/ETH_USDT_1m.jsonl").exists(),
+    reason="historical replay requires the downloaded immutable M1 dataset")
+async def test_selected_trade_replay_refreshes_only_later_trader_context(tmp_path, monkeypatch):
+    args = _args(tmp_path)
+    args.only_trade = SELECTED_CID
+    args.recorded_run = _trader_source_subset(tmp_path)
+    args.start, args.end = "2026-09-21T15:00:00Z", "2026-09-21T18:00:00Z"
+    runner = WalkForward(args)
+    monkeypatch.setattr(gm_module, "time", SimpleNamespace(time=lambda: runner.now / 1000))
+    next_due = 1790006549351
+    try:
+        trader_outputs = [item for item in runner.agenda
+            if item["kind"] in ("recorded_trader", "recorded_trader_context")]
+        assert [item["kind"] for item in trader_outputs] == [
+            "recorded_trader", "recorded_trader_context"]
+        assert runner.manifest["source_trader_cycles"] == 1
+        assert trader_outputs[1]["due"] == next_due
+
+        # The selected MAIN is active before the next source analysis completes.
+        await runner.advance_to(next_due - 1)
+        assert len(runner.venue.trades) == 1
+        trade = runner.venue.trades[0]
+        assert trade.correlation_id == SELECTED_CID and trade.opened_at_ms == 1790005679999
+        latest_path = runner.store.root / "trader" / "latest.json"
+        latest = json.loads(latest_path.read_text())
+        assert latest["decision_time_ms"] == 1790002799999
+        assert not (runner.root / "trader_context_updates.jsonl").exists()
+
+        await runner.advance_to(next_due)
+        latest = json.loads(latest_path.read_text())
+        assert latest["decision_time_ms"] == 1790006399999
+        assert latest["decision"] == "NO_TRADE"
+        updates = [json.loads(line) for line in
+            (runner.root / "trader_context_updates.jsonl").read_text().splitlines()]
+        assert len(updates) == 1
+        assert updates[0]["decision"] == "NO_TRADE"
+        assert updates[0]["available_at_ms"] == next_due
+        assert updates[0]["source_line"] == 2
+        assert updates[0]["intent"]["decision_time_ms"] == latest["decision_time_ms"]
+
+        assert len(runner.venue.trades) == 1
+        assert runner.venue.trades[0].correlation_id == SELECTED_CID
+        assert len(runner.venue.entry_submissions) == 1
+        trader_events = [event for event in runner.store.read_events()
+            if event.type == EventType.TRADER_INTENT_CREATED]
+        assert len(trader_events) == 1
+        assert trader_events[0].correlation_id == SELECTED_CID
+        cycles = [json.loads(line) for line in (runner.root / "cycles.jsonl").read_text().splitlines()]
+        assert len(cycles) == 1
+        assert cycles[0]["correlation_id"] == SELECTED_CID
+    finally:
+        runner.events.close()
+        runner.store.flush()
 
 
 @pytest.mark.asyncio

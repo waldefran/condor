@@ -20,6 +20,10 @@ Check, in order:
 If those checks cannot be completed, the PM should reconcile or block rather
 than infer a convenient state.
 
+Use `management_history` to audit prior actions and fills. It is not a command
+to repeat a prior `HOLD`; reassess current structure, exposure, and the active
+objective at each wake.
+
 ## Price-action evidence for existing exposure
 
 Price action informs whether the recorded trade premise still fits the market;
@@ -41,18 +45,34 @@ through. These are contextual observations, not deterministic signals.
 
 Entry price and unrealized PnL are account facts, not structural proof that the
 thesis failed. Consider PnL, fees, funding, and margin under the governing
-account policy, while grounding directional management reasons in the recorded
-premise and current price structure. Give a concise reason and the strongest
+account policy, while grounding discretionary management in the recorded
+premise and current price structure. At every wake compare holding, capturing
+open profit or reducing giveback, and evidence-supported hedge/unwind choices.
+For each discretionary action, including `HOLD`, use fresh closed M15 bars;
+fetch them if the input's raw bars are inadequate. Inspect the complete
+D1/H4 `macro_contexts` and `latest_trader_intent_freshness` when supplied, but
+treat those summaries as fallible context, not a vote or a substitute for
+current closed bars. The recorded entry Trader read is historical. A recent
+`NO_TRADE` does not command closing the open position, and a contrary
+`ENTER_*` does not command a new entry. Give a concise reason and the strongest
 contradictory reason; do not provide a private reasoning transcript.
 
-The PM's candle read is optional and limited to the available OHLC interface.
-Missing volume profile, order-flow/footprint/delta, DOM/Level II, news, or EMA
-values does not make the snapshot incomplete and is not a reason by itself to
-block or request a Trader report. Al Brooks has said he does not use volume as
-a price-action prerequisite and that he does not need Time & Sales or DOM to
-read the chart; this does not mean that every Brooks chart concept excludes
-indicators such as an EMA. Use supplied optional indicators only when relevant,
-and never infer values that were not supplied.
+In the opted-in long experiment, account for costs in combined operation net
+and report them, but do not use fees, spread, funding, or other costs alone to
+veto or discourage a structure-supported hedge. Do not promise profit or
+recovery. Margin health, product mode, hedge ownership, and coherent live state
+remain hard constraints.
+
+For every discretionary decision, use adequate recent closed M15 bars from the
+input or the available OHLC read interface; the PM need not reproduce a full
+Trader analysis or paste all bars into its rationale. Missing volume profile,
+order-flow/footprint/delta, DOM/Level II, news, or EMA values does not make the
+snapshot incomplete and is not a reason by itself to block or request a Trader
+report. Al Brooks has said he does not use volume as a price-action prerequisite
+and that he does not need Time & Sales or DOM to read the chart; this does not
+mean that every Brooks chart concept excludes indicators such as an EMA. Use
+supplied optional indicators only when relevant, and never infer values that
+were not supplied.
 
 ## Condor hedge policy
 
@@ -65,17 +85,35 @@ For an operation-scoped `lock_and_wait_nonnegative_net` experiment, apply the
 procedure in the parent skill only when the host-supplied
 `operation_correlation_id` exactly matches the current MAIN LONG operation.
 With `max_unhedged_loss_r: "5"`, the host locks at 100% when combined projected
-exit net reaches the five frozen initial-R loss on a closed M1 bar; the original
-structural limit is informational and is used for PM unlock only after
-Brooks-supported resumption and a closed-M15 reclaim. If the max-loss field is
-absent, use only the explicitly defined legacy 1R fallback. Judge exit net
-across both legs and costs; disclose that funding is not modeled and do not
-promise an exact cap. These are Condor rules, not Al Brooks teachings.
+exit net reaches the five frozen initial-R loss on a closed M1 bar. This is the
+final mandatory host backstop, not a PM target or prerequisite: at every wake,
+compare holding, profit protection/giveback, hedge/increase, and unwind choices
+against fresh closed M15 structure. A supported hedge through ratio 1 may be
+chosen before 5R with combined PnL green, near zero, or negative. Account for
+fees and modeled exit costs in net, but they are not standalone reasons to
+refuse that hedge. Reduce or remove a hedge only with fresh M15 evidence of
+resumption or other admissible current structure and a concrete plan; the
+original structural limit is informative context, not a mandatory reclaim
+price. If the max-loss field is absent, use only the explicitly defined legacy
+1R fallback. When supplied alongside this scope in the host's typed
+management-policy context, honor
+`management_objective: "maximize_operation_net_profit"`,
+`discretionary_hedge_timing: "any_management_wake"`,
+`hedge_cost_policy: "account_in_net_never_standalone_veto"`,
+`hedge_objectives: ["protect_open_profit", "limit_structural_deterioration"]`,
+and `unlock_policy: "fresh_closed_m15_recovery_structure"`. The host TP remains
+active and fixed; treating the original stop/structural limit as informational
+does not make TP informational, and PM cannot move TP. Costs remain part of
+combined exit net and the nonnegative MAIN-exit floor. Judge exit net across
+both legs and costs; disclose that funding is not modeled and do not promise an
+exact cap. These are Condor rules, not Al Brooks teachings.
 
 ## Action evidence
 
-- **HOLD:** state is coherent, protection is adequate, and no supplied
-  management condition requires intervention. Mention the risk that remains.
+- **HOLD:** state is coherent and fresh structure supports continued exposure;
+  explain the profit objective for holding, what current structure supports
+  leaving exposure open, and what would make that judgment unsafe. Do not use
+  a price prediction. `SAFE` margin or being short of 5R is not sufficient.
 - **REDUCE:** identify the affected position, the `reduce_fraction`, and the
   expected exposure change. Do not supply a quantity or count a partial fill
   twice; reconcile observed fills before another action.
@@ -90,6 +128,11 @@ promise an exact cap. These are Condor rules, not Al Brooks teachings.
   agree. Reconciliation is an action, not permission to invent a fill.
 - **MANAGEMENT_BLOCKED:** use when a missing or conflicting operational fact,
   policy limit, or unavailable safe action prevents a supported decision.
+
+Keep the decision reason concise: cite the latest relevant closed-M15 bar and
+structure, the action objective, and only the net/cost facts needed for the
+decision. Do not repeat every account quantity or paste all bars returned by a
+30-bar read.
 
 V2 requires `evidence.observations`, `evidence.evidence_for`, and
 `evidence.evidence_against` to each be a nonempty array of nonempty strings.
@@ -112,9 +155,9 @@ Its plan must answer:
 | hedge_position_id | Which existing hedge is affected, or `null` when none exists yet? |
 | ratio_basis | Use the contract value `absolute_mark_notional`. |
 | expected_effect_on_exposure | How does the named action change net exposure? |
-| costs | What fees, funding, spread, margin, and liquidation interactions matter? Supply a nonempty string array. |
-| unlock_condition | What observable event permits reducing/removing the hedge or closing the base leg? |
-| failure_condition | What makes the hedge invalid, too costly, or unsafe? |
+| costs | What fees, funding, spread, margin, and liquidation interactions matter? Supply a nonempty string array; costs are reported and included in net, but alone do not veto a supported hedge. |
+| unlock_condition | What fresh closed-M15 structure or other observable evidence permits reducing/removing the hedge or closing the base leg? A reclaim of the original stop reference is not mandatory. |
+| failure_condition | What observable structure, ownership, margin, or execution failure makes the hedge invalid or unsafe? Costs alone are not a veto. |
 
 Use the exact V2 names `target_hedge_ratio`, `main_position_id`,
 `hedge_position_id`, and `ratio_basis`. Do not emit a `size` field: GM owns
@@ -127,18 +170,21 @@ position identifiers appropriate to the existing state; do not infer
 ownership from side, size, or PnL.
 
 If no unlock condition can be stated, do not use a hedge as a default answer.
-If a new market reading is needed to choose the hedge direction or duration,
-request an independent Trader report first. The report informs management; it
-does not authorize an automatic hedge.
+Use current closed M15 bars to choose a hedge direction, ratio, and review
+condition when they adequately show the structure. If those bars are inadequate
+and a new market reading is material, request an independent Trader report; it
+informs management but does not authorize an automatic hedge. Do not churn a
+hedge without new evidence, and do not let cost alone prevent a justified risk
+or profit-protection hedge.
 
 ## Opposing case
 
 The PM should record the strongest reason to choose a different action. Examples
-include a stop that already covers the risk, an intervention that increases
-fees/funding without changing net exposure, an order state that may be stale,
-or a discretionary decision that lacks adequate current market evidence from
-the snapshot or closed candles. This field is for uncertainty and auditability,
-not for a keyword checklist.
+include fresh structure supporting a continued move, a hedge that does not
+meaningfully change exposure, an order state that may be stale, or inadequate
+current bar evidence. Disclose fees/carry and their effect on net, but do not
+turn costs alone into an argument against a supported hedge. This field is for
+uncertainty and auditability, not for a keyword checklist.
 
 ## Live V2 boundary
 

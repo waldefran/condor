@@ -13,12 +13,16 @@ from condor.brooks.adapters import (
     _pm_latest_intent,
     build_pm_load_context,
 )
+from condor.brooks.pm import PositionManager
 
 SYMBOL = "BTC-USDT"
 ACCOUNT = "acct"
 CONNECTOR = "binance_perpetual"
 CONTROLLER = "ctrl"
 NOW_MS = 1_800_000_000_000
+HOUR_MS = 3_600_000
+H4_MS = 4 * HOUR_MS
+DAY_MS = 24 * HOUR_MS
 
 
 def _intent():
@@ -109,6 +113,47 @@ def _write_state(root):
                 "confidence": "medium",
             }
         )
+    )
+
+
+def _context_v2(timeframe, decision_time_ms, *, symbol=SYMBOL, **changes):
+    value = {
+        "schema": "brooks.market-context.v2",
+        "role": "CONTEXT_ANALYST",
+        "symbol": symbol,
+        "timeframe": timeframe,
+        "decision_time_ms": decision_time_ms,
+        "window_bars": 120,
+        "primary_regime": "trading-range",
+        "phase": "range",
+        "breakout_mode": "unclear",
+        "directional_pressure": "balanced",
+        "always_in": "unclear",
+        "always_in_relevance": "low",
+        "observations": [f"V2 {timeframe} range"],
+        "structures": [],
+        "evidence_for": [f"{timeframe} supporting evidence"],
+        "evidence_against": [f"{timeframe} opposing evidence"],
+        "transition_conditions": [f"{timeframe} transition condition"],
+        "missing_information": [f"{timeframe} missing information"],
+        "confidence": "medium",
+    }
+    value.update(changes)
+    return value
+
+
+def _write_macro_context(root, timeframe, context):
+    path = root / "brooks_state" / "context" / timeframe.lower() / "latest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(context))
+
+
+def _write_latest_trader(root, *, decision_time_ms, symbol=SYMBOL):
+    intent = _intent()
+    intent["symbol"] = symbol
+    intent["decision_time_ms"] = decision_time_ms
+    (root / "brooks_state" / "trader" / "latest.json").write_text(
+        json.dumps(intent)
     )
 
 
@@ -310,6 +355,169 @@ def test_pm_snapshot_keeps_only_bound_position_executor_and_fills(tmp_path):
     assert client.order_searches[0]["trading_pairs"] == [SYMBOL]
     assert client.order_searches[0]["start_time"] is None
     assert client.order_searches[0]["end_time"] == NOW_MS // 1000
+
+
+def test_pm_macro_bundle_reaches_first_prompt_and_market_tool_frozen(tmp_path):
+    _write_state(tmp_path)
+    # Pick a D1 close on the absolute Unix epoch grid. The same instant is
+    # also an H4 and H1 close, so all three currentness checks agree.
+    pm_time = ((NOW_MS + 1) // DAY_MS) * DAY_MS - 1 + DAY_MS
+    expected_d1_time = ((pm_time + 1) // DAY_MS) * DAY_MS - 1
+    expected_h4_time = ((pm_time + 1) // H4_MS) * H4_MS - 1
+    assert expected_d1_time == expected_h4_time == pm_time
+    d1 = _context_v2("D1", expected_d1_time)
+    h4 = _context_v2(
+        "H4",
+        expected_h4_time,
+        primary_regime="bull-trend",
+        phase="channel",
+        evidence_for=["H4 higher highs and strong bull closes"],
+        evidence_against=["H4 is extended from its moving average"],
+    )
+    _write_macro_context(tmp_path, "D1", d1)
+    _write_macro_context(tmp_path, "H4", h4)
+    _write_latest_trader(tmp_path, decision_time_ms=pm_time)
+
+    client = _Client()
+    load = build_pm_load_context(
+        client,
+        account_name=ACCOUNT,
+        connector_name=CONNECTOR,
+        controller_id=CONTROLLER,
+        state_root=tmp_path,
+        now_fn=lambda: pm_time,
+    )
+    context = asyncio.run(load("trade-1"))
+    assert context is not None
+    assert context["macro_contexts"]["D1"] == {"freshness": "current", "context": d1}
+    assert context["macro_contexts"]["H4"] == {"freshness": "current", "context": h4}
+    assert context["latest_trader_intent"]["decision_time_ms"] == pm_time
+    assert context["latest_trader_intent_freshness"] == "current"
+
+    # Change the ambient files after loading. This wake and its read tool must
+    # continue to use the exact D1/H4 packet assembled for this snapshot.
+    _write_macro_context(
+        tmp_path,
+        "D1",
+        _context_v2("D1", expected_d1_time, primary_regime="bear-trend"),
+    )
+    _write_latest_trader(tmp_path, decision_time_ms=pm_time + 1)
+
+    seen = {}
+
+    class CaptureRunner:
+        async def run(self, role, **kwargs):
+            seen["role"] = role
+            seen["prompt"] = kwargs["prompt"]
+            seen["market_context"] = await (
+                kwargs["market_tools"]["get_market_context"]()
+            )
+            return {
+                "schema": "brooks.management-decision.v2",
+                "role": "POSITION_MANAGER",
+                "decision_time_ms": pm_time,
+                "action": "HOLD",
+                "position_ids": ["p1"],
+                "reason": "Maintain the bound position.",
+                "evidence": {
+                    "observations": ["Position remains open."],
+                    "evidence_for": ["No management trigger."],
+                    "evidence_against": ["Market conditions can change."],
+                },
+                "risk": {
+                    "exposure_before": ["Long position."],
+                    "exposure_after": ["Long position."],
+                    "protection_status": "unknown",
+                    "costs_considered": ["No execution cost."],
+                    "uncertainty": "medium",
+                },
+                "execution": {
+                    "orders": [],
+                    "cancel_order_ids": [],
+                    "replace_orders": [],
+                },
+                "hedge_plan": None,
+                "market_analysis_request": None,
+                "conditions_that_change_action": ["A structural change."],
+            }
+
+    manager = PositionManager(
+        runner=CaptureRunner(),
+        load_context=lambda correlation_id: context,
+        save_decision=lambda correlation_id, decision: None,
+        publish=lambda event: None,
+        candle_source=lambda symbol, timeframe, limit: [],
+        record_market_read=lambda correlation_id, record: None,
+    )
+    decision = asyncio.run(
+        manager.handle_event(
+            {
+                "type": "POSITION_CHANGED",
+                "correlation_id": "trade-1",
+                "event_id": "wake-1",
+            }
+        )
+    )
+
+    assert decision.action == "HOLD"
+    assert seen["role"] == "POSITION_MANAGER"
+    prompt = seen["prompt"]
+    assert prompt["macro_contexts"] == context["macro_contexts"]
+    assert prompt["latest_trader_intent_freshness"] == "current"
+    d1_prompt = prompt["macro_contexts"]["D1"]["context"]
+    h4_prompt = prompt["macro_contexts"]["H4"]["context"]
+    assert d1_prompt["primary_regime"] == "trading-range"
+    assert d1_prompt["phase"] == "range"
+    assert d1_prompt["evidence_for"] == d1["evidence_for"]
+    assert d1_prompt["evidence_against"] == d1["evidence_against"]
+    assert h4_prompt["primary_regime"] == "bull-trend"
+    assert h4_prompt["phase"] == "channel"
+    assert h4_prompt["evidence_for"] == h4["evidence_for"]
+    assert seen["market_context"] == prompt["macro_contexts"]
+
+
+def test_pm_snapshot_filters_unusable_macro_and_trader_contexts(tmp_path):
+    _write_state(tmp_path)
+    client = _Client()
+    load = build_pm_load_context(
+        client,
+        account_name=ACCOUNT,
+        connector_name=CONNECTOR,
+        controller_id=CONTROLLER,
+        state_root=tmp_path,
+        now_fn=lambda: NOW_MS,
+    )
+
+    stale_d1_time = ((NOW_MS + 1) // DAY_MS) * DAY_MS - 1 - DAY_MS
+    _write_macro_context(tmp_path, "D1", _context_v2("D1", stale_d1_time))
+    _write_latest_trader(tmp_path, decision_time_ms=NOW_MS + 1)
+    stale = asyncio.run(load("trade-1"))
+    assert stale is not None  # Unusable ambient context does not block MAIN.
+    assert stale["macro_contexts"]["D1"]["freshness"] == "stale"
+    assert stale["macro_contexts"]["D1"]["context"]["evidence_for"] == [
+        "D1 supporting evidence"
+    ]
+    assert stale["macro_contexts"]["H4"] == {"freshness": "missing", "context": None}
+    assert stale["latest_trader_intent"] is None
+    assert stale["latest_trader_intent_freshness"] == "missing"
+
+    # A same-symbol future V2 context and a current other-symbol context are
+    # both excluded from this BTC snapshot; a valid ETH TraderIntent is too.
+    _write_macro_context(
+        tmp_path, "D1", _context_v2("D1", NOW_MS + 1, primary_regime="bear-trend")
+    )
+    _write_macro_context(
+        tmp_path, "H4", _context_v2("H4", NOW_MS - 1, symbol="ETH-USDT")
+    )
+    _write_latest_trader(tmp_path, decision_time_ms=NOW_MS - 1, symbol="ETH-USDT")
+    hidden = asyncio.run(load("trade-1"))
+    assert hidden is not None
+    assert hidden["macro_contexts"] == {
+        "D1": {"freshness": "missing", "context": None},
+        "H4": {"freshness": "missing", "context": None},
+    }
+    assert hidden["latest_trader_intent"] is None
+    assert hidden["latest_trader_intent_freshness"] == "missing"
 
 
 @pytest.mark.parametrize("failure_mode", ["missing", "raises", "incomplete"])

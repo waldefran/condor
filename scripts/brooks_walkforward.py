@@ -324,13 +324,30 @@ class WalkForward:
         cycles_file = source / "cycles.jsonl"
         if not cycles_file.is_file():
             raise ValueError(f"Recorded source lacks cycles.jsonl: {source}")
+        selected = getattr(self, "only_trade", None)
+        selected_seen = False
         for line_no, line in enumerate(cycles_file.read_text().splitlines(), 1):
             row = json.loads(line)
-            if getattr(self, "only_trade", None) and row["correlation_id"] != self.only_trade:
-                continue
+            is_selected = bool(selected and row.get("correlation_id") == selected)
+            if selected:
+                if is_selected:
+                    selected_seen = True
+                    kind = "recorded_trader"
+                elif (not selected_seen or row.get("symbol") != self.symbol
+                    or row.get("status") != "completed"):
+                    # A selected-trade replay may refresh the latest Trader
+                    # analysis from later accepted source cycles. Those
+                    # context-only updates never become entry candidates.
+                    continue
+                else:
+                    kind = "recorded_trader_context"
+            else:
+                kind = "recorded_trader"
             decision = row["decision_time_ms"]
             due = row["simulation_completed_at_ms"]
             if not (self.start - HOUR <= decision < self.end and due < self.end):
+                continue
+            if kind == "recorded_trader_context" and due < self.start:
                 continue
             if due < decision or row["symbol"] != self.symbol:
                 raise ValueError(f"Invalid recorded Trader timing/symbol at source line {line_no}")
@@ -346,7 +363,7 @@ class WalkForward:
             packet_file = row.get("frozen_packet_file")
             if not packet_file or not (source / packet_file).is_file():
                 raise ValueError(f"Source cycle lacks frozen packet at line {line_no}")
-            self.enqueue(due, 0, "recorded_trader", source_line=line_no,
+            self.enqueue(due, 0, kind, source_line=line_no,
                 decision=decision)
         if getattr(self, "only_trade", None) and not any(
             item["kind"] == "recorded_trader" for item in self.agenda
@@ -415,6 +432,21 @@ class WalkForward:
         if row["simulation_completed_at_ms"] != item["due"] or row["decision_time_ms"] != item["decision"]:
             raise ValueError("Recorded Trader output changed after scheduling")
         intent = row.get("intent")
+        if item["kind"] == "recorded_trader_context":
+            if row.get("status") != "completed" or intent is None:
+                raise ValueError("Recorded Trader context is no longer an accepted output")
+            validated = TradeIntentV2.model_validate(intent)
+            payload = validated.model_dump(mode="json")
+            self.store.save_trader_intent(payload)
+            append_json(self.root / "trader_context_updates.jsonl", {
+                "decision": validated.decision,
+                "decision_time_ms": validated.decision_time_ms,
+                "available_at_ms": item["due"],
+                "source_line": item["source_line"],
+                "correlation_id": row["correlation_id"],
+                "intent": payload,
+            })
+            return
         if intent is not None:
             validated = TradeIntentV2.model_validate(intent)
             self.store.save_trader_intent(validated.model_dump(mode="json"))
@@ -510,15 +542,17 @@ class WalkForward:
         if state is None:
             return context
         context["management_policy"].update(
-            policy_id="brooks-long-lock-selected-operation", version="experimental-1",
-            protection_semantics="LONG limit locks exposure through a confirmed hedge; final operation exits require nonnegative combined net",
+            policy_id="brooks-long-lock-selected-operation", version="experimental-2",
+            protection_semantics="PM may hedge proactively to protect profit or contain deterioration at any wake; 5R is the mandatory fallback, and final operation exits require nonnegative combined net",
             applicable_risk_behavior={
+                **(context["management_policy"].get("applicable_risk_behavior") or {}),
                 "long_exit_policy": "lock_and_wait_nonnegative_net",
                 "operation_correlation_id": self.only_trade,
                 "projection_scope": "MAIN_PLUS_HEDGE_NET",
                 "funding_mode": "not_modeled",
                 "short_stop_policy": "normal",
                 "duration_policy": "pm_managed_long",
+                "unlock_policy": "fresh_closed_m15_recovery_structure",
                 "lock_trigger": "observed_closed_m1_combined_net_5R" if self.max_unhedged_loss_r == "5" else "observed_closed_m1",
                 "lock_ratio": "1", "max_unhedged_loss_r": self.max_unhedged_loss_r,
                 "policy_state": state,

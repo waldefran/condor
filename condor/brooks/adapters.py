@@ -1956,7 +1956,7 @@ async def _pm_snapshot(
     if not isinstance(original_raw, dict):
         return None
     original_intent = TradeIntentV2.model_validate(original_raw).model_dump(mode="json")
-    if original_intent["symbol"] != symbol:
+    if original_intent["symbol"] != symbol or original_intent["decision_time_ms"] > now_ms:
         return None
     # Supervisor store documents (GM trades or brooks_state). Management history must be a
     # JSONL list of mappings; latest ambient intents degrade to None.
@@ -1968,8 +1968,14 @@ async def _pm_snapshot(
     history_rows = BrooksStore.read_jsonl(history_path)
     if any(not isinstance(row, dict) for row in history_rows):
         return None
-    latest_trader = _pm_latest_intent(root, "trader", symbol)
-    latest_market = _pm_latest_context(root, symbol)
+    latest_trader = _pm_latest_intent(root, "trader", symbol, decision_time_ms=now_ms)
+    latest_market = _pm_latest_context(root, symbol, decision_time_ms=now_ms)
+    macro_contexts = _pm_macro_contexts(root, symbol, now_ms)
+    latest_h1_close = ((now_ms + 1) // 3_600_000) * 3_600_000 - 1
+    latest_trader_freshness = (
+        "missing" if latest_trader is None else
+        "current" if latest_trader["decision_time_ms"] == latest_h1_close else "stale"
+    )
     # Bound executors: the read itself must be complete; rows without an
     # identity cannot be referenced, so they are skipped, never guessed.
     executors_result = await client.executors.search_executors(
@@ -2224,6 +2230,12 @@ async def _pm_snapshot(
                 "gm-compiled: PM decisions are advisory; only the "
                 "deterministic GM may write to the venue."
             ),
+            "applicable_risk_behavior": {
+                "management_objective": "maximize_operation_net_profit",
+                "discretionary_hedge_timing": "any_management_wake",
+                "hedge_cost_policy": "account_in_net_never_standalone_veto",
+                "hedge_objectives": ["protect_open_profit", "limit_structural_deterioration"],
+            },
         }
     ).model_dump(mode="json")
     margin_health = _pm_margin_health(
@@ -2289,6 +2301,8 @@ async def _pm_snapshot(
         "original_trade_intent": original_intent,
         "latest_trader_intent": latest_trader,
         "latest_market_context": latest_market,
+        "macro_contexts": macro_contexts,
+        "latest_trader_intent_freshness": latest_trader_freshness,
         "market_analysis": None,
         "management_history": history_rows[-10:],
         "management_policy": management_policy,
@@ -2297,7 +2311,9 @@ async def _pm_snapshot(
     }
 
 
-def _pm_latest_intent(root: Path, role: str, symbol: str) -> dict[str, Any] | None:
+def _pm_latest_intent(
+    root: Path, role: str, symbol: str, *, decision_time_ms: int | None = None
+) -> dict[str, Any] | None:
     """Latest ambient TraderIntent for this symbol; ``None`` when not usable."""
     from condor.brooks.contracts import TradeIntentV2
 
@@ -2308,10 +2324,16 @@ def _pm_latest_intent(root: Path, role: str, symbol: str) -> dict[str, Any] | No
         intent = TradeIntentV2.model_validate(raw).model_dump(mode="json")
     except Exception:
         return None
-    return intent if intent.get("symbol") == symbol else None
+    if intent.get("symbol") != symbol or (
+        decision_time_ms is not None and intent["decision_time_ms"] > decision_time_ms
+    ):
+        return None
+    return intent
 
 
-def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
+def _pm_latest_context(
+    root: Path, symbol: str, *, decision_time_ms: int | None = None
+) -> dict[str, Any] | None:
     """Latest ambient MarketContext for this symbol; ``None`` when not usable."""
     from condor.brooks.contracts import MarketContextV1, MarketContextV2
     from condor.brooks.store import BrooksStore
@@ -2324,7 +2346,10 @@ def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
             legacy = MarketContextV1.model_validate(raw).model_dump(mode="json")
     except Exception:
         pass
-    if legacy is not None and legacy.get("symbol") != symbol:
+    if legacy is not None and (
+        legacy.get("symbol") != symbol
+        or (decision_time_ms is not None and legacy["decision_time_ms"] > decision_time_ms)
+    ):
         legacy = None
 
     # PM still accepts the V1 shape. Bridge the newer D1 structural record at
@@ -2337,7 +2362,9 @@ def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
         v2 = MarketContextV2.model_validate(raw_v2) if raw_v2 else None
     except Exception:
         v2 = None
-    if v2 is None or v2.window_bars != 120:
+    if v2 is None or v2.window_bars != 120 or (
+        decision_time_ms is not None and v2.decision_time_ms > decision_time_ms
+    ):
         return legacy
     if legacy is not None and legacy["decision_time_ms"] > v2.decision_time_ms:
         return legacy
@@ -2352,6 +2379,36 @@ def _pm_latest_context(root: Path, symbol: str) -> dict[str, Any] | None:
         "uncertainty": v2.missing_information or ["V2 D1 context adapted for the V1 PM input."],
     }
     return MarketContextV1.model_validate(bridged).model_dump(mode="json")
+
+
+def _pm_macro_contexts(root: Path, symbol: str, decision_time_ms: int) -> dict[str, Any]:
+    """Full, fallible D1/H4 interpretations frozen for this PM wake."""
+    from condor.brooks.contracts import MarketContextV2
+    from condor.brooks.store import BrooksStore
+
+    store = BrooksStore(_pm_ambient_root(root).parent)
+    result = {}
+    for label, interval in (("D1", 86_400_000), ("H4", 14_400_000)):
+        try:
+            raw = store.read_market_context(label, symbol=symbol)
+            context = MarketContextV2.model_validate(raw) if raw else None
+        except Exception:
+            context = None
+        if (
+            context is None or context.symbol != symbol or context.timeframe != label
+            or context.decision_time_ms > decision_time_ms
+        ):
+            result[label] = {"freshness": "missing", "context": None}
+            continue
+        expected_close = ((decision_time_ms + 1) // interval) * interval - 1
+        result[label] = {
+            "freshness": (
+                "current" if context.window_bars == 120
+                and context.decision_time_ms == expected_close else "stale"
+            ),
+            "context": context.model_dump(mode="json"),
+        }
+    return result
 
 
 def _pm_ambient_root(root: Path | str) -> Path:
