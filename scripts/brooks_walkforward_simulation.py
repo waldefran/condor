@@ -20,7 +20,7 @@ from dataclasses import asdict, dataclass, field, fields
 from decimal import Decimal, InvalidOperation
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from condor.brooks.adapters import (
     HummingbotAccountReader,
@@ -28,6 +28,7 @@ from condor.brooks.adapters import (
     build_pm_load_context,
 )
 from condor.brooks.execution import ExecutionRejected
+from scripts.brooks_long_lock_policy import projected_operation_exit_net
 
 
 _D0 = Decimal(0)
@@ -120,6 +121,11 @@ class _Trade:
     ambiguous_bar_count: int = 0
     partial_entry_bar_count: int = 0
     management_actions: list[dict[str, Any]] = field(default_factory=list)
+    protection_limit: Decimal | None = None
+    protection_armed: bool = True
+    last_lock_proof: dict[str, Any] | None = None
+    duration_expires_at_ms: int | None = None
+    duration_notified_at_ms: int | None = None
 
     @property
     def is_open(self) -> bool:
@@ -377,6 +383,9 @@ class WalkForwardExecutionPort:
             slippage_cost=slip_cost,
             max_favorable_price=fill,
             max_adverse_price=fill,
+            protection_limit=stop_price if owner.long_lock_policy and side == "LONG" else None,
+            duration_expires_at_ms=(owner.now_ms + time_limit_sec * 1000)
+                if owner.long_lock_policy and side == "LONG" else None,
         )
         trade.management_actions.append(
             {
@@ -524,6 +533,8 @@ class WalkForwardExecutionPort:
             owner._add_executor(exec_id, symbol, status="CLOSED", position_id=hedge.position_id)
             owner._add_hold(exec_id, symbol, hedge.side, quantity)
         owner._record_equity(event="hedge_write")
+        if owner.on_hedge_write is not None:
+            owner.on_hedge_write()
         return exec_id
 
 
@@ -553,6 +564,8 @@ class WalkForwardVenueAdapter:
         controller_id: str = "brooks-walkforward",
         candle_source: Any | None = None,
         now_fn: Any | None = None,
+        long_lock_policy: bool = False,
+        on_hedge_write: Callable[[], None] | None = None,
     ) -> None:
         if not isinstance(symbol, str) or not symbol.strip():
             raise ValueError("symbol is required")
@@ -578,6 +591,10 @@ class WalkForwardVenueAdapter:
         self.connector_name = connector_name
         self.controller_id = controller_id
         self.candle_source = candle_source
+        self.long_lock_policy = bool(long_lock_policy)
+        self.on_hedge_write = on_hedge_write
+        self.long_lock_requests: list[dict[str, Any]] = []
+        self.duration_requests: list[dict[str, Any]] = []
         self._now_fn = now_fn
         self._time_ms = 0
         self.current_bar: dict[str, Any] | None = None
@@ -866,6 +883,62 @@ class WalkForwardVenueAdapter:
                     return pos
         raise ExecutionRejected("simulated MAIN position is missing")
 
+    def long_policy_context(self, correlation_id: str) -> dict[str, Any] | None:
+        """Current operation liquidation estimate for the PM's bounded snapshot."""
+        trade = self._trade_for(correlation_id)
+        if trade is None:
+            return None
+        legs = [pos for pos in self._positions.values()
+                if pos.correlation_id == correlation_id and pos.quantity > 0]
+        main_quantity = sum((pos.quantity for pos in legs if pos.role == "MAIN"), _D0)
+        hedge_quantity = sum((pos.quantity for pos in legs if pos.role == "HEDGE"), _D0)
+        projected = projected_operation_exit_net(
+            trade.realized_gross_pnl, trade.fees,
+            [(pos.side, pos.quantity, pos.entry_price) for pos in legs],
+            self.mark_price, self.taker_fee_rate, self.slippage_bps)
+        return {
+            "main_side": trade.side,
+            "main_quantity": str(main_quantity),
+            "hedge_quantity": str(hedge_quantity),
+            "projected_exit_net": str(projected),
+            "realized_net": str(trade.realized_gross_pnl - trade.fees),
+            "protection_limit": str(trade.protection_limit) if trade.protection_limit is not None else None,
+            "protection_armed": trade.protection_armed,
+            "last_lock_proof": trade.last_lock_proof,
+            "duration_expires_at_ms": trade.duration_expires_at_ms,
+        }
+
+    def rearm_long_protection(self, correlation_id: str, limit: Decimal | str | None = None) -> None:
+        """Arm a new protection episode after the host has handled a lock request."""
+        trade = self._trade_for(correlation_id)
+        if not self.long_lock_policy or trade is None or trade.side != "LONG" or not trade.is_open:
+            raise ValueError("no open locked LONG operation")
+        if limit is not None:
+            trade.protection_limit = _decimal(limit, "protection_limit", positive=True)
+        trade.protection_armed = True
+
+    def prolong_long_duration(self, correlation_id: str, expires_at_ms: int) -> None:
+        trade = self._trade_for(correlation_id)
+        if not self.long_lock_policy or trade is None or trade.side != "LONG" or not trade.is_open:
+            raise ValueError("no open locked LONG operation")
+        if isinstance(expires_at_ms, bool) or not isinstance(expires_at_ms, int) or expires_at_ms <= self.now_ms:
+            raise ValueError("new duration expiry must be later than current simulation time")
+        trade.duration_expires_at_ms = expires_at_ms
+        trade.duration_notified_at_ms = None
+
+    def _guard_main_long_exit(self, pos: _Position, quantity: Decimal) -> None:
+        if not self.long_lock_policy or pos.role != "MAIN" or pos.side != "LONG":
+            return
+        trade = self._trade_for(pos.correlation_id)
+        if trade is None:
+            raise ExecutionRejected("locked LONG operation lacks trade record")
+        context = self.long_policy_context(trade.correlation_id)
+        assert context is not None
+        if quantity == pos.quantity and Decimal(context["hedge_quantity"]) > 0:
+            raise ExecutionRejected("locked LONG cannot close MAIN while hedge remains")
+        if Decimal(context["projected_exit_net"]) < 0:
+            raise ExecutionRejected("locked LONG projected operation exit is negative")
+
     def _close_main_quantity(
         self,
         *,
@@ -878,6 +951,7 @@ class WalkForwardVenueAdapter:
         pos = self._main_position(symbol, side)
         if quantity <= 0 or quantity > pos.quantity:
             raise ExecutionRejected("simulated MAIN close quantity is invalid")
+        self._guard_main_long_exit(pos, quantity)
         exec_id = self._next_executor_id()
         self._add_executor(exec_id, symbol, status=executor_status, position_id=pos.position_id)
         self._add_hold(exec_id, symbol, side, quantity)
@@ -906,6 +980,7 @@ class WalkForwardVenueAdapter:
     ) -> None:
         if quantity <= 0 or quantity > pos.quantity:
             raise ExecutionRejected("simulated close quantity exceeds open leg")
+        self._guard_main_long_exit(pos, quantity)
         sign = _side_sign(pos.side)
         fill = self._exit_fill(self.mark_price, sign)
         gross = (fill - pos.entry_price) * quantity * sign
@@ -1010,7 +1085,8 @@ class WalkForwardVenueAdapter:
         low = _decimal(bar.get("low"), "bar.low", positive=True)
         opening = _decimal(bar.get("open"), "bar.open", positive=True)
         sign = _side_sign(main.side)
-        stop = main.stop_price
+        locked_long = self.long_lock_policy and main.side == "LONG" and trade is not None
+        stop = trade.protection_limit if locked_long else main.stop_price
         target = main.target_price
         stop_hit = bool(stop is not None and (low <= stop if sign > 0 else high >= stop))
         target_hit = bool(target is not None and (high >= target if sign > 0 else low <= target))
@@ -1044,6 +1120,54 @@ class WalkForwardVenueAdapter:
                         "note": "OHLC includes prices from before the market fill.",
                     }
                 )
+        elif locked_long:
+            hedge_quantity = sum((pos.quantity for pos in self._positions.values()
+                if pos.role == "HEDGE" and pos.correlation_id == main.correlation_id), _D0)
+            if stop_hit and trade.protection_armed and hedge_quantity < main.quantity:
+                proof = {
+                    "correlation_id": trade.correlation_id,
+                    "bar_open_time_ms": open_ms,
+                    "bar_close_time_ms": close_ms,
+                    "protection_limit": str(stop),
+                    "low": str(low),
+                    "high": str(high),
+                    "close": str(bar.get("close")),
+                    "ambiguous_target_touch": ambiguous,
+                    "observed_at_ms": close_ms,
+                }
+                self.long_lock_requests.append(proof)
+                trade.last_lock_proof = proof
+                trade.protection_armed = False
+                self.executions.append({"event": "long_lock_requested", **proof})
+            if (trade.duration_expires_at_ms is not None
+                and close_ms >= trade.duration_expires_at_ms
+                and trade.duration_notified_at_ms != trade.duration_expires_at_ms):
+                request = {"correlation_id": trade.correlation_id,
+                    "bar_close_time_ms": close_ms,
+                    "expires_at_ms": trade.duration_expires_at_ms,
+                    "observed_at_ms": close_ms}
+                self.duration_requests.append(request)
+                trade.duration_notified_at_ms = trade.duration_expires_at_ms
+                self.executions.append({"event": "long_duration_expired", **request})
+            if reason == "TAKE_PROFIT":
+                if hedge_quantity > 0:
+                    reason = None
+                else:
+                    original_mark = self.mark_price
+                    self.mark_price = exit_mark
+                    try:
+                        self._guard_main_long_exit(main, main.quantity)
+                    except ExecutionRejected:
+                        reason = None
+                    finally:
+                        self.mark_price = original_mark
+            else:
+                # Stops request protection and duration expiry requests a PM wake.
+                # Neither is an intrabar LONG liquidation.
+                reason = None
+            if reason is None:
+                exit_mark = None
+            self._update_excursions(main, bar)
         else:
             excursion_bar = dict(bar)
             if reason == "STOP_LOSS" and exit_mark is not None:
@@ -1145,6 +1269,9 @@ class WalkForwardVenueAdapter:
             ],
             "entry_submissions": list(self.entry_submissions),
             "pending_intents": list(self.pending_intents),
+            "long_lock_policy": self.long_lock_policy,
+            "long_lock_requests": list(self.long_lock_requests),
+            "duration_requests": list(self.duration_requests),
             "open_position_count": sum(pos.quantity > 0 for pos in self._positions.values()),
             "open_trade_count": sum(trade.is_open for trade in self.trades),
             "entry_submissions": list(self.entry_submissions),
@@ -1216,6 +1343,11 @@ class WalkForwardVenueAdapter:
             "trigger_kind": trade.trigger_kind,
             "submitted_order_type": trade.submitted_order_type,
             "management_actions": [dict(action) for action in trade.management_actions],
+            "protection_limit": str(trade.protection_limit) if trade.protection_limit is not None else None,
+            "protection_armed": trade.protection_armed,
+            "last_lock_proof": trade.last_lock_proof,
+            "duration_expires_at_ms": trade.duration_expires_at_ms,
+            "duration_notified_at_ms": trade.duration_notified_at_ms,
         }
 
     def trades_dump(self) -> list[dict[str, Any]]:
@@ -1255,6 +1387,7 @@ class WalkForwardVenueAdapter:
                 "account_name": self.account_name,
                 "connector_name": self.connector_name,
                 "controller_id": self.controller_id,
+                "long_lock_policy": self.long_lock_policy,
             },
             "now_ms": self.now_ms,
             "time_ms": self._time_ms,
@@ -1273,6 +1406,8 @@ class WalkForwardVenueAdapter:
             "trades": [asdict(row) for row in self.trades],
             "entry_submissions": self.entry_submissions,
             "pending_intents": self.pending_intents,
+            "long_lock_requests": self.long_lock_requests,
+            "duration_requests": self.duration_requests,
             "executions": self.executions,
             "equity_curve": self.equity_curve,
             "active_correlation_id": self.active_correlation_id,
@@ -1303,8 +1438,12 @@ class WalkForwardVenueAdapter:
             "account_name": self.account_name,
             "connector_name": self.connector_name,
             "controller_id": self.controller_id,
+            "long_lock_policy": self.long_lock_policy,
         }
-        if payload.get("config") != expected:
+        checkpoint_config = dict(payload.get("config") or {})
+        if "long_lock_policy" not in checkpoint_config and not self.long_lock_policy:
+            checkpoint_config["long_lock_policy"] = False
+        if checkpoint_config != expected:
             raise ValueError("checkpoint config differs from the active simulation")
         self._time_ms = int(payload.get("time_ms", payload.get("now_ms", 0)))
         self.mark_price = _decimal(payload["mark_price"], "checkpoint.mark_price", positive=True)
@@ -1336,6 +1475,7 @@ class WalkForwardVenueAdapter:
             "target_price", "submission_mark", "realized_gross_pnl", "fees",
             "slippage_cost", "max_favorable_price", "max_adverse_price",
             "max_favorable_r", "max_adverse_r", "exit_price",
+            "protection_limit",
         }
         self.trades = []
         for raw in payload.get("trades", []):
@@ -1347,6 +1487,8 @@ class WalkForwardVenueAdapter:
             row = {name: value for name, value in row.items() if name in valid_fields}
             self.trades.append(_Trade(**row))
         self.pending_intents = list(payload.get("pending_intents", []))
+        self.long_lock_requests = list(payload.get("long_lock_requests", []))
+        self.duration_requests = list(payload.get("duration_requests", []))
         self.entry_submissions = list(payload.get("entry_submissions", []))
         self.executions = list(payload.get("executions", []))
         self.equity_curve = list(payload.get("equity_curve", []))

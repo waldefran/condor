@@ -61,6 +61,14 @@ management and execution policy. They are not Al Brooks teachings. Preserve
 the typed management policy, authoritative hedge ownership, and reconciliation
 rules when applying any price-action judgment.
 
+For the first-operation `lock_and_wait_nonnegative_net` experiment, follow the
+opt-in procedure in the parent position-management skill. The original
+protection limit stays fixed; the host locks/re-locks the hedge at 100% on its
+closed-M1 trigger, while PM unlock requires Brooks-supported resumption and a
+closed-M15 reclaim of that limit. Judge exit net across MAIN and HEDGE together;
+do not treat either leg's individual PnL as the operation result. These rules
+are Condor policy, not Al Brooks teachings.
+
 ## Action evidence
 
 - **HOLD:** state is coherent, protection is adequate, and no supplied

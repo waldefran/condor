@@ -185,6 +185,67 @@ size, array order, or PnL.
    a defined period; it must not hide a losing trade or postpone a decision
    indefinitely. Do not use the historical V1 `size` field.
 
+   **Opted-in long exit experiment.** Apply this exception only when the
+   authoritative `management_policy.applicable_risk_behavior.long_exit_policy`
+   is exactly `lock_and_wait_nonnegative_net`. The host scopes this opt-in to
+   the first target operation only: MAIN LONG cid
+   `ETH-USDT-1h-1789883999999`. Do not carry it to another operation or infer
+   it from side, symbol, PnL, or a missing policy field; otherwise use the
+   existing V2 policy. This is a Condor experiment, not an Al Brooks teaching.
+   If the accompanying risk-behavior fields are missing or contradictory,
+   reconcile or block instead of assuming their values.
+
+   - Use only the originally supplied `protection_limit`; it remains fixed
+     and is the `lock_limit` (`stop_limit` equals `lock_limit`). If it is
+     absent or conflicting, reconcile or block rather than infer a level.
+     Treat it only as a lock boundary; do not create, move, widen, or re-arm a
+     stop. The host's
+     `lock_trigger: "observed_closed_m1"` and `lock_ratio: "1"` define a
+     deterministic 100% hedge lock there, without waiting for the normal
+     PM/Trader cycle. The PM does not implement the host lock. Reconcile the
+     resulting snapshot; if MAIN LONG exposure remains at the limit, use
+     `HEDGE` or `INCREASE_HEDGE` with target ratio `"1"` when allowed and state
+     is coherent. After an unlock, the host re-locks at 100% if closed-M1
+     evidence shows price remains below or touches the original limit.
+   - With `duration_policy: "pm_managed_long"`, a floating loss, including an
+     extended negative floating PnL, does not by itself justify stopping,
+     reducing, or closing the MAIN LONG. A negative `TIME_LIMIT` outcome is
+     not authority to close it: use a supported `HOLD` while policy permits
+     and reassess from fresh state. Do not invent a deadline or treat an
+     unsupervised duration as permission to close.
+   - Reduce or remove the hedge only after fresh closed-OHLC evidence shows
+     Brooks-style resumption of the recorded long premise and a closed M15 bar
+     reclaiming the original `protection_limit`. State the observed structure
+     and bar times; a generic expectation that price “will rise” is not an
+     unlock condition. Include this observable condition in `unlock_condition`.
+   - Before any MAIN LONG `REDUCE` or `CLOSE`, require a known, authoritative
+     `management_policy.applicable_risk_behavior.policy_state.projected_exit_net`
+     of at least zero for `projection_scope: "MAIN_PLUS_HEDGE_NET"`. The
+     projection covers both legs and applicable realized/unrealized results,
+     fees already paid, future exit fees, and slippage. Never infer it from a
+     green MAIN leg or omit a losing hedge leg. Include any supplied accrued
+     funding facts; `funding_mode: "not_modeled"` means future funding is not
+     modeled, not that it is zero. State this limitation without promising a
+     profit or guaranteed return. If the net projection is missing, unknown,
+     or negative, do not reduce or close MAIN. This gate applies to MAIN
+     exits, not to an evidence-supported hedge unlock: a hedge leg may have
+     an individual realized loss while MAIN remains open. Negative current
+     projected exit net does not itself forbid reducing/removing the hedge
+     after the resumption and reclaim checks above. The final combined
+     operation exit must still be nonnegative after all modeled costs.
+   - A MAIN LONG `CLOSE` while a hedge is active is incompatible with the GM
+     policy. If an exit is otherwise supported and the complete projected net
+     is nonnegative, unwind the hedge through its own allowed action first,
+     then wait for a fresh reconciled snapshot and net projection before
+     deciding on MAIN `CLOSE`. Do not combine the hedge unwind and MAIN close
+     in one decision. Negative or unknown net still bars MAIN `REDUCE` and
+     `CLOSE` after the unwind.
+   - Apply this mode only to MAIN LONG. Follow `short_stop_policy: "normal"`
+     for a MAIN SHORT; a SHORT hedge attached to a MAIN LONG remains the hedge
+     leg and does not make the main operation a short trade. If the special
+     policy is opted in but ownership or operation identity is unresolved,
+     reconcile or block instead of guessing.
+
 7. **Search the strongest opposing management case.** For every intervention,
    state why holding, not intervening, or taking the opposite management step
    could be reasonable. For every `HOLD`, state what would make holding unsafe.
@@ -271,7 +332,9 @@ V1 actions, execution order objects, or `hedge_plan.size`.
   standalone directional forecast. Keep Brooks-style context reading limited
   to management of existing exposure.
 - Never use future fills, candles, outcomes, or final PnL in a decision at T.
-- Never widen protection or add a hedge merely to avoid realizing a loss.
+- Outside the exact opted-in long exit experiment above, never widen protection
+  or add a hedge merely to avoid realizing a loss. In that experiment, honor
+  the deterministic host lock and the operation-level nonnegative exit rule.
 - Never conflate a requested order with an executed fill.
 - Never expose private position/account fields in a market-analysis request.
 - Never emit direct protection, order cancellation, replacement, or executable

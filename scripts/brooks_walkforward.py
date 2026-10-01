@@ -153,6 +153,10 @@ class WalkForward:
             raise ValueError("Replay boundaries must be ascending absolute UTC hours")
         self.symbol = args.symbol
         self.recorded_run = getattr(args, "recorded_run", None)
+        self.only_trade = getattr(args, "only_trade", None)
+        self.long_lock_policy = getattr(args, "long_lock_policy", False)
+        if self.long_lock_policy and (self.recorded_run is None or not self.only_trade):
+            raise ValueError("Long lock experiment requires --recorded-run and --only-trade")
         self.pending_entries: dict[str, PendingStopState] = {}
         self.pending_events: dict[str, dict[str, Any]] = {}
         if self.recorded_run is not None:
@@ -173,6 +177,8 @@ class WalkForward:
             account_name="walkforward", connector_name="binance_perpetual_demo",
             controller_id="brooks-walkforward-10d", now_fn=lambda: self.now,
             candle_source=self.source,
+            long_lock_policy=self.long_lock_policy,
+            on_hedge_write=self.observe_hedge_write,
         )
         known_bar = next(bar for bar in reversed(self.minute_bars) if bar["close_time_ms"] <= self.now)
         self.venue.set_market(known_bar, decision_time_ms=self.now)
@@ -189,7 +195,7 @@ class WalkForward:
         self.contexts = {tf: ContextAnalystConsumer(args.agent_key, self.source, self.store, self.events, timeframe=tf)
                          for tf in ("1d", "4h")}
         self.pm_interval_sec = BrooksConfig().pm.frequency_sec
-        self.pm = PositionManager(load_context=self.venue.pm_load_context, save_decision=self.save_pm,
+        self.pm = PositionManager(load_context=self.load_pm_context, save_decision=self.save_pm,
             publish=self.events, candle_source=self.source, record_market_read=self.record_pm_read,
             list_active_correlations=self.active_correlations, agent_key=args.agent_key)
         self.watcher = PositionWatcher(
@@ -263,11 +269,25 @@ class WalkForward:
                 "invalidation, expiry or a newer same-symbol ENTER cancels a pending candidate; "
                 "NO_TRADE does not cancel an earlier candidate"
             )
+        if self.only_trade:
+            self.manifest["only_trade"] = self.only_trade
+        if self.long_lock_policy:
+            self.manifest["script_sha256"]["brooks_long_lock_policy.py"] = hashlib.sha256(
+                (REPO / "scripts/brooks_long_lock_policy.py").read_bytes()).hexdigest()
+            self.manifest["assumptions"]["long_exit_policy"] = (
+                "lock_and_wait_nonnegative_net: no automatic LONG stop or time-limit exit; "
+                "observed closed M1 stop touch requests full hedge through existing GM; "
+                "MAIN close/reduction blocked if projected MAIN+HEDGE liquidation net is negative; "
+                "SHORT MAIN barriers unchanged; management horizon is finite"
+            )
         checkpoint = self.args.state / "walkforward_checkpoint.json"
         if checkpoint.exists():
             state = json.loads(checkpoint.read_text())
             if state["git_head"] != args.git_head or state["start_ms"] != self.start or state["end_ms"] != self.end:
                 raise ValueError("Checkpoint identity differs from this replay")
+            if (state.get("only_trade") != self.only_trade
+                or state.get("long_lock_policy", False) != self.long_lock_policy):
+                raise ValueError("Checkpoint selected trade or exit policy differs")
             self.now, self.minute_index = state["now"], state["minute_index"]
             self.agenda, self.sequence = state["agenda"], state["sequence"]
             self.manifest = state["manifest"]
@@ -292,6 +312,8 @@ class WalkForward:
             raise ValueError(f"Recorded source lacks cycles.jsonl: {source}")
         for line_no, line in enumerate(cycles_file.read_text().splitlines(), 1):
             row = json.loads(line)
+            if getattr(self, "only_trade", None) and row["correlation_id"] != self.only_trade:
+                continue
             decision = row["decision_time_ms"]
             due = row["simulation_completed_at_ms"]
             if not (self.start - HOUR <= decision < self.end and due < self.end):
@@ -312,6 +334,10 @@ class WalkForward:
                 raise ValueError(f"Source cycle lacks frozen packet at line {line_no}")
             self.enqueue(due, 0, "recorded_trader", source_line=line_no,
                 decision=decision)
+        if getattr(self, "only_trade", None) and not any(
+            item["kind"] == "recorded_trader" for item in self.agenda
+        ):
+            raise ValueError("Selected trade is not available in this replay window")
         for source_file in sorted((source / "role_runs").glob("*.json")):
             capture = json.loads(source_file.read_text())
             if capture.get("role") != "CONTEXT_ANALYST" or capture.get("host", {}).get("accepted") is not True:
@@ -433,6 +459,7 @@ class WalkForward:
             await self._apply_due_recorded(bar["close_time_ms"] - 1)
             self.now = bar["close_time_ms"]
             self.venue.resolve_executor_bar(bar)
+            await self._protect_long_positions()
             self.venue.set_market(bar, decision_time_ms=self.now)
             await self._apply_due_recorded(self.now)
             if self.now >= self.start:
@@ -446,14 +473,78 @@ class WalkForward:
                     self.venue.now_ms = self.now
                     return
         await self._apply_due_recorded(target)
-        self.now = target
-        self.venue.now_ms = target
+        self.now = max(target, self.now)
+        self.venue.now_ms = self.now
+
+    def observe_hedge_write(self):
+        # The order is observed after the pre-write account snapshot. Advance
+        # execution time by one millisecond; no later candle is supplied.
+        self.now += 1
+        self.venue.now_ms = self.now
 
     def active_correlations(self, symbol):
         return [row["correlation_id"] for row in read_bindings(self.store.root,
             account_name=self.venue.account_name, connector_name=self.venue.connector_name,
             controller_id=self.venue.controller_id)
             if symbol in (None, "", "*", row.get("symbol"))]
+
+    async def load_pm_context(self, cid):
+        context = await self.venue.pm_load_context(cid)
+        if context is None or not self.long_lock_policy:
+            return context
+        state = self.venue.long_policy_context(cid)
+        if state is None:
+            return context
+        context["management_policy"].update(
+            policy_id="brooks-long-lock-first-operation", version="experimental-1",
+            protection_semantics="LONG limit locks exposure through a confirmed hedge; final operation exits require nonnegative combined net",
+            applicable_risk_behavior={
+                "long_exit_policy": "lock_and_wait_nonnegative_net",
+                "projection_scope": "MAIN_PLUS_HEDGE_NET",
+                "funding_mode": "not_modeled",
+                "short_stop_policy": "normal",
+                "duration_policy": "pm_managed_long",
+                "lock_trigger": "observed_closed_m1", "lock_ratio": "1",
+                "policy_state": state,
+            })
+        return context
+
+    async def _protect_long_positions(self):
+        if not getattr(self, "long_lock_policy", False):
+            return
+        while self.venue.long_lock_requests:
+            proof = self.venue.long_lock_requests.pop(0)
+            cid = proof["correlation_id"]
+            binding = self.store.read_trade_document(cid, "binding.json")
+            action = "INCREASE_HEDGE" if binding and binding.get("hedge_position_id") else "HEDGE"
+            record = {"simulation_time_ms": self.now, "proof": proof,
+                "action": action, "target_hedge_ratio": "1"}
+            try:
+                if binding is None:
+                    raise ValueError("LONG protection has no authoritative binding")
+                result = await self.gm.execute_hedge(
+                    correlation_id=cid, decision_id=f"long-lock-{self.now}",
+                    action=action, target_hedge_ratio="1",
+                    plan_main_position_id=binding.get("main_position_id"),
+                    plan_hedge_position_id=binding.get("hedge_position_id"))
+                record["gm_result"] = result
+                if result.get("assessment") != "confirmed":
+                    self.venue.rearm_long_protection(cid)
+            except Exception as exc:
+                record["error"] = {"type": type(exc).__name__, "message": str(exc)}
+                # No fabricated hedge: the next observed M1 can retry after
+                # reconciliation. Failed protection remains visible.
+                logging.exception("LONG protection failed %s", cid)
+                self.venue.rearm_long_protection(cid)
+            append_json(self.root / "long_lock_events.jsonl", record)
+        while self.venue.duration_requests:
+            proof = self.venue.duration_requests.pop(0)
+            append_json(self.root / "long_duration_events.jsonl", proof)
+            await self.events.publish(BrooksEvent(EventType.PM_TIMER, self.symbol,
+                {"duration_limit_reached": proof}, correlation_id=proof["correlation_id"]))
+            self.enqueue(self.now, 20, "pm", event={
+                "type": "PM_TIMER", "symbol": self.symbol,
+                "correlation_id": proof["correlation_id"], "created_at_ms": self.now})
 
     def save_pm(self, cid, decision):
         value = decision.model_dump(mode="json")
@@ -559,12 +650,57 @@ class WalkForward:
             if event.type == EventType.TRADER_INTENT_CREATED:
                 await self._route_entry(event)
             elif event.type == EventType.MANAGEMENT_INTENT_CREATED:
-                result, _ = await self.scoped(f"gm-management-{event.event_id}", lambda: self.gm_consumer.handle(event))
+                rejection = self._long_management_rejection(event)
+                if rejection:
+                    result = BrooksEvent(EventType.GM_MANAGEMENT_REJECTED, event.symbol,
+                        {"reason": rejection, "action": event.payload.get("action"),
+                            "policy": "lock_and_wait_nonnegative_net"},
+                        correlation_id=event.correlation_id, causation_id=event.event_id)
+                    await self.events.publish(result)
+                else:
+                    result, _ = await self.scoped(f"gm-management-{event.event_id}", lambda: self.gm_consumer.handle(event))
+                if (getattr(self, "long_lock_policy", False)
+                    and isinstance(result, BrooksEvent)
+                    and result.type == EventType.GM_MANAGEMENT_APPROVED):
+                    action = event.payload.get("action")
+                    confirmed = result.payload.get("result", {}).get("assessment") == "confirmed"
+                    if action in ("REDUCE_HEDGE", "REMOVE_HEDGE") and confirmed:
+                        self.venue.rearm_long_protection(event.correlation_id)
+                    if action == "HOLD":
+                        state = self.venue.long_policy_context(event.correlation_id)
+                        if state and state.get("duration_expires_at_ms") is not None and state["duration_expires_at_ms"] <= self.now:
+                            self.venue.prolong_long_duration(event.correlation_id,
+                                self.now + self.pm_interval_sec * 1000)
+                            append_json(self.root / "long_duration_events.jsonl", {
+                                "correlation_id": event.correlation_id,
+                                "simulation_time_ms": self.now, "action": "HOLD_EXTENSION",
+                                "expires_at_ms": self.now + self.pm_interval_sec * 1000})
                 append_json(self.root / "management_outcomes.jsonl", {"simulation_time_ms": self.now,
                     "correlation_id": event.correlation_id, "decision": event.payload,
                     "gm_result": result.to_dict() if isinstance(result, BrooksEvent) else result})
             if event.type.value in PM_WAKE_EVENTS and event.type != EventType.PM_TIMER:
                 self.enqueue(self.now, 20, "pm", event=event.to_dict())
+            if (getattr(self, "only_trade", None) == event.correlation_id
+                and event.type == EventType.POSITION_CLOSED):
+                self.manifest["stop_reason"] = "selected_trade_closed"
+                self.stop.set()
+
+    def _long_management_rejection(self, event):
+        if not getattr(self, "long_lock_policy", False):
+            return None
+        if event.payload.get("action") not in ("CLOSE", "REDUCE"):
+            return None
+        state = self.venue.long_policy_context(event.correlation_id)
+        if state is None:
+            return "LONG exit blocked: operation net projection is unavailable"
+        if state.get("main_side") != "LONG":
+            return None
+        projection = state.get("projected_exit_net")
+        if projection is None or Decimal(projection) < 0:
+            return "LONG exit blocked: combined MAIN+HEDGE net after modeled costs is negative or unknown"
+        if Decimal(state["hedge_quantity"]) > 0:
+            return "LONG exit blocked: unwind HEDGE and re-evaluate fresh state before closing/reducing MAIN"
+        return None
 
     async def scoped(self, label: str, operation):
         scope = {"round_id": label, "captures": []}
@@ -618,6 +754,7 @@ class WalkForward:
             "sequence": self.sequence, "manifest": self.manifest, "gm_results": self.gm_results,
             "pending_entries": {cid: value.model_dump(mode="json") for cid, value in self.pending_entries.items()},
             "pending_events": self.pending_events,
+            "only_trade": self.only_trade, "long_lock_policy": self.long_lock_policy,
             "watcher_snapshots": list(self.watcher._previous.values())})
         render_report(self.root)
 
@@ -682,7 +819,10 @@ class WalkForward:
                 await self.drain()
             self.agenda.remove(item)
             await self.checkpoint()
-        if not self.agenda:
+        if self.manifest.get("stop_reason") == "selected_trade_closed":
+            self.manifest.update(status="completed", finished_at_ms=time.time_ns()//1_000_000,
+                pending_endpoint_pm_events=len(self.agenda))
+        elif not self.agenda:
             await self.advance_to(self.end-1)
             await self.drain()
             # Exit/mark events at the endpoint are retained; no post-window model calls.
@@ -756,6 +896,9 @@ def main():
     parser.add_argument("--git-head", required=True)
     parser.add_argument("--recorded-run", type=Path,
         help="Replay accepted Trader and Context Analyst source outputs at their original completion times; run PM and GM live")
+    parser.add_argument("--only-trade", help="Reproduce only this source Trader correlation id; stop after its position closes")
+    parser.add_argument("--long-lock-policy", action="store_true",
+        help="Simulated first-operation experiment: LONG limit locks a hedge and negative combined net MAIN exits are blocked")
     args = parser.parse_args()
     args.state.mkdir(parents=True, exist_ok=True)
     lock = (args.state / "runner.lock").open("a")
